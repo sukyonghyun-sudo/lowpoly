@@ -762,7 +762,8 @@ const WEAPONS = [
 // game.js — Quarter-view House: Mood Presets + Filter System + FBX Character
 
 // ===== MOBILE TOUCH CONTROLS =====
-const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);window.mobileInput={forward:0,right:0};if(isMobile){const base=document.getElementById("mobile-joystick-base");const stick=document.getElementById("mobile-joystick-stick");const look=document.getElementById("mobile-look-area");let sx=0,sy=0;base.addEventListener("touchstart",e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;},{passive:false});base.addEventListener("touchmove",e=>{const t=e.touches[0];let dx=Math.max(-40,Math.min(40,t.clientX-sx));let dy=Math.max(-40,Math.min(40,t.clientY-sy));stick.style.transform=`translate(${dx}px,${dy}px)`;mobileInput.right=dx/40;mobileInput.forward=-dy/40;e.preventDefault();},{passive:false});base.addEventListener("touchend",()=>{mobileInput.forward=0;mobileInput.right=0;stick.style.transform="translate(0px,0px)";});let lx=0,ly=0;look.addEventListener("touchstart",e=>{const t=e.touches[0];lx=t.clientX;ly=t.clientY;},{passive:false});look.addEventListener("touchmove",e=>{const t=e.touches[0];const dx=t.clientX-lx;const dy=t.clientY-ly;if(typeof cameraYaw!=="undefined")cameraYaw-=dx*0.003;if(typeof cameraPitch!=="undefined")cameraPitch-=dy*0.003;if(typeof targetCameraYaw!=="undefined")targetCameraYaw-=dx*0.003;if(typeof targetCameraPitch!=="undefined")targetCameraPitch-=dy*0.003;lx=t.clientX;ly=t.clientY;e.preventDefault();},{passive:false});console.log("mobile touch enabled");}
+const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);window.mobileInput={forward:0,right:0};if(isMobile){const base=document.getElementById("mobile-joystick-base");const stick=document.getElementById("mobile-joystick-stick");const look=document.getElementById("mobile-look-area");
+look.style.pointerEvents = 'none';let sx=0,sy=0;base.addEventListener("touchstart",e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;},{passive:false});base.addEventListener("touchmove",e=>{const t=e.touches[0];let dx=Math.max(-40,Math.min(40,t.clientX-sx));let dy=Math.max(-40,Math.min(40,t.clientY-sy));stick.style.transform=`translate(${dx}px,${dy}px)`;mobileInput.right=dx/40;mobileInput.forward=-dy/40;e.preventDefault();},{passive:false});base.addEventListener("touchend",()=>{mobileInput.forward=0;mobileInput.right=0;stick.style.transform="translate(0px,0px)";});let lx=0,ly=0;look.addEventListener("touchstart",e=>{const t=e.touches[0];lx=t.clientX;ly=t.clientY;},{passive:false});look.addEventListener("touchmove",e=>{const t=e.touches[0];const dx=t.clientX-lx;const dy=t.clientY-ly;if(typeof cameraYaw!=="undefined")cameraYaw-=dx*0.003;if(typeof cameraPitch!=="undefined")cameraPitch-=dy*0.003;if(typeof targetCameraYaw!=="undefined")targetCameraYaw-=dx*0.003;if(typeof targetCameraPitch!=="undefined")targetCameraPitch-=dy*0.003;lx=t.clientX;ly=t.clientY;e.preventDefault();},{passive:false});console.log("mobile touch enabled");}
 // ===== MOBILE UI TOUCH FIX =====
 
 // 모든 버튼 터치 가능하게
@@ -815,24 +816,34 @@ setTimeout(enableMobileButtons, 3000);
 
 // UI 위에서는 시점회전 막기
 const lookArea = document.getElementById('mobile-look-area');
-
 document.addEventListener('touchstart', e => {
 
   const target = e.target;
 
-  if(
+  const isUI =
     target.closest('button') ||
     target.closest('#mood-panel') ||
     target.closest('#weapon-gui') ||
     target.closest('#vision-panel') ||
-    target.closest('#weapon-wheel')
-  ){
-    lookArea.style.pointerEvents = 'none';
+    target.closest('#weapon-wheel') ||
+    target.closest('#fx-toggle-container') ||
+    target.closest('#attachments-panel');
+
+  if(isUI){
+    look.style.pointerEvents = 'none';
   } else {
-    lookArea.style.pointerEvents = 'auto';
+    look.style.pointerEvents = 'auto';
   }
 
 }, { passive:true });
+
+document.addEventListener('touchend', ()=>{
+
+  look.style.pointerEvents = 'none';
+
+}, { passive:true });
+
+
 // Prevent context menu
 document.addEventListener('contextmenu', e => e.preventDefault());
 
