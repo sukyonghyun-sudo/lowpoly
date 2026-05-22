@@ -10,10 +10,9 @@
   <title>Eden Game</title>
   <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:'Courier New',monospace}
-body{position:fixed;top:0;left:0;right:0;bottom:0}
-#game-container{width:100vw;height:100vh;position:fixed;top:0;left:0;overflow:hidden}
-#game-container canvas{display:block;width:100%!important;height:100%!important;position:absolute;top:0;left:0;filter:brightness(1.10) contrast(0.86) saturate(0.94)}
+html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:'Courier New',monospace;touch-action:none}
+#game-container{width:100%;height:100%;position:fixed;top:0;left:0;overflow:hidden}
+#game-container canvas{display:block;position:absolute;top:0;left:0;filter:brightness(1.10) contrast(0.86) saturate(0.94)}
 #room-name{position:fixed;top:16px;left:20px;font-size:14px;color:#cc9966;pointer-events:none;z-index:10;font-weight:bold;letter-spacing:0.15em}
 #map-toggle-btn{position:fixed;top:16px;left:120px;z-index:90;background:rgba(20,18,14,0.92);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-family:'Courier New',monospace;font-size:11px;padding:5px 10px;cursor:pointer;border-radius:4px;transition:all 0.3s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 #map-toggle-btn:hover{border-color:#cc9966;color:#eedd99;background:rgba(200,150,100,0.2)}
@@ -391,6 +390,21 @@ body{position:fixed;top:0;left:0;right:0;bottom:0}
   </script>
 </head>
 <body>
+<script>
+// Mobile viewport fix: sync game-container to actual visible viewport
+// Prevents touch offset issues in landscape mode
+function fixViewport() {
+  const w = window.innerWidth;
+  const h = window.innerHeight;
+  const gc = document.getElementById('game-container');
+  if (gc) { gc.style.width = w + 'px'; gc.style.height = h + 'px'; }
+  document.documentElement.style.setProperty('--vh', h + 'px');
+  document.documentElement.style.setProperty('--vw', w + 'px');
+}
+window.addEventListener('resize', fixViewport);
+window.addEventListener('orientationchange', () => setTimeout(fixViewport, 150));
+document.addEventListener('DOMContentLoaded', fixViewport);
+</script>
 <div id="game-container"></div>
 
   <!-- Video Cutscene -->
@@ -3618,14 +3632,18 @@ async function init() {
   function handleResize() {
     const width = window.innerWidth;
     const height = window.innerHeight;
+    // Sync game container to actual viewport (prevents landscape touch offset)
+    container.style.width = width + 'px';
+    container.style.height = height + 'px';
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.setSize(width, height, false);
+    renderer.setSize(width, height, true); // true = also set CSS size on canvas
     composer.setSize(width, height);
     bloomPass.setSize(width, height);
   }
   window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', () => setTimeout(handleResize, 200));
 
   // Force resize on load to fix timing issues with initial dimensions
   window.addEventListener('load', handleResize);
