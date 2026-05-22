@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="mobile-web-app-capable" content="yes">
@@ -11,6 +11,7 @@
   <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:'Courier New',monospace}
+body{position:fixed;top:0;left:0;right:0;bottom:0}
 #game-container{width:100vw;height:100vh;position:fixed;top:0;left:0;overflow:hidden}
 #game-container canvas{display:block;width:100%!important;height:100%!important;position:absolute;top:0;left:0;filter:brightness(1.10) contrast(0.86) saturate(0.94)}
 #room-name{position:fixed;top:16px;left:20px;font-size:14px;color:#cc9966;pointer-events:none;z-index:10;font-weight:bold;letter-spacing:0.15em}
@@ -348,10 +349,20 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:
 #btn-attack:active{background:rgba(200,50,30,0.6)}
 #btn-tab{right:100px;bottom:130px;width:52px;height:52px;background:rgba(200,150,100,0.2);border:2px solid rgba(200,150,100,0.35);color:#cc9966;font-size:11px}
 #btn-sneak{right:100px;bottom:70px;width:52px;height:52px;background:rgba(100,150,200,0.2);border:2px solid rgba(100,150,200,0.35);color:#88aacc;font-size:11px}
-#btn-run{left:140px;bottom:120px;width:52px;height:52px;background:rgba(200,180,50,0.2);border:2px solid rgba(200,180,50,0.35);color:#ccaa44;font-size:11px}
+#btn-run{left:170px;bottom:100px;width:52px;height:52px;background:rgba(200,180,50,0.2);border:2px solid rgba(200,180,50,0.35);color:#ccaa44;font-size:11px}
 #btn-fullscreen{right:20px;top:60px;width:40px;height:40px;background:rgba(200,150,100,0.2);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-size:16px;border-radius:6px}
 #btn-opacity{right:70px;top:60px;width:40px;height:40px;background:rgba(200,150,100,0.2);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-size:14px;border-radius:6px}
 #btn-assassin{right:20px;bottom:160px;width:52px;height:52px;background:rgba(150,30,30,0.25);border:2px solid rgba(150,30,30,0.4);color:#cc6655;font-size:11px;display:none}
+@media(orientation:landscape){
+  #btn-attack{right:max(20px,env(safe-area-inset-right,0px))}
+  #btn-tab{right:max(100px,calc(80px + env(safe-area-inset-right,0px)))}
+  #btn-sneak{right:max(100px,calc(80px + env(safe-area-inset-right,0px)))}
+  #btn-fullscreen{right:max(20px,env(safe-area-inset-right,0px))}
+  #btn-opacity{right:max(70px,calc(50px + env(safe-area-inset-right,0px)))}
+  #btn-assassin{right:max(20px,env(safe-area-inset-right,0px))}
+  #joystick-zone{left:max(10px,env(safe-area-inset-left,0px))}
+  #btn-run{left:max(170px,calc(160px + env(safe-area-inset-left,0px)))}
+}
 .mobile-controls-dim #joystick-base,
 .mobile-controls-dim #joystick-thumb,
 .mobile-controls-dim .mobile-btn{opacity:0.15}
