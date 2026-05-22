@@ -221,70 +221,137 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:
 .fx-toggle-btn{background:rgba(20,18,14,0.95);border:1px solid rgba(200,150,100,0.3);color:#aa9977;font-family:'Courier New',monospace;font-size:10px;padding:6px 12px;cursor:pointer;border-radius:4px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all 0.15s}
 .fx-toggle-btn:hover{border-color:#cc9966;color:#eedd99;background:rgba(60,40,20,0.95)}
 .fx-toggle-btn.active{background:rgba(200,150,100,0.3);border-color:#ffcc88;color:#fff;box-shadow:0 0 10px rgba(255,200,100,0.3)}
-  /* ===== MOBILE TOUCH CONTROLS ===== */#mobile-ui{position:fixed;inset:0;z-index:999;pointer-events:none;display:none}#mobile-joystick-base{position:absolute;left:24px;bottom:24px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);pointer-events:auto;touch-action:none}#mobile-joystick-stick{position:absolute;left:50%;top:50%;width:60px;height:60px;margin-left:-30px;margin-top:-30px;border-radius:50%;background:rgba(255,255,255,0.22);border:2px solid rgba(255,255,255,0.25)}#mobile-look-area{position:absolute;right:0;top:0;width:55%;height:100%;pointer-events:auto;touch-action:none}
-#mobile-attack-btn{
-position:absolute;
-right:24px;
-bottom:28px;
-width:92px;
-height:92px;
-border-radius:50%;
-border:none;
-background:rgba(180,40,40,0.82);
-color:white;
-font-size:40px;
-font-weight:bold;
-z-index:1001;
-pointer-events:auto;
-touch-action:none;
-}
 
-#mobile-tab-btn{
-position:absolute;
-right:130px;
-bottom:42px;
-width:70px;
-height:70px;
-border-radius:14px;
-border:none;
-background:rgba(40,40,40,0.82);
-color:white;
-font-size:30px;
-z-index:1001;
-pointer-events:auto;
-}
+/* ===== Player Lighting Panel ===== */
+#plight-panel{position:fixed;top:100px;right:480px;width:240px;background:rgba(20,18,14,0.95);border:1px solid rgba(200,150,100,0.3);border-radius:6px;padding:10px;z-index:30;font-family:'Courier New',monospace;color:#aa9977;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-height:80vh;overflow-y:auto}
+#plight-panel .plight-title{font-size:11px;color:#cc9966;font-weight:bold;letter-spacing:0.1em;margin-bottom:8px;cursor:grab;user-select:none}
+#plight-panel .plight-title:active{cursor:grabbing}
+#plight-panel .plight-close{float:right;cursor:pointer;color:#776;font-weight:normal;font-size:11px;padding:0 4px}
+#plight-panel .plight-close:hover{color:#ff8866}
+#plight-panel .plight-row{margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid rgba(200,150,100,0.08)}
+#plight-panel .plight-toggle{display:flex;align-items:center;gap:6px;color:#cca;font-size:10px;cursor:pointer;font-weight:bold}
+#plight-panel .plight-toggle input{accent-color:#cc9966;cursor:pointer}
+#plight-panel .plight-slider-row{display:flex;align-items:center;gap:5px;margin-top:4px;margin-left:18px}
+#plight-panel .pl-lbl{width:42px;font-size:9px;color:#776;text-align:right;flex-shrink:0}
+#plight-panel .pl-slider{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:rgba(200,150,100,0.2);border-radius:2px;outline:none;cursor:pointer}
+#plight-panel .pl-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;background:#cc9966;border-radius:50%;cursor:pointer;border:none}
+#plight-panel .pl-val{width:44px;font-size:9px;color:#ccaa88;text-align:right;flex-shrink:0}
+#plight-panel .pl-color{width:30px;height:18px;border:1px solid rgba(200,150,100,0.3);border-radius:3px;cursor:pointer;background:transparent}
+#plight-panel .plight-reset{display:block;width:100%;margin-top:6px;background:rgba(120,40,20,0.4);border:1px solid rgba(200,100,80,0.3);color:#ddaa88;font-family:inherit;font-size:10px;padding:6px;cursor:pointer;border-radius:3px}
+#plight-panel .plight-reset:hover{border-color:#cc6644;color:#ffaa88}
+#plight-toggle{position:fixed;bottom:60px;right:288px;background:rgba(20,18,14,0.95);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-family:'Courier New',monospace;font-size:10px;padding:6px 10px;cursor:pointer;border-radius:4px;z-index:25;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#plight-toggle:hover{border-color:#cc9966;color:#eedd99;background:rgba(200,150,100,0.2)}
 
-#mobile-market-btn{
-position:absolute;
-right:215px;
-bottom:42px;
-width:70px;
-height:70px;
-border-radius:14px;
-border:none;
-background:rgba(160,120,30,0.88);
-color:white;
-font-size:30px;
-z-index:1001;
-pointer-events:auto;
-}
+/* ===== Assassin Prompt ===== */
+#assassin-prompt{position:fixed;top:55%;left:50%;transform:translate(-50%,-50%);background:rgba(20,0,0,0.85);border:2px solid #cc2222;color:#ffaaaa;font-family:'Courier New',monospace;font-size:18px;font-weight:bold;padding:10px 24px;border-radius:6px;z-index:35;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);box-shadow:0 0 20px rgba(200,30,30,0.4);letter-spacing:0.05em;animation:assassin-pulse 1.2s ease-in-out infinite}
+#assassin-prompt kbd{background:#fff;color:#000;padding:2px 8px;border-radius:3px;margin:0 4px;font-size:14px}
+@keyframes assassin-pulse{0%,100%{opacity:0.85;box-shadow:0 0 20px rgba(200,30,30,0.4)}50%{opacity:1.0;box-shadow:0 0 30px rgba(255,40,40,0.7)}}
 
-#mobile-fullscreen-btn{
-position:absolute;
-top:16px;
-right:16px;
-width:58px;
-height:58px;
-border-radius:14px;
-border:none;
-background:rgba(0,0,0,0.62);
-color:white;
-font-size:26px;
-z-index:1001;
-pointer-events:auto;
-}
+/* ===== Assassin / VFX Tuning Panel ===== */
+#ass-panel{position:fixed;top:80px;right:740px;width:260px;background:rgba(20,5,5,0.95);border:1px solid rgba(204,34,34,0.4);border-radius:6px;padding:10px;z-index:30;font-family:'Courier New',monospace;color:#aa8888;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-height:85vh;overflow-y:auto}
+#ass-panel .ass-title{font-size:11px;color:#cc4444;font-weight:bold;letter-spacing:0.1em;margin-bottom:8px;cursor:grab;user-select:none}
+#ass-panel .ass-title:active{cursor:grabbing}
+#ass-panel .ass-close{float:right;cursor:pointer;color:#776;font-weight:normal;font-size:11px;padding:0 4px}
+#ass-panel .ass-close:hover{color:#ff8866}
+#ass-panel .ass-section{font-size:10px;color:#dd6666;font-weight:bold;letter-spacing:0.08em;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(204,34,34,0.2)}
+#ass-panel .ass-slider-row{display:flex;align-items:center;gap:5px;margin-top:3px}
+#ass-panel .ass-lbl{width:75px;font-size:10px;color:#998;text-align:right;flex-shrink:0}
+#ass-panel .ass-slider{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:rgba(204,34,34,0.2);border-radius:2px;outline:none;cursor:pointer}
+#ass-panel .ass-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;background:#cc4444;border-radius:50%;cursor:pointer;border:none}
+#ass-panel .ass-val{width:44px;font-size:9px;color:#ccaaaa;text-align:right;flex-shrink:0}
+#ass-panel .ass-buttons{display:flex;gap:6px;margin-top:10px}
+#ass-panel .ass-reset,#ass-panel .ass-export{flex:1;background:rgba(120,40,20,0.4);border:1px solid rgba(200,100,80,0.3);color:#ddaa88;font-family:inherit;font-size:10px;padding:6px;cursor:pointer;border-radius:3px}
+#ass-panel .ass-reset:hover,#ass-panel .ass-export:hover{border-color:#cc6644;color:#ffaa88}
+#ass-toggle{position:fixed;bottom:60px;right:380px;background:rgba(20,5,5,0.95);border:1px solid rgba(204,34,34,0.4);color:#cc6666;font-family:'Courier New',monospace;font-size:10px;padding:6px 10px;cursor:pointer;border-radius:4px;z-index:25;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#ass-toggle:hover{border-color:#cc6666;color:#ffaaaa;background:rgba(204,34,34,0.2)}
 
-@media (max-width:900px){#mobile-ui{display:block}}</style>
+/* ===== Scene Lighting Panel ===== */
+#sc-panel{position:fixed;top:80px;right:1010px;width:260px;background:rgba(10,15,30,0.95);border:1px solid rgba(80,140,220,0.4);border-radius:6px;padding:10px;z-index:30;font-family:'Courier New',monospace;color:#88aacc;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-height:85vh;overflow-y:auto}
+#sc-panel .sc-title{font-size:11px;color:#88ccff;font-weight:bold;letter-spacing:0.1em;margin-bottom:8px;cursor:grab;user-select:none}
+#sc-panel .sc-title:active{cursor:grabbing}
+#sc-panel .sc-close{float:right;cursor:pointer;color:#776;font-size:11px;padding:0 4px}
+#sc-panel .sc-close:hover{color:#ff8866}
+#sc-panel .sc-section{font-size:10px;color:#66aadd;font-weight:bold;letter-spacing:0.08em;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(80,140,220,0.2)}
+#sc-panel .sc-slider-row{display:flex;align-items:center;gap:5px;margin-top:3px}
+#sc-panel .sc-lbl{width:75px;font-size:10px;color:#778;text-align:right;flex-shrink:0}
+#sc-panel .sc-slider{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:rgba(80,140,220,0.2);border-radius:2px;outline:none;cursor:pointer}
+#sc-panel .sc-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;background:#4488cc;border-radius:50%;cursor:pointer;border:none}
+#sc-panel .sc-val{width:44px;font-size:9px;color:#aaccdd;text-align:right;flex-shrink:0}
+#sc-panel .sc-color{width:30px;height:18px;border:1px solid rgba(80,140,220,0.3);border-radius:3px;cursor:pointer;background:transparent}
+#sc-panel .sc-buttons{display:flex;gap:6px;margin-top:10px}
+#sc-panel .sc-reset,#sc-panel .sc-export{flex:1;background:rgba(20,40,80,0.4);border:1px solid rgba(80,140,220,0.3);color:#aaccff;font-family:inherit;font-size:10px;padding:6px;cursor:pointer;border-radius:3px}
+#sc-toggle{position:fixed;bottom:60px;right:472px;background:rgba(10,15,30,0.95);border:1px solid rgba(80,140,220,0.4);color:#88ccff;font-family:'Courier New',monospace;font-size:10px;padding:6px 10px;cursor:pointer;border-radius:4px;z-index:25}
+#sc-toggle:hover{border-color:#88ccff;color:#ffffff;background:rgba(80,140,220,0.2)}
+
+/* ===== Player Filter Panel ===== */
+#pf-panel{position:fixed;top:80px;right:1280px;width:240px;background:rgba(15,30,15,0.95);border:1px solid rgba(80,200,80,0.4);border-radius:6px;padding:10px;z-index:30;font-family:'Courier New',monospace;color:#88cc88;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);max-height:85vh;overflow-y:auto}
+#pf-panel .pf-title{font-size:11px;color:#88ff88;font-weight:bold;letter-spacing:0.1em;margin-bottom:8px;cursor:grab;user-select:none}
+#pf-panel .pf-close{float:right;cursor:pointer;color:#776;font-size:11px;padding:0 4px}
+#pf-panel .pf-close:hover{color:#ff8866}
+#pf-panel .pf-slider-row{display:flex;align-items:center;gap:5px;margin-top:3px}
+#pf-panel .pf-lbl{width:75px;font-size:10px;color:#787;text-align:right;flex-shrink:0}
+#pf-panel .pf-slider{-webkit-appearance:none;appearance:none;flex:1;height:3px;background:rgba(80,200,80,0.2);border-radius:2px;outline:none;cursor:pointer}
+#pf-panel .pf-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:10px;height:10px;background:#44cc44;border-radius:50%;cursor:pointer;border:none}
+#pf-panel .pf-val{width:44px;font-size:9px;color:#aacccc;text-align:right;flex-shrink:0}
+#pf-panel .pf-color{width:30px;height:18px;border:1px solid rgba(80,200,80,0.3);border-radius:3px;cursor:pointer;background:transparent}
+#pf-panel .pf-buttons{display:flex;gap:6px;margin-top:10px}
+#pf-panel .pf-reset,#pf-panel .pf-export{flex:1;background:rgba(20,80,20,0.4);border:1px solid rgba(80,200,80,0.3);color:#aaffaa;font-family:inherit;font-size:10px;padding:6px;cursor:pointer;border-radius:3px}
+#pf-toggle{position:fixed;bottom:60px;right:564px;background:rgba(15,30,15,0.95);border:1px solid rgba(80,200,80,0.4);color:#88ff88;font-family:'Courier New',monospace;font-size:10px;padding:6px 10px;cursor:pointer;border-radius:4px;z-index:25}
+#pf-toggle:hover{border-color:#88ff88;color:#ffffff;background:rgba(80,200,80,0.2)}
+
+/* ===== Scene Lighting Preset Buttons ===== */
+#sc-panel .sc-presets{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin-bottom:6px}
+#sc-panel .sc-preset{background:linear-gradient(135deg,rgba(20,15,30,0.9),rgba(35,20,40,0.9));border:1px solid rgba(120,80,160,0.4);color:#ccaadd;font-family:'Courier New',monospace;font-size:10px;padding:6px 4px;cursor:pointer;border-radius:3px;transition:all 0.15s;text-align:center}
+#sc-panel .sc-preset:hover{background:linear-gradient(135deg,rgba(40,20,60,0.95),rgba(60,30,80,0.95));border-color:#aa66cc;color:#ffaaff;transform:translateY(-1px);box-shadow:0 2px 8px rgba(170,100,200,0.3)}
+#sc-panel .sc-preset:active{transform:translateY(0)}
+
+/* ===== Player Filter Preset Buttons ===== */
+#pf-panel .pf-section{font-size:10px;color:#66dd66;font-weight:bold;letter-spacing:0.08em;margin:8px 0 4px 0;padding-bottom:3px;border-bottom:1px solid rgba(80,200,80,0.2)}
+#pf-panel .pf-presets{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;margin-bottom:6px}
+#pf-panel .pf-preset{background:linear-gradient(135deg,rgba(15,30,15,0.9),rgba(20,40,20,0.9));border:1px solid rgba(80,160,80,0.4);color:#aadda a;font-family:'Courier New',monospace;font-size:10px;padding:6px 4px;cursor:pointer;border-radius:3px;transition:all 0.15s;text-align:center}
+#pf-panel .pf-preset:hover{background:linear-gradient(135deg,rgba(30,60,30,0.95),rgba(40,80,40,0.95));border-color:#66cc66;color:#aaffaa;transform:translateY(-1px);box-shadow:0 2px 8px rgba(80,200,80,0.3)}
+#pf-panel .pf-preset:active{transform:translateY(0)}
+
+/* ===== Hide non-essential panels (keep mood + filter/lighting panels) ===== */
+#weapon-gui,#weapon-hud,#weapon-preview,#minimap-wrap,#controls-hint,#tab-hint,
+#spawn-panel,#motion-panel,#move-panel,#attachments-panel,#options-panel,
+#ass-panel,#ass-toggle,#sc-toggle,#pf-toggle,#plight-toggle,#move-toggle,
+#motion-toggle,#vision-toggle,#fx-toggle-container{display:none!important}
+
+/* ===== Mobile Touch Controls ===== */
+#mobile-controls{display:none;position:fixed;inset:0;pointer-events:none;z-index:80;font-family:'Courier New',monospace}
+@media(max-width:1024px),(pointer:coarse){
+  #mobile-controls{display:block}
+  #controls-hint,#tab-hint{display:none!important}
+}
+#joystick-zone{position:absolute;left:10px;bottom:60px;width:150px;height:150px;pointer-events:auto;touch-action:none}
+#joystick-base{width:120px;height:120px;border-radius:50%;background:rgba(200,150,100,0.12);border:2px solid rgba(200,150,100,0.25);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+#joystick-thumb{width:50px;height:50px;border-radius:50%;background:rgba(200,150,100,0.4);border:2px solid rgba(200,150,100,0.5);position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);transition:none}
+.mobile-btn{pointer-events:auto;touch-action:none;position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;user-select:none;-webkit-user-select:none;cursor:pointer;transition:background 0.1s}
+.mobile-btn:active{transform:scale(0.9)}
+#btn-attack{right:20px;bottom:80px;width:70px;height:70px;background:rgba(200,50,30,0.35);border:2px solid rgba(200,50,30,0.5);color:#ff8866}
+#btn-attack:active{background:rgba(200,50,30,0.6)}
+#btn-tab{right:100px;bottom:130px;width:52px;height:52px;background:rgba(200,150,100,0.2);border:2px solid rgba(200,150,100,0.35);color:#cc9966;font-size:11px}
+#btn-sneak{right:100px;bottom:70px;width:52px;height:52px;background:rgba(100,150,200,0.2);border:2px solid rgba(100,150,200,0.35);color:#88aacc;font-size:11px}
+#btn-run{left:140px;bottom:120px;width:52px;height:52px;background:rgba(200,180,50,0.2);border:2px solid rgba(200,180,50,0.35);color:#ccaa44;font-size:11px}
+#btn-fullscreen{right:20px;top:60px;width:40px;height:40px;background:rgba(200,150,100,0.2);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-size:16px;border-radius:6px}
+#btn-opacity{right:70px;top:60px;width:40px;height:40px;background:rgba(200,150,100,0.2);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-size:14px;border-radius:6px}
+#btn-assassin{right:20px;bottom:160px;width:52px;height:52px;background:rgba(150,30,30,0.25);border:2px solid rgba(150,30,30,0.4);color:#cc6655;font-size:11px;display:none}
+.mobile-controls-dim #joystick-base,
+.mobile-controls-dim #joystick-thumb,
+.mobile-controls-dim .mobile-btn{opacity:0.15}
+/* Touch-friendly sizes for mobile */
+@media(pointer:coarse){
+  #map-toggle-btn{font-size:14px!important;padding:10px 16px!important;min-height:44px}
+  .mood-btn{min-height:38px!important;font-size:12px!important;padding:8px 14px!important}
+  #mood-panel{max-width:200px}
+  #hp-hud{bottom:220px!important;left:10px!important;width:160px!important}
+  #room-name{font-size:12px!important}
+  #interaction-prompt{font-size:12px!important;bottom:240px!important}
+  #assassin-prompt{font-size:14px!important}
+  #game-over .go-text{font-size:48px!important}
+}
+  </style>
   <script type="importmap">
   {
     "imports": {
@@ -299,13 +366,13 @@ pointer-events:auto;
   <div id="room-name">🏠</div>
   <button id="map-toggle-btn">🏪 마켓</button>
   <div id="minimap-wrap">
-    <div class="minimap-title">MAP</div>
+    <div class="minimap-title" style="cursor:grab;user-select:none">MAP <span style="float:right;cursor:pointer;color:#776;font-size:11px;padding:0 4px" onclick="this.closest('#minimap-wrap').style.display='none'">✕</span></div>
     <canvas id="minimap" width="180" height="180"></canvas>
   </div>
   <div id="filter-panel"></div>
 
   <div id="mood-panel">
-    <div class="panel-title">🌙 NIGHT MOOD</div>
+    <div class="panel-title">🌙 NIGHT MOOD <span class="panel-close" style="float:right;cursor:pointer;color:#776;font-size:11px;padding:0 4px" onclick="this.closest('#mood-panel').style.display='none'">✕</span></div>
     <button class="mood-btn active" data-mood="marketDefault">🏪 Default</button>
     <button class="mood-btn mood-horror" data-mood="deadCity">🌆 Dead City</button>
     <button class="mood-btn mood-horror" data-mood="bloodMoon">🩸 Blood Moon</button>
@@ -317,6 +384,7 @@ pointer-events:auto;
     <button class="mood-btn mood-horror" data-mood="acidRain">☠️ Acid Rain</button>
   </div>
   <div id="interaction-prompt"></div>
+  <div id="assassin-prompt" style="display:none;">💀 <kbd>F</kbd> 암살</div>
   <div id="weapon-gui"></div>
   <div id="weapon-hud">
     <div class="label">EQUIPPED</div>
@@ -335,23 +403,24 @@ pointer-events:auto;
   <div id="weapon-preview"></div>
   <div id="weapon-wheel"><div class="backdrop"></div><div id="wheel-container"></div></div>
   <div id="tab-hint"><kbd>TAB</kbd> 무기 선택</div>
-  <div id="controls-hint"><span><kbd>WASD</kbd>이동</span><span><kbd>SHIFT</kbd>달리기</span><span><kbd>C</kbd>잠행</span><span><kbd>L</kbd>플래시</span><span><kbd>DRAG</kbd>회전</span><span><kbd>E</kbd>상호작용</span><span><kbd>T</kbd>댄스</span><span><kbd>V</kbd>시야</span><span><kbd>O</kbd>속도</span><span><kbd>G</kbd>무적</span><span><kbd>B</kbd>부착</span><span><kbd>P</kbd>위치</span><span><kbd>M</kbd>모션</span></div>
-  
-<div id="mobile-ui">
-
-  <div id="mobile-joystick-base">
-    <div id="mobile-joystick-stick"></div>
+  <div id="controls-hint"><span><kbd>WASD</kbd>이동</span><span><kbd>SHIFT</kbd>달리기</span><span><kbd>C</kbd>잠행</span><span><kbd>F</kbd>암살</span><span><kbd>L</kbd>플래시</span><span><kbd>DRAG</kbd>회전</span><span><kbd>E</kbd>상호작용</span><span><kbd>T</kbd>댄스</span><span><kbd>V</kbd>시야</span><span><kbd>O</kbd>속도</span><span><kbd>G</kbd>무적</span><span><kbd>B</kbd>부착</span><span><kbd>P</kbd>위치</span><span><kbd>M</kbd>모션</span></div>
+  <!-- Mobile Touch Controls -->
+  <div id="mobile-controls">
+    <div id="joystick-zone">
+      <div id="joystick-base">
+        <div id="joystick-thumb"></div>
+      </div>
+    </div>
+    <div class="mobile-btn" id="btn-attack">⚔</div>
+    <div class="mobile-btn" id="btn-tab">TAB</div>
+    <div class="mobile-btn" id="btn-sneak">C</div>
+    <div class="mobile-btn" id="btn-run">🏃</div>
+    <div class="mobile-btn" id="btn-assassin">💀F</div>
+    <div class="mobile-btn" id="btn-fullscreen">⛶</div>
+    <div class="mobile-btn" id="btn-opacity">👁</div>
   </div>
 
-  <div id="mobile-look-area"></div>
-
-  <button id="mobile-attack-btn">⚔</button>
-  <button id="mobile-tab-btn">🎒</button>
-  <button id="mobile-market-btn">🏪</button>
-  <button id="mobile-fullscreen-btn">⛶</button>
-
-</div>
-<script type="module">
+  <script type="module">
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
@@ -719,8 +788,21 @@ class WeaponWheel {
       this.previewObj = null;
     }
 
-    // Same weapon → unequip
+    // Same weapon → unequip (blocked in market — must always have a weapon)
     if (this.equippedWeapon && this.equippedWeapon.id === w.id) {
+      if (typeof currentMap !== 'undefined' && currentMap === 'market') {
+        console.log('[WeaponWheel] Cannot unequip in market');
+        // Re-attach the same weapon since we already removed it above
+        const model = this.loadedModels[w.id];
+        if (model) {
+          const reattach = model.clone();
+          if (this._handBone) this._handBone.add(reattach);
+          else if (this.playerGroup) this.playerGroup.add(reattach);
+          this.equippedModel = reattach;
+          this._applyWeaponConfig();
+        }
+        return;
+      }
       this.equippedWeapon = null;
       this._updateHUD(null);
       this._syncGUIToWeapon();
@@ -839,89 +921,6 @@ const WEAPONS = [
 
 // game.js — Quarter-view House: Mood Presets + Filter System + FBX Character
 
-// ===== MOBILE TOUCH CONTROLS =====
-const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent);window.mobileInput={forward:0,right:0};if(isMobile){const base=document.getElementById("mobile-joystick-base");const stick=document.getElementById("mobile-joystick-stick");const look=document.getElementById("mobile-look-area");
-look.style.pointerEvents = 'none';let sx=0,sy=0;base.addEventListener("touchstart",e=>{const t=e.touches[0];sx=t.clientX;sy=t.clientY;},{passive:false});base.addEventListener("touchmove",e=>{const t=e.touches[0];let dx=Math.max(-40,Math.min(40,t.clientX-sx));let dy=Math.max(-40,Math.min(40,t.clientY-sy));stick.style.transform=`translate(${dx}px,${dy}px)`;mobileInput.right=dx/40;mobileInput.forward=-dy/40;e.preventDefault();},{passive:false});base.addEventListener("touchend",()=>{mobileInput.forward=0;mobileInput.right=0;stick.style.transform="translate(0px,0px)";});let lx=0,ly=0;look.addEventListener("touchstart",e=>{const t=e.touches[0];lx=t.clientX;ly=t.clientY;},{passive:false});look.addEventListener("touchmove",e=>{const t=e.touches[0];const dx=t.clientX-lx;const dy=t.clientY-ly;if(typeof cameraYaw!=="undefined")cameraYaw-=dx*0.003;if(typeof cameraPitch!=="undefined")cameraPitch-=dy*0.003;if(typeof targetCameraYaw!=="undefined")targetCameraYaw-=dx*0.003;if(typeof targetCameraPitch!=="undefined")targetCameraPitch-=dy*0.003;lx=t.clientX;ly=t.clientY;e.preventDefault();},{passive:false});console.log("mobile touch enabled");}
-// ===== MOBILE UI TOUCH FIX =====
-
-// 모든 버튼 터치 가능하게
-
-function enableMobileButtons(){
-
-  document.querySelectorAll('button').forEach(btn => {
-
-    btn.style.pointerEvents = 'auto';
-
-    if(btn.dataset.mobileFixed) return;
-
-    btn.dataset.mobileFixed = '1';
-
-    btn.addEventListener('touchstart', e => {
-      e.stopPropagation();
-    }, { passive:true });
-
-    btn.addEventListener('touchend', e => {
-      e.preventDefault();
-      e.stopPropagation();
-      btn.click();
-    });
-
-  });
-
-}
-
-setTimeout(enableMobileButtons, 1000);
-setTimeout(enableMobileButtons, 3000);
-
-// 패널 UI도 터치 허용
-[
- '#mood-panel',
- '#weapon-gui',
- '#vision-panel',
- '#move-panel',
- '#spawn-panel',
- '#attachments-panel',
- '#weapon-wheel',
- '#fx-toggle-container'
-].forEach(sel => {
-
-  const el = document.querySelector(sel);
-
-  if(el){
-    el.style.pointerEvents = 'auto';
-  }
-});
-
-// UI 위에서는 시점회전 막기
-const lookArea = document.getElementById('mobile-look-area');
-document.addEventListener('touchstart', e => {
-
-  const target = e.target;
-
-  const isUI =
-    target.closest('button') ||
-    target.closest('#mood-panel') ||
-    target.closest('#weapon-gui') ||
-    target.closest('#vision-panel') ||
-    target.closest('#weapon-wheel') ||
-    target.closest('#fx-toggle-container') ||
-    target.closest('#attachments-panel');
-
-  if(isUI){
-    look.style.pointerEvents = 'none';
-  } else {
-    look.style.pointerEvents = 'auto';
-  }
-
-}, { passive:true });
-
-document.addEventListener('touchend', ()=>{
-
-  look.style.pointerEvents = 'none';
-
-}, { passive:true });
-
-
 // Prevent context menu
 document.addEventListener('contextmenu', e => e.preventDefault());
 
@@ -946,6 +945,7 @@ const REACTION2_URL = 'https://raw.githubusercontent.com/sukyonghyun-sudo/lowpol
 const DEATH1_URL = 'https://raw.githubusercontent.com/sukyonghyun-sudo/lowpoly/main/sam/Death1.fbx';
 const DEATH2_URL = 'https://raw.githubusercontent.com/sukyonghyun-sudo/lowpoly/main/sam/Death2.fbx';
 const FINISH_URL = 'https://raw.githubusercontent.com/sukyonghyun-sudo/lowpoly/main/sam/finish.fbx';
+const ASSASSIN_URL = 'https://raw.githubusercontent.com/sukyonghyun-sudo/lowpoly/main/sam/assassin.fbx';
 
 // ===== Door configuration =====
 const SINGLE_DOOR_IDS = [99, 98, 101, 96, 97];
@@ -1048,6 +1048,7 @@ let reaction2Action = null;
 let death1Action = null;
 let death2Action = null;
 let finishAction = null;
+let assassinAction = null;
 let isSneaking = false;
 let isPlayerDead = false;
 let isReacting = false;
@@ -1072,8 +1073,8 @@ let comboTimeScales = [];       // desired timeScale per combo step (parallel to
 let comboHitFired = [];         // tracks whether each combo step's damage has been dealt
 const COMBO_WINDOW = 0.5;       // seconds to input next hit after current ends
 const COMBO_EARLY_CANCEL = 0.70; // current hit progress ratio to early-cancel into next
-const IMPACT_FRAME = 0.50;      // animation progress (0-1) when weapon connects
-const IMPACT_FRAME_FAST = 0.38; // faster impact for 2nd combo hits
+const IMPACT_FRAME = 0.40;      // 20% earlier (was 0.50) — reaction triggers sooner
+const IMPACT_FRAME_FAST = 0.30; // also 20% earlier (was 0.38)
 let weaponWheel = null;
 let bodyAttachments = null;
 
@@ -1081,12 +1082,12 @@ let bodyAttachments = null;
 const zombies = []; // array of zombie state objects
 
 // ===== Movement =====
-const CHAR_MOVE_SPEED_HOUSE = 5.76;
-const CHAR_RUN_SPEED_HOUSE = 20.16;
+const CHAR_MOVE_SPEED_HOUSE = 6.91;   // +20% (was 5.76)
+const CHAR_RUN_SPEED_HOUSE = 12.10;   // 50% slower (was 24.19)
 const CHAR_MOVE_SPEED_MARKET = 1.8;
 const CHAR_RUN_SPEED_MARKET = 5.0;
-let CHAR_MOVE_SPEED = 4.8;
-let CHAR_RUN_SPEED = 16.8;
+let CHAR_MOVE_SPEED = 5.76;          // initial = new house default
+let CHAR_RUN_SPEED = 20.16;
 const CHAR_TURN_SPEED = 10;
 const keysPressed = {};
 
@@ -1322,6 +1323,9 @@ async function init() {
 
   // ===== Camera =====
   const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 500);
+  // Camera sees both layer 0 (environment) and layer 1 (character)
+  camera.layers.enable(0);
+  camera.layers.enable(1);
 
   // Wire up post-processing (now that scene & camera exist)
   renderPass.scene = scene;
@@ -1329,9 +1333,11 @@ async function init() {
 
   // ===== Lighting =====
   ambientLight = new THREE.AmbientLight(0xddbb88, 0.45);
+  ambientLight.layers.set(0); // environment only — player has own lights
   scene.add(ambientLight);
 
   sunLight = new THREE.DirectionalLight(0xffcc88, 1.0);
+  sunLight.layers.set(0); // environment only
   sunLight.position.set(-20, 35, 15);
   sunLight.castShadow = true;
   sunLight.shadow.mapSize.set(4096, 4096);
@@ -1356,10 +1362,27 @@ async function init() {
   scene.add(sunLight);
 
   hemiLight = new THREE.HemisphereLight(0xddccaa, 0x554433, 0.25);
+  hemiLight.layers.set(0); // environment only
   scene.add(hemiLight);
 
-  // (playerLight removed — was causing an awkward bright spot near the
-  // character's legs. Sun/ambient light is sufficient.)
+  // ===== Player-only lights (Layer 1 only) =====
+  // These lights ONLY illuminate the character (layer 1) and are NOT affected
+  // by mood/scene changes. This guarantees the player is always clearly visible.
+  const playerFillLight = new THREE.DirectionalLight(0xfff0dd, 1.2);
+  playerFillLight.position.set(-5, 12, 8);
+  playerFillLight.layers.set(1);
+  scene.add(playerFillLight);
+
+  const playerRimLight = new THREE.DirectionalLight(0xaabbdd, 0.6);
+  playerRimLight.position.set(5, 8, -6);
+  playerRimLight.layers.set(1);
+  scene.add(playerRimLight);
+
+  const playerAmbientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  playerAmbientLight.layers.set(1);
+  scene.add(playerAmbientLight);
+
+  console.log('[Lighting] Player-only lights added (Layer 1)');
 
   // Room ceiling lights (6)
   const roomLightPositions = [
@@ -1370,6 +1393,7 @@ async function init() {
     const light = new THREE.PointLight(0xffcc88, 1.0, 16);
     light.position.set(pos[0], pos[1], pos[2]);
     light.castShadow = false;
+    light.layers.set(0); // environment only
     scene.add(light);
     roomLightsArr.push(light);
   }
@@ -1382,6 +1406,7 @@ async function init() {
     const light = new THREE.PointLight(0xffaa66, 0.5, 10);
     light.position.set(pos[0], pos[1], pos[2]);
     light.castShadow = false;
+    light.layers.set(0); // environment only
     scene.add(light);
     accentLightsArr.push(light);
   }
@@ -1416,13 +1441,30 @@ async function init() {
         console.log('[Flashlight]', window._flashlightOn ? 'ON' : 'OFF');
       }
     }
+    if (e.code === 'KeyF' && !e.repeat) {
+      if (document.activeElement && document.activeElement.tagName === 'INPUT') return;
+      if (window._findAssassinTarget && window._executeAssassination) {
+        const t = window._findAssassinTarget();
+        if (t) {
+          window._executeAssassination(t);
+        }
+      }
+    }
   });
   window.addEventListener('keyup', e => {
     keysPressed[e.code] = false;
   });
-  window.addEventListener('blur', () => {
+  // Reset keys whenever the window loses focus (alt-tab, devtools, etc.)
+  // or visibility changes — prevents "stuck key" where W gets locked on.
+  function clearAllKeys() {
     Object.keys(keysPressed).forEach(k => { keysPressed[k] = false; });
+  }
+  window.addEventListener('blur', clearAllKeys);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) clearAllKeys();
   });
+  // Also clear when mouse leaves the document
+  document.addEventListener('mouseleave', clearAllKeys);
 
   // ===== Mouse drag → camera rotation + click attack =====
   container.addEventListener('pointerdown', e => {
@@ -1513,11 +1555,28 @@ async function init() {
   const moodPanel = document.getElementById('mood-panel');
   makeDraggable(moodPanel, moodPanel.querySelector('.panel-title'));
 
+  // Apply draggable to minimap
+  const minimapWrap = document.getElementById('minimap-wrap');
+  makeDraggable(minimapWrap, minimapWrap.querySelector('.minimap-title'));
+
   // Weapon GUI — title is created dynamically by weapon-wheel.js, wait for it
+  // Also add a close button when the title appears
   const weaponGui = document.getElementById('weapon-gui');
   const wgTitleObs = new MutationObserver(() => {
     const wgTitle = weaponGui.querySelector('.wg-title');
-    if (wgTitle) { makeDraggable(weaponGui, wgTitle); wgTitleObs.disconnect(); }
+    if (wgTitle) {
+      // Add close button if not present
+      if (!wgTitle.querySelector('.wg-close')) {
+        const closeSpan = document.createElement('span');
+        closeSpan.className = 'wg-close';
+        closeSpan.textContent = '✕';
+        closeSpan.style.cssText = 'float:right;cursor:pointer;color:#776;font-size:11px;padding:0 4px';
+        closeSpan.addEventListener('click', (e) => { e.stopPropagation(); weaponGui.style.display = 'none'; });
+        wgTitle.appendChild(closeSpan);
+      }
+      makeDraggable(weaponGui, wgTitle);
+      wgTitleObs.disconnect();
+    }
   });
   wgTitleObs.observe(weaponGui, { childList: true, subtree: true });
 
@@ -1653,8 +1712,15 @@ async function init() {
       scene.add(character);
       characterObj = character;
       cam.lookAt.copy(characterObj.position);
-      // Make the character cast and receive shadows
+      // Layer setup: character is on Layer 1 only. Environment lights stay
+      // on Layer 0 and won't illuminate the character. Character-specific
+      // lights (Fill/Rim/Spill/Pin/Flashlight) enable Layer 1.
+      // Camera renders both layers.
+      character.layers.set(1);
       character.traverse(o => {
+        if (o.isMesh || o.isSkinnedMesh || o.isBone || o.isObject3D) {
+          o.layers.set(1);
+        }
         if (o.isMesh || o.isSkinnedMesh) {
           o.castShadow = true;
           o.receiveShadow = true;
@@ -1853,12 +1919,13 @@ async function init() {
       } catch (err) {
         console.warn('[Character] Sneak Walk.fbx load failed:', err);
       }
-      let reaction1Fbx = null, reaction2Fbx = null, death1Fbx = null, death2Fbx = null, finishFbx = null;
+      let reaction1Fbx = null, reaction2Fbx = null, death1Fbx = null, death2Fbx = null, finishFbx = null, assassinFbx = null;
       try { reaction1Fbx = await fbxLoader.loadAsync(REACTION1_URL); } catch (err) { console.warn('[Character] Reaction1.fbx load failed:', err); }
       try { reaction2Fbx = await fbxLoader.loadAsync(REACTION2_URL); } catch (err) { console.warn('[Character] Reaction2.fbx load failed:', err); }
       try { death1Fbx = await fbxLoader.loadAsync(DEATH1_URL); } catch (err) { console.warn('[Character] Death1.fbx load failed:', err); }
       try { death2Fbx = await fbxLoader.loadAsync(DEATH2_URL); } catch (err) { console.warn('[Character] Death2.fbx load failed:', err); }
       try { finishFbx = await fbxLoader.loadAsync(FINISH_URL); } catch (err) { console.warn('[Character] finish.fbx load failed:', err); }
+      try { assassinFbx = await fbxLoader.loadAsync(ASSASSIN_URL); } catch (err) { console.warn('[Character] assassin.fbx load failed:', err); }
 
       if (downSwing1Fbx && downSwing1Fbx.animations && downSwing1Fbx.animations.length > 0) {
         const clip = downSwing1Fbx.animations[0];
@@ -1943,6 +2010,44 @@ async function init() {
         finishAction.clampWhenFinished = true;
         console.log('[Character] Finish loaded');
       }
+      // Assassinate — stealth kill from behind
+      // Strip root XZ position + Y rotation from Hips so that code-set
+      // player position and facing are preserved throughout the animation.
+      // Y position is kept so the overhead swing motion doesn't collapse.
+      // Strip ONLY the XZ position drift from Hips so the player stays
+      // in place. Keep ALL rotation — the animation's natural body turn
+      // is needed for the overhead strike motion. The angleOffset config
+      // compensates for the starting direction.
+      function stripAssassinRootMotion(clip) {
+        if (!clip || !clip.tracks) return;
+        for (const track of clip.tracks) {
+          const boneName = track.name.split('.')[0].toLowerCase();
+          const isRoot = boneName.includes('hips') || boneName.includes('root') || boneName === '';
+          if (!isRoot) continue;
+
+          // Position: zero X/Z only, keep Y for vertical motion
+          if (track.name.endsWith('.position')) {
+            const v = track.values;
+            for (let i = 0; i < v.length; i += 3) {
+              v[i] = 0;       // X = 0
+              // v[i+1] kept  // Y = vertical bob
+              v[i + 2] = 0;   // Z = 0
+            }
+            console.log('[Assassin] Stripped root XZ position, kept Y:', track.name);
+          }
+          // Quaternion: KEEP as-is — the body turn is part of the strike
+        }
+      }
+
+      if (assassinFbx && assassinFbx.animations && assassinFbx.animations.length > 0) {
+        const clip = assassinFbx.animations[0];
+        clip.name = 'Assassin';
+        stripAssassinRootMotion(clip);
+        assassinAction = characterMixer.clipAction(clip);
+        assassinAction.setLoop(THREE.LoopOnce);
+        assassinAction.clampWhenFinished = true;
+        console.log('[Character] Assassin loaded (XZ pos stripped, full rotation kept)');
+      }
 
       if (weaponIdleFbx && weaponIdleFbx.animations && weaponIdleFbx.animations.length > 0) {
         const weaponIdleClip = weaponIdleFbx.animations[0];
@@ -2021,28 +2126,48 @@ async function init() {
             const slot = bodyAttachments.slots && bodyAttachments.slots.get('flashlight');
             const model = slot && slot.model;
             if (model) {
+              // Measure flashlight bbox to find bulb tip
+              model.updateMatrixWorld(true);
+              const box = new THREE.Box3().setFromObject(model);
+              const size = new THREE.Vector3();
+              box.getSize(size);
+
+              // Create a holder Object3D inside the model — easier to tune
+              const lightHolder = new THREE.Object3D();
+              // The flashlight model has rotation x:-90 in its config, so the
+              // light needs to come from its "+Y" tip (which is forward in world).
+              // We adjust holder offset to roughly match bulb position.
+              // These offsets are tunable from the Lighting panel later.
+              lightHolder.position.set(0, 0, 0);
+              model.add(lightHolder);
+
               const spot = new THREE.SpotLight(
                 0xfff0c4,  // warm white
-                30,         // intensity
-                25,         // distance
+                40,         // intensity
+                30,         // distance
                 Math.PI / 5, // cone angle (~36°)
                 0.4,        // penumbra (soft edge)
-                1.0         // decay
+                1.5         // decay
               );
               spot.position.set(0, 0, 0);
               const target = new THREE.Object3D();
-              target.position.set(0, 0, 10); // forward
-              model.add(spot);
-              model.add(target);
+              target.position.set(0, 0, 10);
+              lightHolder.add(spot);
+              lightHolder.add(target);
               spot.target = target;
-              spot.castShadow = false; // off for performance
+              spot.castShadow = false;
+              // Flashlight illuminates BOTH layers — the character holds it
+              // but should also light up the environment in front.
+              spot.layers.enable(0);
+              spot.layers.enable(1);
+
               window._flashlightSpot = spot;
               window._flashlightTarget = target;
+              window._flashlightHolder = lightHolder;
               window._flashlightModel = model;
-              // Toggle storage
               window._flashlightOn = true;
               spot.visible = true;
-              console.log('[Flashlight] SpotLight attached');
+              console.log('[Flashlight] SpotLight attached. Model size:', size.x.toFixed(2), size.y.toFixed(2), size.z.toFixed(2));
             }
           }
           // Hide by default — only show in market (initial map is house)
@@ -2179,6 +2304,14 @@ async function init() {
 
         model.scale.setScalar(Z_SIZE_MULT);
         positionZombieInGrid(model, zi);
+
+        // Enable shadow casting on all meshes (player + light setup will catch it)
+        model.traverse(o => {
+          if (o.isMesh || o.isSkinnedMesh) {
+            o.castShadow = true;
+            o.receiveShadow = true;
+          }
+        });
 
         scene.add(model);
         stripZombieRootMotion(gltf.animations);
@@ -2331,22 +2464,29 @@ async function init() {
     let _comboTargetTimer = 0;
     window._getComboTargetTimer = () => _comboTargetTimer;
     window._tickComboTargetTimer = (dt) => { if (_comboTargetTimer > 0) _comboTargetTimer -= dt; };
-    window._setComboTarget = (z) => { _comboTarget = z; _comboTargetTimer = 1.5; };
+    window._setComboTarget = (z) => {
+      _comboTarget = z;
+      _comboTargetTimer = z ? 1.5 : 0;
+    };
     window._getComboTarget = () => _comboTarget;
     // Every frame during an attack, force player to keep facing target.
     // Without this, the mixer or movement code can rotate the player away
     // from the zombie they're trying to hit.
     window._lockFaceTarget = () => {
       if (!characterObj || !_comboTarget) return;
-      if (_comboTargetTimer <= 0) return;
+      // Don't check _comboTargetTimer here — as long as the target exists
+      // and is alive, keep facing it during the whole attack.
       if (!_comboTarget.model.visible || _comboTarget.aiState === 'dead') return;
       const dx = _comboTarget.model.position.x - characterObj.position.x;
       const dz = _comboTarget.model.position.z - characterObj.position.z;
       const d = Math.sqrt(dx * dx + dz * dz);
       if (d < 0.01) return;
       const target = Math.atan2(dx, dz);
-      // Snap directly (no smoothing — combat needs precision)
+      // CRITICAL: set BOTH rotation.y AND quaternion. The character mesh
+      // uses quaternion under the hood, and setting only rotation.y can be
+      // overridden by the previously-slerped quaternion value.
       characterObj.rotation.y = target;
+      characterObj.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), target);
     };
 
     function dealDamageToNearby() {
@@ -2431,15 +2571,21 @@ async function init() {
       const hitSet = new Set();
       const hits = [];
 
-      // GUARANTEED hit on locked target — but only if actually within range
+      // GUARANTEED hit on locked target — only if within range AND in front arc.
+      // This was the bug: previously zombies behind the player could take
+      // damage just because they were the combo target. Now we require both
+      // distance and a forward-ish angle.
       if (bestTarget && bestTarget.aiState !== 'dead' && bestTarget.model.visible) {
         const dx = bestTarget.model.position.x - characterObj.position.x;
         const dz = bestTarget.model.position.z - characterObj.position.z;
         const d = Math.sqrt(dx * dx + dz * dz);
-        // Strict: target must be within real attack reach
-        if (d <= ATTACK_REACH) {
-          hits.push({ z: bestTarget, primary: true });
-          hitSet.add(bestTarget);
+        if (d <= ATTACK_REACH && d > 0.01) {
+          // Must be in front 180° arc (dot product positive)
+          const dot = (dx / d) * fx + (dz / d) * fz;
+          if (dot > -0.2) { // allow slightly side-back
+            hits.push({ z: bestTarget, primary: true });
+            hitSet.add(bestTarget);
+          }
         }
       }
 
@@ -2463,7 +2609,12 @@ async function init() {
         const { z, primary } = hits[i];
         const dmgFactor = primary ? 1.0 : 0.7;
         damageZombie(z, Math.round(weaponDmg * dmgFactor));
-        if (window._spawnBloodHit) window._spawnBloodHit(z.model.position, false);
+        // Blood spawns slightly delayed so it appears AFTER the weapon hits,
+        // not before — feels more like the wound is opening as a reaction.
+        const zRef = z;
+        setTimeout(() => {
+          if (window._spawnBloodHit) window._spawnBloodHit(zRef.model.position, false);
+        }, 83); // ~25% later relative to a 0.5s swing (10% delayed from 75ms)
       }
 
       if (hits.length > 0) {
@@ -2631,16 +2782,25 @@ async function init() {
           }
         }
 
-        // === Attack-push: if player is attacking, gently push zombie away ===
-        // (1~3단계 통합 — 공격 시 좀비를 살짝 밀어내서 회피감)
+        // === Attack-push: only push zombies that ARE being hit ===
+        // Previously this pushed any zombie within 2.5m which caused the
+        // "untouched zombie gets pushed" bug. Now we require the zombie to
+        // be within attack reach AND in front of the player.
         if (window._attackPushActive && window._attackPushActive() && z.aiState !== 'dead' && z.aiState !== 'hit') {
           const dx = z.model.position.x - px;
           const dz = z.model.position.z - pz;
           const d = Math.sqrt(dx * dx + dz * dz);
-          if (d < 2.5 && d > 0.01) {
-            const pushAmt = 0.025; // ~25cm over the attack window
-            z.model.position.x += (dx / d) * pushAmt;
-            z.model.position.z += (dz / d) * pushAmt;
+          if (d < 1.8 && d > 0.01) {
+            // Check front arc — player facing toward zombie
+            const facing = characterObj ? characterObj.rotation.y : 0;
+            const fx = Math.sin(facing);
+            const fz = Math.cos(facing);
+            const dot = (dx / d) * fx + (dz / d) * fz;
+            if (dot > 0.3) { // ~140° front arc
+              const pushAmt = 0.025;
+              z.model.position.x += (dx / d) * pushAmt;
+              z.model.position.z += (dz / d) * pushAmt;
+            }
           }
         }
 
@@ -2651,6 +2811,12 @@ async function init() {
             z.hp = z.maxHp;
             z.aiState = 'idle';
             z.deadTimer = 0;
+            // Restore head if it was exploded
+            if (z._headless && z._headBone) {
+              z._headBone.scale.set(1, 1, 1);
+              z._headless = false;
+              z._headBone = null;
+            }
             playZombieAnim(z, 'Idle');
           }
           continue;
@@ -2815,6 +2981,215 @@ async function init() {
     window._updatePlayerBloodStains = updatePlayerBloodStains;
     window._spawnBloodHit = spawnBloodHit;
 
+    // ===== Head Explosion =====
+    // Hide head mesh + spawn dense gore particles + heavy screen blood.
+    function explodeZombieHead(z) {
+      if (!z || !z.model) return;
+      // Find head bone — Mixamo standard
+      let headBone = null;
+      z.model.traverse(obj => {
+        if (headBone) return;
+        if (!obj.isBone) return;
+        const n = (obj.name || '');
+        if (n === 'mixamorigHead' || n === 'Head' || n === 'head' ||
+            n === 'mixamorig:Head') {
+          headBone = obj;
+        }
+      });
+      if (!headBone) {
+        z.model.traverse(obj => {
+          if (headBone) return;
+          if (!obj.isBone) return;
+          const n = (obj.name || '').toLowerCase();
+          if (n.includes('head') && !n.includes('top') && !n.includes('end')) {
+            headBone = obj;
+          }
+        });
+      }
+      const worldPos = new THREE.Vector3();
+      if (headBone) {
+        headBone.getWorldPosition(worldPos);
+      } else {
+        const box = new THREE.Box3().setFromObject(z.model);
+        worldPos.set(
+          (box.min.x + box.max.x) / 2,
+          box.max.y - 0.2,
+          (box.min.z + box.max.z) / 2
+        );
+      }
+
+      // === Hide head mesh permanently ===
+      z._headless = true;
+      z._headBone = headBone;
+      if (headBone) {
+        headBone.scale.set(0.0001, 0.0001, 0.0001);
+      }
+
+      // === 1. Small blood droplets (config-driven) ===
+      const cfg = window._assassinCfg || {};
+      const SPRAY_COUNT = Math.floor(cfg.sprayCount || 300);
+      const DROP_MIN = cfg.droplet_min || 0.4;
+      const DROP_MAX = cfg.droplet_max || 0.8;
+      const SPRAY_UP = cfg.sprayUp || 2.0;
+      const SPRAY_OUT = cfg.sprayOut || 6.0;
+      for (let i = 0; i < SPRAY_COUNT; i++) {
+        const mat = _bloodMat.clone();
+        mat.color.set(0x8a1414);
+        const mesh = new THREE.Mesh(_bloodGeo, mat);
+        mesh.position.copy(worldPos);
+        mesh.position.x += (Math.random() - 0.5) * 0.1;
+        mesh.position.y += (Math.random() - 0.5) * 0.1;
+        mesh.position.z += (Math.random() - 0.5) * 0.1;
+        const speed = SPRAY_OUT * (0.3 + Math.random() * 0.7);
+        const theta = Math.random() * Math.PI * 2;
+        const phi = (Math.random() * 0.6 + 0.2) * Math.PI;
+        const vel = new THREE.Vector3(
+          Math.sin(phi) * Math.cos(theta) * speed,
+          Math.cos(phi) * speed * SPRAY_UP / 3,
+          Math.sin(phi) * Math.sin(theta) * speed
+        );
+        const s = DROP_MIN + Math.random() * (DROP_MAX - DROP_MIN);
+        mesh.scale.setScalar(s);
+        scene.add(mesh);
+        activeBloodDrops.push({
+          mesh, vel, life: 0,
+          maxLife: 1.5 + Math.random() * 0.8,
+          isSpark: false, mat
+        });
+      }
+
+      // === 2. Large head chunks — varied shapes & rotation ===
+      const CHUNK_COUNT = Math.floor(cfg.chunkCount || 8);
+      const CHUNK_SIZE = cfg.chunkSize || 1.0;
+      // Variety of chunk geometries — looks like irregular gore pieces
+      const chunkGeoms = [
+        new THREE.SphereGeometry(0.08, 5, 4),
+        new THREE.BoxGeometry(0.1, 0.08, 0.12),
+        new THREE.OctahedronGeometry(0.09),
+        new THREE.TetrahedronGeometry(0.1),
+        new THREE.DodecahedronGeometry(0.08),
+      ];
+      for (let i = 0; i < CHUNK_COUNT; i++) {
+        const mat = new THREE.MeshBasicMaterial({
+          color: i % 3 === 0 ? 0x4a0808 : (i % 3 === 1 ? 0x6a1010 : 0x8a1818),
+          transparent: true,
+          opacity: 1.0
+        });
+        const geo = chunkGeoms[i % chunkGeoms.length];
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(worldPos);
+        // Random rotation so chunks look irregular
+        mesh.rotation.set(
+          Math.random() * Math.PI * 2,
+          Math.random() * Math.PI * 2,
+          Math.random() * Math.PI * 2
+        );
+        // Initial spinning velocity (visual: chunks tumble as they fly)
+        mesh.userData.spin = new THREE.Vector3(
+          (Math.random() - 0.5) * 12,
+          (Math.random() - 0.5) * 12,
+          (Math.random() - 0.5) * 12
+        );
+        const speed = 4.0 + Math.random() * 3.5;
+        const theta = Math.random() * Math.PI * 2;
+        const phi = (Math.random() * 0.5 + 0.3) * Math.PI;
+        const vel = new THREE.Vector3(
+          Math.sin(phi) * Math.cos(theta) * speed,
+          Math.cos(phi) * speed * 1.8,
+          Math.sin(phi) * Math.sin(theta) * speed
+        );
+        const s = CHUNK_SIZE * (0.8 + Math.random() * 0.8);
+        mesh.scale.setScalar(s);
+        scene.add(mesh);
+        activeBloodDrops.push({
+          mesh, vel, life: 0,
+          maxLife: 2.5 + Math.random() * 0.5,
+          isSpark: false, mat, isChunk: true
+        });
+      }
+
+      // === 3. Shockwave ring ===
+      const ringGeo = new THREE.RingGeometry(0.05, 0.15, 24);
+      const ringMat = new THREE.MeshBasicMaterial({
+        color: 0xcc2222, transparent: true, opacity: 0.9,
+        side: THREE.DoubleSide
+      });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.position.copy(worldPos);
+      ring.lookAt(camera.position);
+      scene.add(ring);
+      let ringT = 0;
+      const ringDur = cfg.ringDur || 0.4;
+      function tickRing() {
+        ringT += 0.016;
+        if (ringT >= ringDur) {
+          scene.remove(ring);
+          ringGeo.dispose();
+          ringMat.dispose();
+          return;
+        }
+        const p = ringT / ringDur;
+        ring.scale.setScalar(1 + p * 6);
+        ringMat.opacity = 0.9 * (1 - p);
+        ring.lookAt(camera.position);
+        requestAnimationFrame(tickRing);
+      }
+      requestAnimationFrame(tickRing);
+
+      // === 4. Screen blood (no shake — disabled per user request) ===
+      if (window._screenBloodSplatter) window._screenBloodSplatter(cfg.screenBlood || 1.0);
+    }
+    window._explodeZombieHead = explodeZombieHead;
+
+    // ===== Screen Blood Splatter (full-screen overlay) =====
+    let screenBloodEl = document.getElementById('screen-blood');
+    if (!screenBloodEl) {
+      screenBloodEl = document.createElement('div');
+      screenBloodEl.id = 'screen-blood';
+      screenBloodEl.style.cssText = `
+        position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;
+        z-index:40;opacity:0;transition:opacity 0.15s;
+        background-image:radial-gradient(circle at 30% 40%, rgba(120,15,15,0.7) 0%, transparent 25%),
+                         radial-gradient(circle at 70% 60%, rgba(140,20,20,0.6) 0%, transparent 20%),
+                         radial-gradient(circle at 50% 30%, rgba(110,10,10,0.5) 0%, transparent 18%),
+                         radial-gradient(circle at 20% 70%, rgba(130,25,25,0.6) 0%, transparent 22%),
+                         radial-gradient(circle at 80% 25%, rgba(100,15,15,0.55) 0%, transparent 16%),
+                         radial-gradient(circle at 45% 75%, rgba(120,20,20,0.6) 0%, transparent 20%);
+        mix-blend-mode:multiply;
+      `;
+      document.body.appendChild(screenBloodEl);
+    }
+    window._screenBloodSplatter = (mult) => {
+      const m = (mult === undefined) ? 1.0 : mult;
+      screenBloodEl.style.transition = 'opacity 0.05s';
+      screenBloodEl.style.opacity = String(Math.min(1, m));
+      setTimeout(() => {
+        screenBloodEl.style.transition = 'opacity 2.0s';
+        screenBloodEl.style.opacity = '0';
+      }, 200);
+    };
+
+    // ===== Assassination Cinematic Camera =====
+    // Temporary zoom-in + slight tilt during assassin animation.
+    let _camOverride = null;
+    window._triggerAssassinCam = (zombie, duration) => {
+      _camOverride = {
+        timer: duration || 1.5,
+        zombie: zombie,
+      };
+    };
+    window._tickAssassinCam = (dt) => {
+      if (!_camOverride) return false;
+      _camOverride.timer -= dt;
+      if (_camOverride.timer <= 0) {
+        _camOverride = null;
+        return false;
+      }
+      return true;
+    };
+    window._isAssassinCam = () => _camOverride !== null;
+    window._assassinCamTarget = () => _camOverride ? _camOverride.zombie : null;
+
     function updateBloodDrops(dt) {
       const GRAVITY = -7.5;
       for (let i = activeBloodDrops.length - 1; i >= 0; i--) {
@@ -2832,6 +3207,12 @@ async function init() {
         d.mesh.position.x += d.vel.x * dt;
         d.mesh.position.y += d.vel.y * dt;
         d.mesh.position.z += d.vel.z * dt;
+        // Chunks tumble as they fly
+        if (d.isChunk && d.mesh.userData.spin) {
+          d.mesh.rotation.x += d.mesh.userData.spin.x * dt;
+          d.mesh.rotation.y += d.mesh.userData.spin.y * dt;
+          d.mesh.rotation.z += d.mesh.userData.spin.z * dt;
+        }
         // Fade out near end of life
         const t = d.life / d.maxLife;
         d.mat.opacity = (1 - t) * (d.isSpark ? 1.0 : 0.95);
@@ -2951,6 +3332,8 @@ async function init() {
 
     // Close button
     document.getElementById('opt-close').addEventListener('click', () => { optPanel.style.display = 'none'; });
+    // Make options panel draggable
+    makeDraggable(optPanel, optPanel.querySelector('div'));
 
     // F1 toggle
     window.addEventListener('keydown', (e) => {
@@ -3358,7 +3741,7 @@ async function init() {
         if (walkAction) walkAction.timeScale = CHAR_MOVE_SPEED / 1.3;
         if (runAction) runAction.timeScale = CHAR_RUN_SPEED / 3.0;
         // Weapon walk now runs slightly faster (1.15x speed multiplier)
-        if (weaponWalkAction) weaponWalkAction.timeScale = (CHAR_MOVE_SPEED * 1.15) / 1.3;
+        if (weaponWalkAction) weaponWalkAction.timeScale = CHAR_MOVE_SPEED / 1.3;
         // Sneak now 0.65x walk
         if (sneakAction) sneakAction.timeScale = (CHAR_MOVE_SPEED * 0.65) / 0.9;
       } else {
@@ -3368,7 +3751,7 @@ async function init() {
         cam.zoom = 1.0;
         if (walkAction) walkAction.timeScale = CHAR_MOVE_SPEED / 1.3;
         if (runAction) runAction.timeScale = CHAR_RUN_SPEED / 3.0;
-        if (weaponWalkAction) weaponWalkAction.timeScale = (CHAR_MOVE_SPEED * 1.15) / 1.3;
+        if (weaponWalkAction) weaponWalkAction.timeScale = CHAR_MOVE_SPEED / 1.3;
         if (sneakAction) sneakAction.timeScale = (CHAR_MOVE_SPEED * 0.65) / 0.9;
       }
 
@@ -3431,20 +3814,40 @@ async function init() {
           const RING_RADIUS_MAX = 10;
           for (let i = 0; i < zombies.length; i++) {
             const z = zombies[i];
-            const angle = (i / zombies.length) * Math.PI * 2 + Math.random() * 0.4;
-            const radius = RING_RADIUS_MIN + Math.random() * (RING_RADIUS_MAX - RING_RADIUS_MIN);
-            const zx = px + Math.cos(angle) * radius;
-            const zz = pz + Math.sin(angle) * radius;
+            let zx, zz, faceAngle;
+            if (i === 0) {
+              // === ZOMBIE #0: Assassination target ===
+              // Place 8m away, facing AWAY from player so back is exposed.
+              const offsetAngle = Math.PI * 0.25; // 45° to the side
+              zx = px + Math.cos(offsetAngle) * 8;
+              zz = pz + Math.sin(offsetAngle) * 8;
+              // Face perpendicular so player can sneak behind
+              faceAngle = offsetAngle + Math.PI / 2;
+              z.isAssassinTarget = true;
+            } else {
+              const angle = (i / zombies.length) * Math.PI * 2 + Math.random() * 0.4;
+              const radius = RING_RADIUS_MIN + Math.random() * (RING_RADIUS_MAX - RING_RADIUS_MIN);
+              zx = px + Math.cos(angle) * radius;
+              zz = pz + Math.sin(angle) * radius;
+              faceAngle = null;
+              z.isAssassinTarget = false;
+            }
 
             z.model.scale.setScalar(targetZombieScale);
             z.model.position.set(zx, py, zz);
-            // Force Idle pose BEFORE measuring foot position — otherwise
-            // crawl/running poses give incorrect bbox and zombie sinks.
-            if (z.actions && z.actions['Idle']) {
-              const idleAct = z.actions['Idle'];
-              idleAct.reset(); idleAct.setEffectiveWeight(1); idleAct.play();
-              z.currentAction = idleAct;
-              if (z.mixer) z.mixer.update(0); // apply pose immediately
+
+            // Decide crawler BEFORE measuring foot offset.
+            // Note: index 0 is now the assassin target (never crawler).
+            const crawlerIndices = [2, 5];
+            z.isCrawler = crawlerIndices.includes(i);
+
+            // Force the actual pose (Idle or Crawl) before measuring bbox.
+            const measurePose = (z.isCrawler && z.actions['Crawl']) ? 'Crawl' : 'Idle';
+            if (z.actions && z.actions[measurePose]) {
+              const act = z.actions[measurePose];
+              act.reset(); act.setEffectiveWeight(1); act.play();
+              z.currentAction = act;
+              if (z.mixer) z.mixer.update(0);
             }
             z.model.updateMatrixWorld(true);
             const box = new THREE.Box3().setFromObject(z.model);
@@ -3454,22 +3857,20 @@ async function init() {
             if (z.baseX !== undefined) z.baseX = zx;
             if (z.baseZ !== undefined) z.baseZ = zz;
             if (z.baseY !== undefined) z.baseY = z.model.position.y;
-            z.model.lookAt(px, z.model.position.y, pz);
+            if (faceAngle !== null) {
+              // Assassin target: face perpendicular so back is exposed
+              z.model.rotation.y = faceAngle;
+            } else {
+              z.model.lookAt(px, z.model.position.y, pz);
+            }
             // Reset AI state on map entry
-            // Make some zombies crawlers (indices 2, 5 = Female E, Male C)
-            const crawlerIndices = [2, 5];
-            z.isCrawler = crawlerIndices.includes(i);
             z.aiState = 'idle';
             z.hp = z.maxHp;
             z.attackCooldown = 0;
             z.hitTimer = 0;
             z.screamTimer = 0;
             z.deadTimer = 0;
-            if (z.isCrawler && z.actions['Crawl']) {
-              if (window._playZombieAnim) window._playZombieAnim(z, 'Crawl');
-            } else {
-              if (window._playZombieAnim) window._playZombieAnim(z, 'Idle');
-            }
+            // (Animation already set above for measurement — no need to replay)
           }
           console.log(`[Zombies] Repositioned ${zombies.length} zombies, scale=${targetZombieScale.toFixed(4)}`);
           // Reset player HP and dead state on entering market
@@ -3495,12 +3896,13 @@ async function init() {
       if (targetMap === 'market') {
         mapToggleBtn.textContent = '🏚️ 하우스';
         if (roomNameEl) roomNameEl.textContent = '🏪 마켓';
-        // Apply market mood automatically (matches the reference screenshot:
-        // dim grey-blue ambient, no fog, no extra point lights).
         applyMood('marketDefault');
-        // Sync mood-panel active state
         document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
         scene.fog = null;
+        // Auto-equip baseball bat on market entry
+        if (weaponWheel && !weaponWheel.equippedWeapon) {
+          setTimeout(() => { weaponWheel.equipWeapon(0); }, 500);
+        }
       } else {
         mapToggleBtn.textContent = '🏪 마켓';
         if (roomNameEl) roomNameEl.textContent = '🏠';
@@ -3630,13 +4032,35 @@ async function init() {
 
     // Zombies (market mode only)
     if (currentMap === 'market' && zombies.length) {
-      ctx.fillStyle = '#cc4422';
       for (const z of zombies) {
         if (!z.model.visible) continue;
         const [zx, zy] = toMap(z.model.position.x, z.model.position.z);
-        ctx.beginPath();
-        ctx.arc(zx, zy, 2.2, 0, Math.PI * 2);
-        ctx.fill();
+        if (z.isAssassinTarget && z.aiState !== 'dead') {
+          // Assassin target: yellow pulsing marker with ring
+          const pulse = 0.6 + 0.4 * Math.sin(performance.now() / 200);
+          // Outer ring
+          ctx.strokeStyle = `rgba(255, 220, 0, ${pulse})`;
+          ctx.lineWidth = 1.5;
+          ctx.beginPath();
+          ctx.arc(zx, zy, 5.5, 0, Math.PI * 2);
+          ctx.stroke();
+          // Filled center
+          ctx.fillStyle = '#ffcc00';
+          ctx.beginPath();
+          ctx.arc(zx, zy, 2.8, 0, Math.PI * 2);
+          ctx.fill();
+          // Skull/dagger emoji-ish marker
+          ctx.fillStyle = '#000';
+          ctx.font = 'bold 8px Courier New';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('☠', zx, zy);
+        } else {
+          ctx.fillStyle = '#cc4422';
+          ctx.beginPath();
+          ctx.arc(zx, zy, 2.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
       }
     }
 
@@ -3987,7 +4411,7 @@ async function init() {
   const spawnPanel = document.createElement('div');
   spawnPanel.id = 'spawn-panel';
   spawnPanel.innerHTML = `
-    <div class="sp-title">📍 SPAWN POSITION</div>
+    <div class="sp-title">📍 SPAWN POSITION <span style="float:right;cursor:pointer;color:#776;font-size:11px;padding:0 4px" class="sp-close-btn">✕</span></div>
     <div class="sp-live">
       <div class="sp-row"><span>X</span><span class="sp-x">0.00</span></div>
       <div class="sp-row"><span>Y</span><span class="sp-y">0.00</span></div>
@@ -4007,6 +4431,7 @@ async function init() {
   spawnPanel.style.display = 'none';
   document.body.appendChild(spawnPanel);
   makeDraggable(spawnPanel, spawnPanel.querySelector('.sp-title'));
+  spawnPanel.querySelector('.sp-close-btn').addEventListener('click', (e) => { e.stopPropagation(); spawnPanel.style.display = 'none'; });
 
   const spX = spawnPanel.querySelector('.sp-x');
   const spY = spawnPanel.querySelector('.sp-y');
@@ -4117,7 +4542,7 @@ async function init() {
     // Re-tune anim timeScales
     if (walkAction) walkAction.timeScale = CHAR_MOVE_SPEED / 1.3;
     if (runAction) runAction.timeScale = CHAR_RUN_SPEED / 3.0;
-    if (weaponWalkAction) weaponWalkAction.timeScale = (CHAR_MOVE_SPEED * 1.15) / 1.3;
+    if (weaponWalkAction) weaponWalkAction.timeScale = CHAR_MOVE_SPEED / 1.3;
     if (sneakAction) sneakAction.timeScale = (CHAR_MOVE_SPEED * moveCfg.sneakMult) / 0.9;
   }
   // Re-apply whenever map switches (intercept end of switchMap by calling later)
@@ -4266,6 +4691,754 @@ async function init() {
 
   // Apply once after a tick so actions are loaded
   setTimeout(applyMoveCfg, 500);
+
+  // ===== Player Lighting System (캐릭터 보조 조명) =====
+  // 5 lights that follow the player to keep them visible in dark scenes:
+  //   - Fill Light: soft top-down point light on player's head
+  //   - Rim Light: backlight to outline silhouette
+  //   - Spill Light: soft ambient glow around the player
+  //   - Pin Light: strong overhead spotlight (like a stage pin spot)
+  //   - Flashlight: held flashlight beam (controlled via this panel too)
+  const playerLights = {
+    fill:   { on: true,  intensity: 1.2, color: '#ffe4c2', dist: 3.0, height: 1.8, forward: 0 },
+    rim:    { on: true,  intensity: 1.8, color: '#88aaff', dist: 4.0, height: 2.0, behind: 1.5, side: 0 },
+    spill:  { on: true,  intensity: 0.8, color: '#fff0e0', dist: 5.0, height: 1.0 },
+    pin:    { on: true,  intensity: 3.0, color: '#fff8e0', dist: 6.0, height: 5.0, angle: 30, penumbra: 0.5 },
+    flash:  { on: true,  intensity: 80,  color: '#fff0c4', dist: 30,  angle: 36, penumbra: 0.4,
+              offX: 0, offY: 0, offZ: 0, aimX: 0, aimY: 0, aimZ: 10 },
+  };
+  // Create the actual Three.js lights
+  const fillLight = new THREE.PointLight(0xffe4c2, 0, 5);
+  const rimLight  = new THREE.PointLight(0x88aaff, 0, 6);
+  const spillLight = new THREE.PointLight(0xfff0e0, 0, 8);
+  // Pin: tight spotlight from above pointing down
+  const pinLight = new THREE.SpotLight(0xfff8e0, 0, 8, Math.PI / 6, 0.5, 1.0);
+  const pinTarget = new THREE.Object3D();
+  // === Layer 1 only: these lights illuminate ONLY the character ===
+  fillLight.layers.set(1);
+  rimLight.layers.set(1);
+  spillLight.layers.set(1);
+  pinLight.layers.set(1);
+  pinTarget.layers.set(1);
+  scene.add(fillLight);
+  scene.add(rimLight);
+  scene.add(spillLight);
+  scene.add(pinLight);
+  scene.add(pinTarget);
+  pinLight.target = pinTarget;
+
+  function updatePlayerLights() {
+    if (!characterObj) return;
+    const px = characterObj.position.x;
+    const py = characterObj.position.y;
+    const pz = characterObj.position.z;
+    const facing = characterObj.rotation.y;
+    const fx = Math.sin(facing);
+    const fz = Math.cos(facing);
+    // Side vector (90 deg right of facing)
+    const sx = Math.sin(facing + Math.PI / 2);
+    const sz = Math.cos(facing + Math.PI / 2);
+
+    // Fill — supports forward offset
+    if (playerLights.fill.on) {
+      fillLight.intensity = playerLights.fill.intensity;
+      fillLight.distance = playerLights.fill.dist;
+      fillLight.color.set(playerLights.fill.color);
+      const fwd = playerLights.fill.forward || 0;
+      fillLight.position.set(px + fx * fwd, py + playerLights.fill.height, pz + fz * fwd);
+    } else fillLight.intensity = 0;
+
+    // Rim — supports behind + side offset
+    if (playerLights.rim.on) {
+      rimLight.intensity = playerLights.rim.intensity;
+      rimLight.distance = playerLights.rim.dist;
+      rimLight.color.set(playerLights.rim.color);
+      const behind = playerLights.rim.behind;
+      const side = playerLights.rim.side || 0;
+      const bx = px - fx * behind + sx * side;
+      const bz = pz - fz * behind + sz * side;
+      rimLight.position.set(bx, py + playerLights.rim.height, bz);
+    } else rimLight.intensity = 0;
+
+    // Spill
+    if (playerLights.spill.on) {
+      spillLight.intensity = playerLights.spill.intensity;
+      spillLight.distance = playerLights.spill.dist;
+      spillLight.color.set(playerLights.spill.color);
+      spillLight.position.set(px, py + playerLights.spill.height, pz);
+    } else spillLight.intensity = 0;
+
+    // Pin
+    if (playerLights.pin.on) {
+      pinLight.intensity = playerLights.pin.intensity;
+      pinLight.distance = playerLights.pin.dist;
+      pinLight.color.set(playerLights.pin.color);
+      pinLight.angle = (playerLights.pin.angle * Math.PI) / 180;
+      pinLight.penumbra = playerLights.pin.penumbra !== undefined ? playerLights.pin.penumbra : 0.5;
+      pinLight.position.set(px, py + playerLights.pin.height, pz);
+      pinTarget.position.set(px, py + 0.5, pz);
+    } else pinLight.intensity = 0;
+
+    // Flashlight: position/aim adjustable via panel
+    if (window._flashlightSpot && window._flashlightHolder && window._flashlightTarget) {
+      if (playerLights.flash.on && window._flashlightOn) {
+        window._flashlightSpot.intensity = playerLights.flash.intensity;
+        window._flashlightSpot.distance = playerLights.flash.dist;
+        window._flashlightSpot.color.set(playerLights.flash.color);
+        window._flashlightSpot.angle = (playerLights.flash.angle * Math.PI) / 180;
+        window._flashlightSpot.penumbra = playerLights.flash.penumbra;
+        window._flashlightHolder.position.set(
+          playerLights.flash.offX,
+          playerLights.flash.offY,
+          playerLights.flash.offZ
+        );
+        window._flashlightTarget.position.set(
+          playerLights.flash.aimX,
+          playerLights.flash.aimY,
+          playerLights.flash.aimZ
+        );
+        window._flashlightSpot.visible = true;
+      } else {
+        window._flashlightSpot.visible = false;
+      }
+    }
+  }
+  window._updatePlayerLights = updatePlayerLights;
+
+  // ----- Panel UI -----
+  const plPanel = document.createElement('div');
+  plPanel.id = 'plight-panel';
+  plPanel.innerHTML = `
+    <div class="plight-title">💡 PLAYER LIGHTS <span class="plight-close">✕</span></div>
+    <div class="plight-rows"></div>
+    <button class="plight-reset">🔄 Reset</button>
+  `;
+  plPanel.style.display = 'none';
+  document.body.appendChild(plPanel);
+  if (window.makeDraggable) makeDraggable(plPanel, plPanel.querySelector('.plight-title'));
+
+  const plToggleBtn = document.createElement('button');
+  plToggleBtn.id = 'plight-toggle';
+  plToggleBtn.textContent = '💡 조명';
+  document.body.appendChild(plToggleBtn);
+  plToggleBtn.onclick = () => {
+    plPanel.style.display = plPanel.style.display === 'none' ? 'block' : 'none';
+  };
+  plPanel.querySelector('.plight-close').onclick = (e) => {
+    e.stopPropagation();
+    plPanel.style.display = 'none';
+  };
+
+  const plRowsEl = plPanel.querySelector('.plight-rows');
+  const plDefs = [
+    { key: 'fill',  label: '보조광 (Fill)',   sliders: [
+      { lbl: 'power',  prop: 'intensity', min: 0, max: 20, step: 0.1 },
+      { lbl: 'dist',   prop: 'dist',      min: 1, max: 30, step: 0.5 },
+      { lbl: 'height', prop: 'height',    min: -2, max: 10, step: 0.1 },
+      { lbl: 'fwd',    prop: 'forward',   min: -5, max: 5, step: 0.1 },
+    ]},
+    { key: 'rim',   label: '림 라이트 (외곽선)', sliders: [
+      { lbl: 'power',  prop: 'intensity', min: 0, max: 20, step: 0.1 },
+      { lbl: 'dist',   prop: 'dist',      min: 1, max: 30, step: 0.5 },
+      { lbl: 'height', prop: 'height',    min: -2, max: 10, step: 0.1 },
+      { lbl: 'behind', prop: 'behind',    min: -5, max: 5, step: 0.1 },
+      { lbl: 'side',   prop: 'side',      min: -5, max: 5, step: 0.1 },
+    ]},
+    { key: 'spill', label: '주변광 (Spill)',  sliders: [
+      { lbl: 'power',  prop: 'intensity', min: 0, max: 20, step: 0.1 },
+      { lbl: 'dist',   prop: 'dist',      min: 1, max: 30, step: 0.5 },
+      { lbl: 'height', prop: 'height',    min: -2, max: 10, step: 0.1 },
+    ]},
+    { key: 'pin',   label: '핀 조명 (위에서)', sliders: [
+      { lbl: 'power',  prop: 'intensity', min: 0, max: 50, step: 0.5 },
+      { lbl: 'dist',   prop: 'dist',      min: 2, max: 50, step: 0.5 },
+      { lbl: 'height', prop: 'height',    min: 1, max: 30, step: 0.5 },
+      { lbl: 'angle',  prop: 'angle',     min: 5, max: 90, step: 1 },
+      { lbl: 'penum',  prop: 'penumbra',  min: 0, max: 1, step: 0.05 },
+    ]},
+    { key: 'flash', label: '🔦 손전등',       sliders: [
+      { lbl: 'power',  prop: 'intensity', min: 0, max: 500, step: 5 },
+      { lbl: 'dist',   prop: 'dist',      min: 5, max: 100, step: 1 },
+      { lbl: 'angle',  prop: 'angle',     min: 5, max: 120, step: 1 },
+      { lbl: 'soft',   prop: 'penumbra',  min: 0, max: 1, step: 0.05 },
+      { lbl: 'offX',   prop: 'offX',      min: -50, max: 50, step: 0.5 },
+      { lbl: 'offY',   prop: 'offY',      min: -50, max: 50, step: 0.5 },
+      { lbl: 'offZ',   prop: 'offZ',      min: -50, max: 50, step: 0.5 },
+      { lbl: 'aimX',   prop: 'aimX',      min: -30, max: 30, step: 0.5 },
+      { lbl: 'aimY',   prop: 'aimY',      min: -30, max: 30, step: 0.5 },
+      { lbl: 'aimZ',   prop: 'aimZ',      min: -30, max: 30, step: 0.5 },
+    ]},
+  ];
+
+  function buildPlRow(def) {
+    const row = document.createElement('div');
+    row.className = 'plight-row';
+    row.innerHTML = `<label class="plight-toggle"><input type="checkbox" ${playerLights[def.key].on ? 'checked' : ''}><span>${def.label}</span></label>`;
+    row.querySelector('input').onchange = (e) => {
+      playerLights[def.key].on = e.target.checked;
+    };
+    for (const s of def.sliders) {
+      const r = document.createElement('div');
+      r.className = 'plight-slider-row';
+      const cur = playerLights[def.key][s.prop];
+      r.innerHTML = `
+        <span class="pl-lbl">${s.lbl}</span>
+        <input type="range" class="pl-slider" min="${s.min}" max="${s.max}" step="${s.step}" value="${cur}">
+        <span class="pl-val">${cur.toFixed(2)}</span>
+      `;
+      const slider = r.querySelector('.pl-slider');
+      const val = r.querySelector('.pl-val');
+      slider.oninput = () => {
+        const v = parseFloat(slider.value);
+        playerLights[def.key][s.prop] = v;
+        val.textContent = v.toFixed(2);
+      };
+      row.appendChild(r);
+    }
+    if (playerLights[def.key].color !== undefined) {
+      const cRow = document.createElement('div');
+      cRow.className = 'plight-slider-row';
+      cRow.innerHTML = `<span class="pl-lbl">color</span><input type="color" class="pl-color" value="${playerLights[def.key].color}">`;
+      cRow.querySelector('.pl-color').oninput = (e) => {
+        playerLights[def.key].color = e.target.value;
+      };
+      row.appendChild(cRow);
+    }
+    return row;
+  }
+  for (const d of plDefs) plRowsEl.appendChild(buildPlRow(d));
+
+  plPanel.querySelector('.plight-reset').onclick = () => {
+    playerLights.fill   = { on: true, intensity: 1.2, color: '#ffe4c2', dist: 3.0, height: 1.8, forward: 0 };
+    playerLights.rim    = { on: true, intensity: 1.8, color: '#88aaff', dist: 4.0, height: 2.0, behind: 1.5, side: 0 };
+    playerLights.spill  = { on: true, intensity: 0.8, color: '#fff0e0', dist: 5.0, height: 1.0 };
+    playerLights.pin    = { on: true, intensity: 3.0, color: '#fff8e0', dist: 6.0, height: 5.0, angle: 30, penumbra: 0.5 };
+    playerLights.flash  = { on: true, intensity: 80,  color: '#fff0c4', dist: 30,  angle: 36, penumbra: 0.4,
+                            offX: 0, offY: 0, offZ: 0, aimX: 0, aimY: 0, aimZ: 10 };
+    plRowsEl.innerHTML = '';
+    for (const d of plDefs) plRowsEl.appendChild(buildPlRow(d));
+  };
+
+  // ============================================================
+  // ===== Assassin / VFX / Camera Tuning Panel  =================
+  // ============================================================
+  // Persisted to localStorage so the user can iterate without losing values.
+  // The "Export" button prints JSON to console for the user to copy back.
+  const ASSASSIN_DEFAULTS = {
+    playerSpeed:   1,
+    zombieSpeed:   1.45,
+    impactPct:     0.49,
+    deathDelay:    0.15,
+    behindDist:    1.5,
+    angleOffset:   0,
+    sideOffset:    0,
+    sprayCount:    580,
+    droplet_min:   0.1,
+    droplet_max:   0.3,
+    chunkCount:    17,
+    chunkSize:     0.6,
+    sprayUp:       2.9,
+    sprayOut:      6.5,
+    camSide:       0,
+    camBack:       -2.6,
+    camUp:         0.6,
+    camLookY:      1.8,
+    shakeStrength: 5,
+    shakeDuration: 0.55,
+    ringDur:       0.1,
+    screenBlood:   2,
+  };
+  let assassinCfg = { ...ASSASSIN_DEFAULTS };
+  try {
+    const saved = localStorage.getItem('assassinCfg');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      assassinCfg = { ...ASSASSIN_DEFAULTS, ...parsed };
+    }
+  } catch(e) {}
+  window._assassinCfg = assassinCfg;
+  function saveAssassinCfg() {
+    try { localStorage.setItem('assassinCfg', JSON.stringify(assassinCfg)); } catch(e) {}
+  }
+
+  const assPanel = document.createElement('div');
+  assPanel.id = 'ass-panel';
+  assPanel.innerHTML = `
+    <div class="ass-title">💀 ASSASSIN / VFX <span class="ass-close">✕</span></div>
+    <div class="ass-section">⏱ ANIMATION</div>
+    <div class="ass-rows" data-section="anim"></div>
+    <div class="ass-section">🩸 BLOOD</div>
+    <div class="ass-rows" data-section="blood"></div>
+    <div class="ass-section">📹 CAMERA</div>
+    <div class="ass-rows" data-section="cam"></div>
+    <div class="ass-buttons">
+      <button class="ass-reset">🔄 Reset</button>
+      <button class="ass-export">📤 Export</button>
+    </div>
+  `;
+  assPanel.style.display = 'none';
+  document.body.appendChild(assPanel);
+  if (window.makeDraggable) makeDraggable(assPanel, assPanel.querySelector('.ass-title'));
+
+  const assBtn = document.createElement('button');
+  assBtn.id = 'ass-toggle';
+  assBtn.textContent = '💀 암살설정';
+  document.body.appendChild(assBtn);
+  assBtn.onclick = () => {
+    assPanel.style.display = assPanel.style.display === 'none' ? 'block' : 'none';
+  };
+  assPanel.querySelector('.ass-close').onclick = (e) => {
+    e.stopPropagation();
+    assPanel.style.display = 'none';
+  };
+
+  const ASS_DEFS = {
+    anim: [
+      { key: 'playerSpeed', lbl: '플레이어 속도', min: 0.2, max: 3.0, step: 0.05 },
+      { key: 'zombieSpeed', lbl: '좀비 속도',    min: 0.2, max: 3.0, step: 0.05 },
+      { key: 'impactPct',   lbl: '임팩트 %',     min: 0.1, max: 0.95, step: 0.01 },
+      { key: 'deathDelay',  lbl: '죽음 지연(s)', min: 0,   max: 1.0, step: 0.05 },
+      { key: 'behindDist',  lbl: '뒤 거리(m)',   min: 0.3, max: 2.5, step: 0.05 },
+      { key: 'angleOffset', lbl: '각도 보정(°)', min: -180, max: 180, step: 1 },
+      { key: 'sideOffset', lbl: '좌우 오프셋',  min: -2.0, max: 2.0, step: 0.05 },
+    ],
+    blood: [
+      { key: 'sprayCount',  lbl: '핏방울 수',    min: 50,  max: 1000, step: 10 },
+      { key: 'droplet_min', lbl: '핏방울 최소',  min: 0.1, max: 2.0, step: 0.05 },
+      { key: 'droplet_max', lbl: '핏방울 최대',  min: 0.2, max: 3.0, step: 0.05 },
+      { key: 'chunkCount',  lbl: '조각 수',      min: 0,   max: 30,  step: 1 },
+      { key: 'chunkSize',   lbl: '조각 크기',    min: 0.3, max: 3.0, step: 0.1 },
+      { key: 'sprayUp',     lbl: '튀는 높이',    min: 0.5, max: 5.0, step: 0.1 },
+      { key: 'sprayOut',    lbl: '튀는 거리',    min: 1.0, max: 20.0, step: 0.5 },
+      { key: 'screenBlood', lbl: '화면 혈흔',    min: 0,   max: 2.0, step: 0.1 },
+    ],
+    cam: [
+      { key: 'camSide',       lbl: '옆 거리',     min: -5,  max: 5,   step: 0.1 },
+      { key: 'camBack',       lbl: '뒤 거리',     min: -5,  max: 5,   step: 0.1 },
+      { key: 'camUp',         lbl: '높이',        min: -2,  max: 5,   step: 0.1 },
+      { key: 'camLookY',      lbl: '보는 높이',   min: 0,   max: 3,   step: 0.1 },
+      { key: 'shakeStrength', lbl: '셰이크 강도', min: 0,   max: 5,   step: 0.1 },
+      { key: 'shakeDuration', lbl: '셰이크 시간', min: 0,   max: 2,   step: 0.05 },
+      { key: 'ringDur',       lbl: '링 시간',     min: 0.1, max: 2.0, step: 0.05 },
+    ],
+  };
+
+  function buildAssRow(def) {
+    const r = document.createElement('div');
+    r.className = 'ass-slider-row';
+    const cur = assassinCfg[def.key];
+    r.innerHTML = `
+      <span class="ass-lbl">${def.lbl}</span>
+      <input type="range" class="ass-slider" min="${def.min}" max="${def.max}" step="${def.step}" value="${cur}">
+      <span class="ass-val">${(+cur).toFixed(2)}</span>
+    `;
+    const s = r.querySelector('.ass-slider');
+    const v = r.querySelector('.ass-val');
+    s.oninput = () => {
+      const val = parseFloat(s.value);
+      assassinCfg[def.key] = val;
+      v.textContent = val.toFixed(2);
+      saveAssassinCfg();
+    };
+    return r;
+  }
+  function rebuildAssRows() {
+    for (const section of Object.keys(ASS_DEFS)) {
+      const container = assPanel.querySelector(`[data-section="${section}"]`);
+      container.innerHTML = '';
+      for (const def of ASS_DEFS[section]) container.appendChild(buildAssRow(def));
+    }
+  }
+  rebuildAssRows();
+
+  assPanel.querySelector('.ass-reset').onclick = () => {
+    Object.assign(assassinCfg, ASSASSIN_DEFAULTS);
+    saveAssassinCfg();
+    rebuildAssRows();
+  };
+  assPanel.querySelector('.ass-export').onclick = () => {
+    const json = JSON.stringify(assassinCfg, null, 2);
+    console.log('=== ASSASSIN CONFIG ===');
+    console.log(json);
+    // Also try to copy
+    try {
+      navigator.clipboard.writeText(json);
+      console.log('(복사됨 — 클립보드 붙여넣기로 전달)');
+    } catch(e) {}
+    // Show small toast
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:rgba(20,0,0,0.95);color:#ffaaaa;padding:12px 20px;border:1px solid #cc2222;border-radius:6px;z-index:200;font-family:Courier New;font-size:13px';
+    t.textContent = '✓ 설정 출력됨 (F12 콘솔 + 클립보드)';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+  };
+
+  // ============================================================
+  // ===== SCENE LIGHTING PANEL (environment only) ==============
+  // ============================================================
+  // Adjusts world ambient + sun + fog. Character is on Layer 1 and these
+  // lights only affect Layer 0, so the character is untouched.
+  const SCENE_DEFAULTS = {
+    ambIntensity: 0.15,
+    ambColor: '#3a2a4a',
+    sunIntensity: 0.35,
+    sunColor: '#7080a8',
+    sunHeight: 30,
+    sunSide: -20,
+    sunFwd: 15,
+    fogEnabled: true,
+    fogColor: '#0a0a14',
+    fogNear: 6,
+    fogFar: 30,
+  };
+  // Horror-themed presets for dark zombie atmosphere
+  const SCENE_PRESETS = {
+    'moonlit':    { ambIntensity: 0.15, ambColor: '#3a2a4a', sunIntensity: 0.35, sunColor: '#7080a8', sunHeight: 30, sunSide: -20, sunFwd: 15, fogEnabled: true, fogColor: '#0a0a14', fogNear: 6, fogFar: 30 },
+    'bloodred':   { ambIntensity: 0.18, ambColor: '#4a1820', sunIntensity: 0.25, sunColor: '#aa3030', sunHeight: 25, sunSide: -15, sunFwd: 10, fogEnabled: true, fogColor: '#1a0808', fogNear: 5, fogFar: 25 },
+    'fog':        { ambIntensity: 0.35, ambColor: '#5a5a6a', sunIntensity: 0.20, sunColor: '#888899', sunHeight: 40, sunSide: 0, sunFwd: 0, fogEnabled: true, fogColor: '#3a3a4a', fogNear: 3, fogFar: 18 },
+    'midnight':   { ambIntensity: 0.08, ambColor: '#1a1a2a', sunIntensity: 0.15, sunColor: '#4060a0', sunHeight: 20, sunSide: -10, sunFwd: 5, fogEnabled: true, fogColor: '#000005', fogNear: 4, fogFar: 22 },
+    'industrial': { ambIntensity: 0.22, ambColor: '#3a4030', sunIntensity: 0.30, sunColor: '#a08850', sunHeight: 35, sunSide: -25, sunFwd: 20, fogEnabled: true, fogColor: '#1a1810', fogNear: 8, fogFar: 35 },
+    'daylight':   { ambIntensity: 0.45, ambColor: '#ddbb88', sunIntensity: 1.0, sunColor: '#ffcc88', sunHeight: 35, sunSide: -20, sunFwd: 15, fogEnabled: false, fogColor: '#0a0a14', fogNear: 8, fogFar: 35 },
+  };
+  let sceneCfg = { ...SCENE_DEFAULTS };
+  try {
+    const s = localStorage.getItem('sceneCfg');
+    if (s) sceneCfg = { ...SCENE_DEFAULTS, ...JSON.parse(s) };
+  } catch(e) {}
+  window._sceneCfg = sceneCfg;
+  function saveSceneCfg() {
+    try { localStorage.setItem('sceneCfg', JSON.stringify(sceneCfg)); } catch(e) {}
+  }
+  // Restrict environment lights to layer 0 only (not character)
+  if (ambientLight) ambientLight.layers.set(0);
+  if (sunLight) sunLight.layers.set(0);
+  function applySceneCfg() {
+    if (ambientLight) {
+      ambientLight.intensity = sceneCfg.ambIntensity;
+      ambientLight.color.set(sceneCfg.ambColor);
+    }
+    if (sunLight) {
+      sunLight.intensity = sceneCfg.sunIntensity;
+      sunLight.color.set(sceneCfg.sunColor);
+      const tgt = sunLight.target ? sunLight.target.position : new THREE.Vector3();
+      sunLight.position.set(tgt.x + sceneCfg.sunSide, tgt.y + sceneCfg.sunHeight, tgt.z + sceneCfg.sunFwd);
+      sunLight.userData.dirOffset = new THREE.Vector3().subVectors(sunLight.position, tgt);
+    }
+    if (sceneCfg.fogEnabled) {
+      scene.fog = new THREE.Fog(new THREE.Color(sceneCfg.fogColor), sceneCfg.fogNear, sceneCfg.fogFar);
+    } else {
+      scene.fog = null;
+    }
+  }
+  window._applySceneCfg = applySceneCfg;
+  applySceneCfg();
+
+  const scPanel = document.createElement('div');
+  scPanel.id = 'sc-panel';
+  scPanel.innerHTML = `
+    <div class="sc-title">🌅 SCENE LIGHTING <span class="sc-close">✕</span></div>
+    <div class="sc-section">🎬 PRESETS</div>
+    <div class="sc-presets">
+      <button class="sc-preset" data-preset="moonlit">🌙 달빛</button>
+      <button class="sc-preset" data-preset="bloodred">🩸 핏빛</button>
+      <button class="sc-preset" data-preset="fog">🌫 안개</button>
+      <button class="sc-preset" data-preset="midnight">🌑 자정</button>
+      <button class="sc-preset" data-preset="industrial">🏭 산업</button>
+      <button class="sc-preset" data-preset="daylight">☀️ 대낮</button>
+    </div>
+    <div class="sc-section">☀ AMBIENT</div>
+    <div class="sc-rows" data-section="ambient"></div>
+    <div class="sc-section">🌞 SUN</div>
+    <div class="sc-rows" data-section="sun"></div>
+    <div class="sc-section">🌫 FOG</div>
+    <div class="sc-rows" data-section="fog"></div>
+    <div class="sc-buttons">
+      <button class="sc-reset">🔄 Reset</button>
+      <button class="sc-export">📤 Export</button>
+    </div>
+  `;
+  scPanel.style.display = 'none';
+  document.body.appendChild(scPanel);
+  if (window.makeDraggable) makeDraggable(scPanel, scPanel.querySelector('.sc-title'));
+
+  const scBtn = document.createElement('button');
+  scBtn.id = 'sc-toggle';
+  scBtn.textContent = '🌅 씬조명';
+  document.body.appendChild(scBtn);
+  scBtn.onclick = () => { scPanel.style.display = scPanel.style.display === 'none' ? 'block' : 'none'; };
+  scPanel.querySelector('.sc-close').onclick = (e) => { e.stopPropagation(); scPanel.style.display = 'none'; };
+
+  const SC_DEFS = {
+    ambient: [
+      { key: 'ambIntensity', lbl: 'intensity', min: 0, max: 3, step: 0.05 },
+      { key: 'ambColor',     lbl: 'color',     color: true },
+    ],
+    sun: [
+      { key: 'sunIntensity', lbl: 'intensity', min: 0, max: 5, step: 0.05 },
+      { key: 'sunColor',     lbl: 'color',     color: true },
+      { key: 'sunHeight',    lbl: 'height',    min: 5, max: 80, step: 1 },
+      { key: 'sunSide',      lbl: 'side(x)',   min: -50, max: 50, step: 1 },
+      { key: 'sunFwd',       lbl: 'fwd(z)',    min: -50, max: 50, step: 1 },
+    ],
+    fog: [
+      { key: 'fogEnabled', lbl: 'enabled', checkbox: true },
+      { key: 'fogColor',   lbl: 'color',   color: true },
+      { key: 'fogNear',    lbl: 'near',    min: 0, max: 100, step: 1 },
+      { key: 'fogFar',     lbl: 'far',     min: 5, max: 200, step: 1 },
+    ],
+  };
+
+  function buildScRow(def) {
+    const r = document.createElement('div');
+    r.className = 'sc-slider-row';
+    const cur = sceneCfg[def.key];
+    if (def.checkbox) {
+      r.innerHTML = `<span class="sc-lbl">${def.lbl}</span><input type="checkbox" ${cur ? 'checked' : ''}>`;
+      r.querySelector('input').onchange = (e) => {
+        sceneCfg[def.key] = e.target.checked;
+        saveSceneCfg();
+        applySceneCfg();
+      };
+    } else if (def.color) {
+      r.innerHTML = `<span class="sc-lbl">${def.lbl}</span><input type="color" class="sc-color" value="${cur}">`;
+      r.querySelector('.sc-color').oninput = (e) => {
+        sceneCfg[def.key] = e.target.value;
+        saveSceneCfg();
+        applySceneCfg();
+      };
+    } else {
+      r.innerHTML = `
+        <span class="sc-lbl">${def.lbl}</span>
+        <input type="range" class="sc-slider" min="${def.min}" max="${def.max}" step="${def.step}" value="${cur}">
+        <span class="sc-val">${(+cur).toFixed(2)}</span>
+      `;
+      const s = r.querySelector('.sc-slider'), v = r.querySelector('.sc-val');
+      s.oninput = () => {
+        const val = parseFloat(s.value);
+        sceneCfg[def.key] = val;
+        v.textContent = val.toFixed(2);
+        saveSceneCfg();
+        applySceneCfg();
+      };
+    }
+    return r;
+  }
+  function rebuildScRows() {
+    for (const section of Object.keys(SC_DEFS)) {
+      const c = scPanel.querySelector(`[data-section="${section}"]`);
+      c.innerHTML = '';
+      for (const def of SC_DEFS[section]) c.appendChild(buildScRow(def));
+    }
+  }
+  rebuildScRows();
+  // Preset buttons
+  scPanel.querySelectorAll('.sc-preset').forEach(btn => {
+    btn.onclick = () => {
+      const presetName = btn.getAttribute('data-preset');
+      const preset = SCENE_PRESETS[presetName];
+      if (!preset) return;
+      Object.assign(sceneCfg, preset);
+      saveSceneCfg();
+      applySceneCfg();
+      rebuildScRows();
+    };
+  });
+  scPanel.querySelector('.sc-reset').onclick = () => {
+    Object.assign(sceneCfg, SCENE_DEFAULTS);
+    saveSceneCfg();
+    applySceneCfg();
+    rebuildScRows();
+  };
+  scPanel.querySelector('.sc-export').onclick = () => {
+    const json = JSON.stringify(sceneCfg, null, 2);
+    console.log('=== SCENE CONFIG ===\n' + json);
+    try { navigator.clipboard.writeText(json); } catch(e) {}
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:rgba(10,20,40,0.95);color:#aaccff;padding:12px 20px;border:1px solid #4488cc;border-radius:6px;z-index:200;font-family:Courier New;font-size:13px';
+    t.textContent = '✓ 씬 설정 출력됨';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+  };
+
+  // ============================================================
+  // ===== PLAYER FILTER PANEL (post effect on character only) ==
+  // ============================================================
+  // Adjusts character material color/brightness/saturation. Applied
+  // directly to the character's mesh materials (no shader required).
+  const PFILTER_DEFAULTS = {
+    brightness: 1.5,
+    saturation: 1.2,
+    tintR: 1.0,
+    tintG: 1.0,
+    tintB: 1.0,
+    emissive: 0.0,
+    emissiveColor: '#ffffff',
+    outlineEnabled: false,
+    outlineColor: '#000000',
+    outlineWidth: 0.02,
+  };
+  // Player visibility presets — keep character clearly visible in dark scenes
+  const PFILTER_PRESETS = {
+    'normal':   { brightness: 1.0, saturation: 1.0, tintR: 1.0, tintG: 1.0, tintB: 1.0, emissive: 0.0, emissiveColor: '#ffffff' },
+    'bright':   { brightness: 1.6, saturation: 1.3, tintR: 1.0, tintG: 1.0, tintB: 1.0, emissive: 0.0, emissiveColor: '#ffffff' },
+    'warmGlow': { brightness: 1.4, saturation: 1.1, tintR: 1.15, tintG: 1.0, tintB: 0.85, emissive: 0.3, emissiveColor: '#ffaa66' },
+    'coolHero': { brightness: 1.5, saturation: 1.2, tintR: 0.95, tintG: 1.05, tintB: 1.15, emissive: 0.2, emissiveColor: '#88aaff' },
+    'cinema':   { brightness: 1.3, saturation: 1.4, tintR: 1.1, tintG: 1.0, tintB: 0.9, emissive: 0.1, emissiveColor: '#ffeecc' },
+    'spotlight':{ brightness: 1.8, saturation: 0.9, tintR: 1.0, tintG: 1.0, tintB: 0.95, emissive: 0.5, emissiveColor: '#ffffff' },
+  };
+  let pfilterCfg = { ...PFILTER_DEFAULTS };
+  try {
+    const s = localStorage.getItem('pfilterCfg');
+    if (s) pfilterCfg = { ...PFILTER_DEFAULTS, ...JSON.parse(s) };
+  } catch(e) {}
+  window._pfilterCfg = pfilterCfg;
+  function savePFilterCfg() {
+    try { localStorage.setItem('pfilterCfg', JSON.stringify(pfilterCfg)); } catch(e) {}
+  }
+
+  // Cache original colors so we can restore/recompute
+  const _pfilterMatCache = new WeakMap();
+  function applyPFilter() {
+    if (!characterObj) return;
+    const c = pfilterCfg;
+    characterObj.traverse(o => {
+      if (!o.isMesh && !o.isSkinnedMesh) return;
+      if (!o.material) return;
+      const mats = Array.isArray(o.material) ? o.material : [o.material];
+      for (const m of mats) {
+        if (!m.color) continue;
+        if (!_pfilterMatCache.has(m)) {
+          _pfilterMatCache.set(m, {
+            color: m.color.clone(),
+            emissive: m.emissive ? m.emissive.clone() : null,
+            emissiveIntensity: m.emissiveIntensity !== undefined ? m.emissiveIntensity : 1.0,
+          });
+        }
+        const orig = _pfilterMatCache.get(m);
+        // Brightness + tint
+        const r = orig.color.r * c.brightness * c.tintR;
+        const g = orig.color.g * c.brightness * c.tintG;
+        const b = orig.color.b * c.brightness * c.tintB;
+        // Saturation: blend toward gray
+        const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+        const sR = gray + (r - gray) * c.saturation;
+        const sG = gray + (g - gray) * c.saturation;
+        const sB = gray + (b - gray) * c.saturation;
+        m.color.setRGB(sR, sG, sB);
+        // Emissive
+        if (m.emissive) {
+          m.emissive.set(c.emissiveColor);
+          m.emissiveIntensity = c.emissive;
+        }
+      }
+    });
+  }
+  window._applyPFilter = applyPFilter;
+  // Apply once after character loads (small delay)
+  setTimeout(applyPFilter, 3000);
+
+  const pfPanel = document.createElement('div');
+  pfPanel.id = 'pf-panel';
+  pfPanel.innerHTML = `
+    <div class="pf-title">🎨 PLAYER FILTER <span class="pf-close">✕</span></div>
+    <div class="pf-section">🎬 PRESETS</div>
+    <div class="pf-presets">
+      <button class="pf-preset" data-preset="bright">✨ 밝게</button>
+      <button class="pf-preset" data-preset="warm">🔥 따뜻</button>
+      <button class="pf-preset" data-preset="cool">❄️ 차갑게</button>
+      <button class="pf-preset" data-preset="horror">🩸 호러</button>
+      <button class="pf-preset" data-preset="noir">⚫ 흑백</button>
+      <button class="pf-preset" data-preset="normal">↩ 원본</button>
+    </div>
+    <div class="pf-section">⚙ ADJUST</div>
+    <div class="pf-rows"></div>
+    <div class="pf-buttons">
+      <button class="pf-reset">🔄 Reset</button>
+      <button class="pf-export">📤 Export</button>
+    </div>
+  `;
+  pfPanel.style.display = 'none';
+  document.body.appendChild(pfPanel);
+  if (window.makeDraggable) makeDraggable(pfPanel, pfPanel.querySelector('.pf-title'));
+
+  const pfBtn = document.createElement('button');
+  pfBtn.id = 'pf-toggle';
+  pfBtn.textContent = '🎨 필터';
+  document.body.appendChild(pfBtn);
+  pfBtn.onclick = () => { pfPanel.style.display = pfPanel.style.display === 'none' ? 'block' : 'none'; };
+  pfPanel.querySelector('.pf-close').onclick = (e) => { e.stopPropagation(); pfPanel.style.display = 'none'; };
+
+  const PF_DEFS = [
+    { key: 'brightness',     lbl: 'brightness', min: 0, max: 3, step: 0.05 },
+    { key: 'saturation',     lbl: 'saturation', min: 0, max: 2, step: 0.05 },
+    { key: 'tintR',          lbl: 'tint R',     min: 0, max: 2, step: 0.05 },
+    { key: 'tintG',          lbl: 'tint G',     min: 0, max: 2, step: 0.05 },
+    { key: 'tintB',          lbl: 'tint B',     min: 0, max: 2, step: 0.05 },
+    { key: 'emissive',       lbl: 'emissive',   min: 0, max: 3, step: 0.05 },
+    { key: 'emissiveColor',  lbl: 'em color',   color: true },
+  ];
+  function buildPfRow(def) {
+    const r = document.createElement('div');
+    r.className = 'pf-slider-row';
+    const cur = pfilterCfg[def.key];
+    if (def.color) {
+      r.innerHTML = `<span class="pf-lbl">${def.lbl}</span><input type="color" class="pf-color" value="${cur}">`;
+      r.querySelector('.pf-color').oninput = (e) => {
+        pfilterCfg[def.key] = e.target.value;
+        savePFilterCfg();
+        applyPFilter();
+      };
+    } else {
+      r.innerHTML = `
+        <span class="pf-lbl">${def.lbl}</span>
+        <input type="range" class="pf-slider" min="${def.min}" max="${def.max}" step="${def.step}" value="${cur}">
+        <span class="pf-val">${(+cur).toFixed(2)}</span>
+      `;
+      const s = r.querySelector('.pf-slider'), v = r.querySelector('.pf-val');
+      s.oninput = () => {
+        const val = parseFloat(s.value);
+        pfilterCfg[def.key] = val;
+        v.textContent = val.toFixed(2);
+        savePFilterCfg();
+        applyPFilter();
+      };
+    }
+    return r;
+  }
+  function rebuildPfRows() {
+    const c = pfPanel.querySelector('.pf-rows');
+    c.innerHTML = '';
+    for (const def of PF_DEFS) c.appendChild(buildPfRow(def));
+  }
+  rebuildPfRows();
+  // Preset buttons
+  pfPanel.querySelectorAll('.pf-preset').forEach(btn => {
+    btn.onclick = () => {
+      const presetName = btn.getAttribute('data-preset');
+      const preset = PFILTER_PRESETS[presetName];
+      if (!preset) return;
+      Object.assign(pfilterCfg, preset);
+      savePFilterCfg();
+      applyPFilter();
+      rebuildPfRows();
+    };
+  });
+  pfPanel.querySelector('.pf-reset').onclick = () => {
+    Object.assign(pfilterCfg, PFILTER_DEFAULTS);
+    savePFilterCfg();
+    applyPFilter();
+    rebuildPfRows();
+  };
+  pfPanel.querySelector('.pf-export').onclick = () => {
+    const json = JSON.stringify(pfilterCfg, null, 2);
+    console.log('=== FILTER CONFIG ===\n' + json);
+    try { navigator.clipboard.writeText(json); } catch(e) {}
+    const t = document.createElement('div');
+    t.style.cssText = 'position:fixed;top:20%;left:50%;transform:translateX(-50%);background:rgba(20,40,10,0.95);color:#aaffaa;padding:12px 20px;border:1px solid #44cc44;border-radius:6px;z-index:200;font-family:Courier New;font-size:13px';
+    t.textContent = '✓ 필터 설정 출력됨';
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+  };
 
   // ===== FX Toggle Buttons (Rain + Bloom) =====
   // Simple on/off toggles, no panel. Stored in localStorage.
@@ -4950,9 +6123,6 @@ async function init() {
     if (window._tickShoveCooldown) window._tickShoveCooldown(rawDt);
     if (window._tickComboTargetTimer) window._tickComboTargetTimer(rawDt);
     if (window._tickAttackPush) window._tickAttackPush(rawDt);
-    // During an attack, keep facing the target zombie — prevents player from
-    // swinging in the wrong direction when zombies move around them.
-    if (isAttacking && window._lockFaceTarget) window._lockFaceTarget();
 
     const t0 = performance.now();
     // 10프레임마다 가까운 충돌 메시만 추림
@@ -4980,14 +6150,34 @@ async function init() {
     const t1 = performance.now();
     updateComboTimer(dt);
     if (characterMixer) characterMixer.update(dt);
+    // CRITICAL: lock player rotation AFTER movement + mixer update,
+    // because both can rotate the character via root motion / input.
+    if (isAttacking && window._lockFaceTarget) window._lockFaceTarget();
+
+    // === Assassination rotation + position lock ===
+    // Position lock: prevents XZ drift from root motion.
+    // Rotation lock: forces root to face zombie so the animation's body
+    // motion plays RELATIVE to the correct facing. This prevents the
+    // bat from missing the head depending on zombie orientation.
+    if (characterObj && window._assassinRotLock !== null && window._assassinRotLock !== undefined) {
+      characterObj.rotation.y = window._assassinRotLock;
+      characterObj.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), window._assassinRotLock);
+    }
+    if (characterObj && window._assassinPosLock) {
+      characterObj.position.x = window._assassinPosLock.x;
+      characterObj.position.z = window._assassinPosLock.z;
+    }
 
     // ===== T-pose safety net (PLAYER) =====
     // If no character action has weight > 0.1, force idle.
-    if (characterMixer && !isPlayerDead && idleAction) {
+    // CRITICAL: skip this entirely while attacking — the attack itself
+    // owns the active action; counting it here once worked, but adding
+    // safety logic on top caused stuck/blended poses for assassin.
+    if (characterMixer && !isPlayerDead && idleAction && !isAttacking) {
       const allActions = [idleAction, walkAction, runAction, danceAction,
         weaponIdleAction, weaponWalkAction, sneakAction,
         downSwingAction, axeSwing1Action, axeSwing2Action,
-        downSwingAction, finishAction,
+        downSwingAction, finishAction, assassinAction,
         reaction1Action, reaction2Action, death1Action, death2Action];
       let totalWeight = 0;
       for (const a of allActions) {
@@ -5005,6 +6195,10 @@ async function init() {
 
     for (const z of zombies) {
       if (z.mixer && z.model.visible) z.mixer.update(dt);
+      // Headless: keep head bone hidden every frame (mixer overwrites scale)
+      if (z._headless && z._headBone) {
+        z._headBone.scale.set(0.0001, 0.0001, 0.0001);
+      }
       // ===== T-pose safety net (ZOMBIE) =====
       if (z.mixer && z.model.visible && z.actions['Idle']) {
         let zw = 0;
@@ -5028,6 +6222,15 @@ async function init() {
     updateLighting(dt);
     updateCamera(dt);
     if (window._updateRain) window._updateRain(dt);
+    if (window._updatePlayerLights) window._updatePlayerLights();
+
+    // Update assassin prompt
+    const assPromptEl = document.getElementById('assassin-prompt');
+    if (assPromptEl && window._findAssassinTarget) {
+      const canAss = window._findAssassinTarget();
+      assPromptEl.style.display = canAss ? 'block' : 'none';
+    }
+
     updateCameraOcclusion(dt, camera);
     const t2 = performance.now();
     if (weaponWheel) weaponWheel.update(dt);
@@ -5107,6 +6310,11 @@ async function init() {
     if (keysPressed['KeyS'] || keysPressed['ArrowDown'])  inputZ += 1;
     if (keysPressed['KeyA'] || keysPressed['ArrowLeft'])  inputX -= 1;
     if (keysPressed['KeyD'] || keysPressed['ArrowRight']) inputX += 1;
+    // Mobile joystick input (overrides keyboard if active)
+    if (window._mobileJoy) {
+      inputX = window._mobileJoy.x;
+      inputZ = window._mobileJoy.z;
+    }
 
     const wantsToMove = (inputX !== 0 || inputZ !== 0);
     const running = keysPressed['ShiftLeft'] || keysPressed['ShiftRight'];
@@ -5115,7 +6323,7 @@ async function init() {
     let speed;
     if (isSneaking) speed = CHAR_MOVE_SPEED * sneakFactor;
     else if (running) speed = CHAR_RUN_SPEED;
-    else speed = CHAR_MOVE_SPEED * (hasWeapon() ? 1.15 : 1.0);
+    else speed = CHAR_MOVE_SPEED;
 
     if (wantsToMove) {
       const len = Math.sqrt(inputX * inputX + inputZ * inputZ);
@@ -5305,53 +6513,257 @@ async function init() {
   }
 
   // ===== Soft Targeting: auto-rotate toward best target on attack =====
-  const SOFT_TARGET_RANGE = 2.5;    // scan radius
-  const SOFT_TARGET_ARC = 140;      // degrees — generous front arc
+  const SOFT_TARGET_RANGE = 4.0;    // wider scan so we always find someone
+  // Player snaps to face the nearest zombie in this radius before swinging.
   const LUNGE_DIST = 0.2;           // small forward step on attack
+  const SOFT_TARGET_ARC = 140;      // degrees — generous front arc
+
+  // ===== Assassination System =====
+  // Simplified: F key kills the nearest zombie. No stealth/behind requirements.
+  const ASSASSIN_RANGE = 1.8;  // must be close
+  function findAssassinTarget() {
+    if (!characterObj) return null;
+    if (isAttacking) return null;
+    if (!weaponWheel || !weaponWheel.equippedWeapon) return null;
+    // Must be in sneak mode (C key toggle)
+    if (!isSneaking) return null;
+    const px = characterObj.position.x;
+    const pz = characterObj.position.z;
+    let target = null;
+    let bestD = ASSASSIN_RANGE;
+    for (const z of zombies) {
+      if (!z.model.visible || z.aiState === 'dead') continue;
+      if (z.isCrawler) continue;
+      const dx = px - z.model.position.x;
+      const dz = pz - z.model.position.z;
+      const d = Math.sqrt(dx * dx + dz * dz);
+      if (d > bestD || d < 0.01) continue;
+      // Must be BEHIND the zombie
+      // Zombie's forward vector
+      const zfx = Math.sin(z.model.rotation.y);
+      const zfz = Math.cos(z.model.rotation.y);
+      // Vector from zombie to player
+      const toPlayerX = dx / d;
+      const toPlayerZ = dz / d;
+      // Dot product. If player is behind zombie, this is negative (opposite of forward).
+      const dot = toPlayerX * zfx + toPlayerZ * zfz;
+      // dot < -0.7 means player is strictly behind (~45° cone from dead-center back)
+      // Rejects side approaches entirely
+      if (dot > -0.7) continue;
+      if (d < bestD) { bestD = d; target = z; }
+    }
+    return target;
+  }
+  window._findAssassinTarget = findAssassinTarget;
+
+  function executeAssassination(target) {
+    if (!target) return;
+    const animAction = assassinAction || axeSwing1Action || downSwingAction;
+    if (!animAction) {
+      console.warn('[Assassin] No animation available');
+      return;
+    }
+
+    // === Randomize camera angle each assassination ===
+    const camOptions = [0, 1.60];
+    assassinCfg.camSide = camOptions[Math.floor(Math.random() * camOptions.length)];
+    // Fix player speed
+    assassinCfg.playerSpeed = 1.30;
+    console.log(`[Assassin] Camera camSide=${assassinCfg.camSide}, playerSpeed=1.30`);
+
+    // Diagnostic
+    const actName = animAction === assassinAction ? 'Assassin' :
+                    animAction === axeSwing1Action ? 'AxeSwing1 (fallback)' :
+                    'DownSwing (fallback)';
+    console.log('[Assassin] Using animation:', actName);
+    // Show on screen so user can see without opening console
+    const diag = document.createElement('div');
+    diag.style.cssText = 'position:fixed;top:10%;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.85);color:#ffaa44;padding:8px 16px;border:1px solid #ff6622;border-radius:4px;z-index:300;font-family:Courier New;font-size:12px;pointer-events:none';
+    diag.textContent = '🎬 ' + actName;
+    document.body.appendChild(diag);
+    setTimeout(() => diag.remove(), 2000);
+
+    const cfg = window._assassinCfg || {};
+
+    // === Position player BEHIND the zombie, facing its back ===
+    // The zombie's forward direction is (sin(rotY), cos(rotY)).
+    // "Behind" = opposite of zombie's forward = zombie pos - forward * dist
+    // Side vector is perpendicular to forward.
+    const zfx = Math.sin(target.model.rotation.y);
+    const zfz = Math.cos(target.model.rotation.y);
+    const sfx = Math.cos(target.model.rotation.y);   // side X
+    const sfz = -Math.sin(target.model.rotation.y);  // side Z
+    const BEHIND_DIST = cfg.behindDist || 1.5;
+    const SIDE_OFFSET = cfg.sideOffset || 0;
+    const playerX = target.model.position.x - zfx * BEHIND_DIST + sfx * SIDE_OFFSET;
+    const playerZ = target.model.position.z - zfz * BEHIND_DIST + sfz * SIDE_OFFSET;
+    characterObj.position.x = playerX;
+    characterObj.position.z = playerZ;
+    // Player faces TOWARD the zombie's back (= zombie's forward direction)
+    const angleOffsetRad = (cfg.angleOffset || 0) * Math.PI / 180;
+    const angleToZombie = Math.atan2(
+      target.model.position.x - playerX,
+      target.model.position.z - playerZ
+    ) + angleOffsetRad;
+    characterObj.rotation.y = angleToZombie;
+    characterObj.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), angleToZombie);
+
+    // === Assassination lock (position + rotation) ===
+    // Position locked so root motion can't drift the player.
+    // Rotation locked so the strike direction stays consistent regardless
+    // of zombie facing. The animation's body motion plays through bones
+    // relative to this locked root direction.
+    window._assassinRotLock = angleToZombie;
+    window._assassinPosLock = { x: playerX, z: playerZ };
+
+    isAttacking = true;
+    if (window._setAttackPush) window._setAttackPush(2.5);
+    comboChain = [];
+    comboStep = 0;
+    moveState = 'attack';
+
+    // === Force ALL other actions to stop cleanly ===
+    const allActions = [
+      idleAction, walkAction, runAction, danceAction,
+      weaponIdleAction, weaponWalkAction, sneakAction,
+      downSwingAction, downSwing1Action, downSwing2Action, downSwing3Action,
+      axeSwing1Action, axeSwing2Action,
+      reaction1Action, reaction2Action, death1Action, death2Action,
+      finishAction
+    ];
+    for (const a of allActions) {
+      if (a && a !== animAction) {
+        a.stop();
+      }
+    }
+
+    // Reset and play assassin at full weight
+    animAction.stop(); // ensure clean state first
+    animAction.reset();
+    animAction.setLoop(THREE.LoopOnce);
+    animAction.clampWhenFinished = true;
+    animAction.setEffectiveWeight(1.0);
+    animAction.setEffectiveTimeScale(cfg.playerSpeed || 1.0);
+    animAction.play();
+    // Force mixer to process this frame immediately so the new pose
+    // takes hold before next render
+    if (characterMixer) characterMixer.update(0.001);
+
+    const clipDur = animAction.getClip().duration / (cfg.playerSpeed || 1.0);
+
+    // Cinematic camera lasts for whole animation
+    if (window._triggerAssassinCam) window._triggerAssassinCam(target, clipDur + 0.4);
+
+    target.aiState = 'hit';
+    target.hitTimer = 999;
+
+    const impactDelay = clipDur * (cfg.impactPct || 0.5) * 1000;
+    const fullDur = clipDur * 1000;
+    const deathDelayMs = (cfg.deathDelay || 0.1) * 1000;
+
+    setTimeout(() => {
+      if (!target.model.visible) return;
+      target.hp = 0;
+      target.aiState = 'dead';
+      target.deadTimer = 0;
+      setTimeout(() => {
+        if (target.actions['Death']) {
+          const da = target.actions['Death'];
+          da.reset();
+          da.setLoop(THREE.LoopOnce);
+          da.clampWhenFinished = true;
+          da.setEffectiveTimeScale(cfg.zombieSpeed || 1.0);
+          da.play();
+          if (target.currentAction && target.currentAction !== da) {
+            target.currentAction.fadeOut(0.15);
+          }
+          target.currentAction = da;
+        }
+      }, deathDelayMs);
+      if (window._explodeZombieHead) window._explodeZombieHead(target);
+    }, impactDelay);
+
+    setTimeout(() => {
+      isAttacking = false;
+      moveState = isSneaking ? 'sneak-idle' : 'idle';
+
+      // === CLEAN RECOVERY ===
+      // 0. Release assassination rotation/position lock
+      window._assassinRotLock = null;
+      window._assassinPosLock = null;
+
+      // 1. Fully stop the assassin action (not just weight=0)
+      animAction.stop();
+
+      // 2. Stop ALL actions to guarantee a clean mixer state
+      for (const a of allActions) {
+        if (a) a.stop();
+      }
+
+      // 3. Flush the mixer — clears any residual pose from clamped actions
+      if (characterMixer) characterMixer.update(0);
+
+      // 4. Start ONLY the restore action from scratch
+      const restore = getActionForState(moveState);
+      if (restore) {
+        restore.reset();
+        restore.setEffectiveWeight(1);
+        restore.setEffectiveTimeScale(1);
+        restore.play();
+      }
+
+      // 5. Force one more mixer tick so the restore pose takes hold immediately
+      if (characterMixer) characterMixer.update(0.001);
+
+      console.log('[Assassin] Recovery complete → moveState:', moveState);
+    }, fullDur);
+  }
+  window._executeAssassination = executeAssassination;
 
   function softTarget() {
     if (!characterObj || zombies.length === 0) return;
     const px = characterObj.position.x;
     const pz = characterObj.position.z;
-    const facing = characterObj.rotation.y;
-    const fx = Math.sin(facing);
-    const fz = Math.cos(facing);
 
-    let bestScore = -Infinity;
+    // ONLY snap to zombies that are actually within attack reach.
+    // If no zombie is in range, the player keeps their current facing
+    // (or movement direction). This prevents the "swing in wrong
+    // direction" bug — you only auto-face zombies you can actually hit.
+    const SNAP_RANGE = 2.0; // matches ATTACK_REACH
+    let bestD = Infinity;
     let bestZ = null;
     for (const z of zombies) {
       if (!z.model.visible || z.aiState === 'dead') continue;
       const dx = z.model.position.x - px;
       const dz = z.model.position.z - pz;
       const d = Math.sqrt(dx * dx + dz * dz);
-      if (d > SOFT_TARGET_RANGE || d < 0.01) continue;
-      // Score: heavily favor closer targets, slightly favor forward
-      const dot = (dx / d) * fx + (dz / d) * fz;
-      const score = (1.0 - d / SOFT_TARGET_RANGE) * 3.0 + dot;
-      if (score > bestScore) {
-        bestScore = score;
+      if (d > SNAP_RANGE || d < 0.01) continue;
+      if (d < bestD) {
+        bestD = d;
         bestZ = z;
       }
     }
 
     if (bestZ) {
-      // Rotate toward target
       const dx = bestZ.model.position.x - px;
       const dz = bestZ.model.position.z - pz;
       const targetAngle = Math.atan2(dx, dz);
       characterObj.rotation.y = targetAngle;
-
-      // Save as combo target so dealDamageToNearby picks the SAME zombie
+      characterObj.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), targetAngle);
       if (window._setComboTarget) window._setComboTarget(bestZ);
 
       // Lunge: small step toward target
-      const d = Math.sqrt(dx * dx + dz * dz);
-      if (d > 1.0 && d < SOFT_TARGET_RANGE) {
+      const d = bestD;
+      if (d > 1.0 && d < SNAP_RANGE) {
         const lungeX = (dx / d) * LUNGE_DIST;
         const lungeZ = (dz / d) * LUNGE_DIST;
         characterObj.position.x += lungeX;
         characterObj.position.z += lungeZ;
       }
+    } else {
+      // No zombie in attack range — clear combo target so _lockFaceTarget
+      // doesn't keep yanking us toward a distant zombie.
+      if (window._setComboTarget) window._setComboTarget(null);
     }
   }
 
@@ -5962,6 +7374,44 @@ async function init() {
   function updateCamera(dt) {
     if (!characterObj) return;
 
+    // === Assassination cinematic camera ===
+    const assassinActive = window._tickAssassinCam ? window._tickAssassinCam(dt) : false;
+    if (assassinActive) {
+      const target = window._assassinCamTarget && window._assassinCamTarget();
+      if (target && target.model) {
+        const tpos = target.model.position;
+        const ppos = characterObj.position;
+        const facing = characterObj.rotation.y;
+        const fwdX = Math.sin(facing);
+        const fwdZ = Math.cos(facing);
+        const sideX = Math.sin(facing + Math.PI / 2);
+        const sideZ = Math.cos(facing + Math.PI / 2);
+        const midX = (tpos.x + ppos.x) / 2;
+        const midZ = (tpos.z + ppos.z) / 2;
+        const midY = ppos.y + 1.0;
+
+        const cfg = window._assassinCfg || {};
+        const sideDist = cfg.camSide !== undefined ? cfg.camSide : 1.8;
+        const backDist = cfg.camBack !== undefined ? cfg.camBack : 0.5;
+        const upDist = cfg.camUp !== undefined ? cfg.camUp : 0.6;
+        const lookY = cfg.camLookY !== undefined ? cfg.camLookY : 1.2;
+
+        const camX = midX + sideX * sideDist - fwdX * backDist;
+        const camZ = midZ + sideZ * sideDist - fwdZ * backDist;
+        const camY = midY + upDist;
+        camera.position.set(camX, camY, camZ);
+        camera.lookAt(tpos.x, tpos.y + lookY, tpos.z);
+
+        if (window._getCameraShakeOffset) {
+          const shakeOff = window._getCameraShakeOffset(dt);
+          camera.position.x += shakeOff.x;
+          camera.position.y += shakeOff.y;
+          camera.position.z += shakeOff.z;
+        }
+        return;
+      }
+    }
+
     // Smooth follow
     const targetPos = characterObj.position.clone();
     targetPos.y += cam.heightOffset;
@@ -6334,66 +7784,152 @@ function createDoorPivot(scene, doorObj, box, size, hingeEdge) {
 }
 
 // =========================================================================
+//  MOBILE TOUCH CONTROLS
+// =========================================================================
+(function setupMobileControls() {
+  const mobileEl = document.getElementById('mobile-controls');
+  if (!mobileEl) return;
+
+  // Detect touch device
+  const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+  if (isTouch) mobileEl.style.display = 'block';
+
+  // ===== Virtual Joystick =====
+  const joystickZone = document.getElementById('joystick-zone');
+  const joystickThumb = document.getElementById('joystick-thumb');
+  let joyActive = false;
+  let joyStartX = 0, joyStartY = 0;
+  let joyDX = 0, joyDZ = 0;
+  const JOY_MAX = 50;
+
+  joystickZone.addEventListener('touchstart', e => {
+    e.preventDefault();
+    joyActive = true;
+    const t = e.touches[0];
+    const rect = joystickZone.getBoundingClientRect();
+    joyStartX = rect.left + rect.width / 2;
+    joyStartY = rect.top + rect.height / 2;
+  }, { passive: false });
+
+  joystickZone.addEventListener('touchmove', e => {
+    e.preventDefault();
+    if (!joyActive) return;
+    const t = e.touches[0];
+    let dx = t.clientX - joyStartX;
+    let dy = t.clientY - joyStartY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist > JOY_MAX) { dx = dx / dist * JOY_MAX; dy = dy / dist * JOY_MAX; }
+    joystickThumb.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+    joyDX = dx / JOY_MAX;
+    joyDZ = dy / JOY_MAX;
+    // Map to keyboard
+    window._mobileJoy = { x: joyDX, z: joyDZ };
+  }, { passive: false });
+
+  function endJoy() {
+    joyActive = false;
+    joyDX = 0; joyDZ = 0;
+    joystickThumb.style.transform = 'translate(-50%, -50%)';
+    window._mobileJoy = null;
+  }
+  joystickZone.addEventListener('touchend', endJoy);
+  joystickZone.addEventListener('touchcancel', endJoy);
+
+  // ===== Buttons =====
+  function simKey(code, duration) {
+    window.dispatchEvent(new KeyboardEvent('keydown', { code, bubbles: true }));
+    if (duration) setTimeout(() => {
+      window.dispatchEvent(new KeyboardEvent('keyup', { code, bubbles: true }));
+    }, duration);
+  }
+
+  // Attack — simulate click
+  const btnAttack = document.getElementById('btn-attack');
+  btnAttack.addEventListener('touchstart', e => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Trigger the handleAttack via a simulated left click
+    const canvas = document.querySelector('#game-container canvas');
+    if (canvas) {
+      canvas.dispatchEvent(new PointerEvent('pointerdown', { button: 0, clientX: 0, clientY: 0, bubbles: true }));
+      setTimeout(() => {
+        canvas.dispatchEvent(new PointerEvent('pointerup', { button: 0, clientX: 0, clientY: 0, bubbles: true }));
+      }, 50);
+    }
+  }, { passive: false });
+
+  // TAB — weapon wheel
+  document.getElementById('btn-tab').addEventListener('touchstart', e => {
+    e.preventDefault(); e.stopPropagation();
+    simKey('Tab', 100);
+  }, { passive: false });
+
+  // C — sneak toggle
+  document.getElementById('btn-sneak').addEventListener('touchstart', e => {
+    e.preventDefault(); e.stopPropagation();
+    simKey('KeyC', 100);
+  }, { passive: false });
+
+  // Shift — run (hold)
+  const btnRun = document.getElementById('btn-run');
+  let runHeld = false;
+  btnRun.addEventListener('touchstart', e => {
+    e.preventDefault(); e.stopPropagation();
+    if (!runHeld) {
+      window.dispatchEvent(new KeyboardEvent('keydown', { code: 'ShiftLeft', bubbles: true }));
+      runHeld = true;
+      btnRun.style.background = 'rgba(200,180,50,0.5)';
+      btnRun.textContent = '🏃‍♂️';
+    }
+  }, { passive: false });
+  btnRun.addEventListener('touchend', e => {
+    if (runHeld) {
+      window.dispatchEvent(new KeyboardEvent('keyup', { code: 'ShiftLeft', bubbles: true }));
+      runHeld = false;
+      btnRun.style.background = '';
+      btnRun.textContent = '🏃';
+    }
+  });
+
+  // F — assassinate
+  document.getElementById('btn-assassin').addEventListener('touchstart', e => {
+    e.preventDefault(); e.stopPropagation();
+    simKey('KeyF', 100);
+  }, { passive: false });
+
+  // Show assassin button when target is available
+  setInterval(() => {
+    const btnAss = document.getElementById('btn-assassin');
+    if (window._findAssassinTarget && window._findAssassinTarget()) {
+      btnAss.style.display = 'flex';
+    } else {
+      btnAss.style.display = 'none';
+    }
+  }, 200);
+
+  // Fullscreen
+  document.getElementById('btn-fullscreen').addEventListener('touchstart', e => {
+    e.preventDefault(); e.stopPropagation();
+    if (document.fullscreenElement) document.exitFullscreen();
+    else document.documentElement.requestFullscreen().catch(() => {});
+  }, { passive: false });
+
+  // Opacity toggle
+  let controlsDim = false;
+  document.getElementById('btn-opacity').addEventListener('touchstart', e => {
+    e.preventDefault(); e.stopPropagation();
+    controlsDim = !controlsDim;
+    mobileEl.classList.toggle('mobile-controls-dim', controlsDim);
+  }, { passive: false });
+
+  console.log('[Mobile] Touch controls initialized');
+})();
+
+// =========================================================================
 //  START
 // =========================================================================
 init().catch(err => {
   console.error('Game init failed:', err);
 });  </script>
-
-<script>
-const attackBtn=document.getElementById('mobile-attack-btn');
-const tabBtn=document.getElementById('mobile-tab-btn');
-const marketBtn=document.getElementById('mobile-market-btn');
-const fsBtn=document.getElementById('mobile-fullscreen-btn');
-
-if(attackBtn){
-attackBtn.addEventListener('touchstart',e=>{
-e.preventDefault();
-window.dispatchEvent(new MouseEvent('mousedown',{button:0}));
-},{passive:false});
-
-attackBtn.addEventListener('touchend',e=>{
-e.preventDefault();
-window.dispatchEvent(new MouseEvent('mouseup',{button:0}));
-},{passive:false});
-}
-
-if(tabBtn){
-tabBtn.addEventListener('touchstart',e=>{
-e.preventDefault();
-document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab'}));
-},{passive:false});
-}
-
-if(marketBtn){
-marketBtn.addEventListener('touchstart',e=>{
-e.preventDefault();
-const mapBtn=document.getElementById('map-toggle-btn');
-if(mapBtn) mapBtn.click();
-},{passive:false});
-}
-
-if(fsBtn){
-fsBtn.addEventListener('touchstart',async e=>{
-e.preventDefault();
-
-const el=document.documentElement;
-
-try{
-if(el.requestFullscreen){
-await el.requestFullscreen();
-}
-
-if(screen.orientation?.lock){
-try{
-await screen.orientation.lock('landscape');
-}catch(err){}
-}
-}catch(err){}
-
-},{passive:false});
-}
-</script>
-
 </body>
 </html>
