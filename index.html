@@ -8,12 +8,12 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:'Courier New',monospace}
 #game-container{width:100vw;height:100vh;position:fixed;top:0;left:0;overflow:hidden}
-#game-container canvas{display:block;width:100%!important;height:100%!important;position:absolute;top:0;left:0;filter:blur(0.5px) brightness(1.10) contrast(0.86) saturate(0.94)}
+#game-container canvas{display:block;width:100%!important;height:100%!important;position:absolute;top:0;left:0;filter:brightness(1.10) contrast(0.86) saturate(0.94)}
 #room-name{position:fixed;top:16px;left:20px;font-size:14px;color:#cc9966;pointer-events:none;z-index:10;font-weight:bold;letter-spacing:0.15em}
-#map-toggle-btn{position:fixed;top:16px;left:120px;z-index:20;background:rgba(20,18,14,0.92);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-family:'Courier New',monospace;font-size:11px;padding:5px 10px;cursor:pointer;border-radius:4px;transition:all 0.3s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#map-toggle-btn{position:fixed;top:16px;left:120px;z-index:90;background:rgba(20,18,14,0.92);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-family:'Courier New',monospace;font-size:11px;padding:5px 10px;cursor:pointer;border-radius:4px;transition:all 0.3s;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 #map-toggle-btn:hover{border-color:#cc9966;color:#eedd99;background:rgba(200,150,100,0.2)}
 #map-toggle-btn:disabled{opacity:0.5;cursor:not-allowed;pointer-events:none}
-#mood-panel{position:fixed;top:14px;right:14px;display:flex;flex-direction:column;gap:4px;z-index:10;background:rgba(20,18,14,0.92);border:1px solid rgba(200,150,100,0.2);border-radius:6px;padding:10px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+#mood-panel{position:fixed;top:14px;right:14px;display:flex;flex-direction:column;gap:4px;z-index:90;background:rgba(20,18,14,0.92);border:1px solid rgba(200,150,100,0.2);border-radius:6px;padding:10px;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 
 
 .panel-title{font-size:11px;color:#cc9966;font-weight:bold;letter-spacing:0.1em;margin-bottom:4px;cursor:grab;user-select:none;padding:2px 0}
@@ -199,7 +199,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:
 #move-toggle:hover{border-color:#cc9966;color:#eedd99;background:rgba(200,150,100,0.2)}
 
 /* ===== HP HUD ===== */
-#hp-hud{position:fixed;bottom:90px;left:20px;width:200px;z-index:20;font-family:'Courier New',monospace;color:#cc9966;background:rgba(20,18,14,0.85);border:1px solid rgba(200,150,100,0.25);border-radius:5px;padding:6px 8px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+#hp-hud{position:fixed;bottom:90px;left:20px;width:200px;z-index:85;font-family:'Courier New',monospace;color:#cc9966;background:rgba(20,18,14,0.85);border:1px solid rgba(200,150,100,0.25);border-radius:5px;padding:6px 8px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 #hp-hud .hp-label{font-size:10px;letter-spacing:0.15em;color:#cc6655;font-weight:bold;margin-bottom:3px}
 #hp-hud .hp-bar{width:100%;height:8px;background:rgba(40,10,10,0.7);border:1px solid rgba(200,80,80,0.3);border-radius:2px;overflow:hidden;position:relative}
 #hp-hud .hp-fill{height:100%;background:linear-gradient(90deg,#cc2222,#ff4422);width:100%;transition:width 0.3s,background 0.3s}
@@ -316,7 +316,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:
 #weapon-gui,#weapon-hud,#weapon-preview,#minimap-wrap,#controls-hint,#tab-hint,
 #spawn-panel,#motion-panel,#move-panel,#attachments-panel,#options-panel,
 #ass-panel,#ass-toggle,#sc-toggle,#pf-toggle,#plight-toggle,#move-toggle,
-#motion-toggle,#vision-toggle,#fx-toggle-container{display:none!important}
+#motion-toggle,#fx-toggle-container{display:none!important}
+
+/* ===== Video Cutscene Overlay ===== */
+#video-cutscene{position:fixed;inset:0;z-index:2000;background:#000;display:none;align-items:center;justify-content:center;flex-direction:column}
+#video-cutscene.active{display:flex}
+#video-cutscene video{max-width:100%;max-height:100%;object-fit:contain}
+#video-cutscene .skip-btn{position:absolute;bottom:40px;right:40px;background:rgba(200,150,100,0.2);border:1px solid rgba(200,150,100,0.4);color:#cc9966;font-family:'Courier New',monospace;font-size:14px;padding:10px 24px;cursor:pointer;border-radius:6px;z-index:2001;transition:all 0.2s;touch-action:manipulation}
+#video-cutscene .skip-btn:hover,#video-cutscene .skip-btn:active{background:rgba(200,150,100,0.4);color:#fff}
+
+/* ===== Mobile Vision Toggle ===== */
+#mobile-vision-btn{position:fixed;top:60px;right:14px;z-index:90;background:rgba(20,18,14,0.92);border:1px solid rgba(200,150,100,0.3);color:#cc9966;font-family:'Courier New',monospace;font-size:11px;padding:6px 10px;cursor:pointer;border-radius:4px;display:none;touch-action:manipulation}
+@media(pointer:coarse){#mobile-vision-btn{display:block;font-size:13px;padding:8px 14px;min-height:40px}}
 
 /* ===== Mobile Touch Controls ===== */
 #mobile-controls{display:none;position:fixed;inset:0;pointer-events:none;z-index:80;font-family:'Courier New',monospace}
@@ -342,14 +353,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:
 .mobile-controls-dim .mobile-btn{opacity:0.15}
 /* Touch-friendly sizes for mobile */
 @media(pointer:coarse){
-  #map-toggle-btn{font-size:14px!important;padding:10px 16px!important;min-height:44px}
-  .mood-btn{min-height:38px!important;font-size:12px!important;padding:8px 14px!important}
-  #mood-panel{max-width:200px}
+  #map-toggle-btn{font-size:14px!important;padding:10px 16px!important;min-height:44px;touch-action:manipulation}
+  .mood-btn{min-height:38px!important;font-size:12px!important;padding:8px 14px!important;touch-action:manipulation}
+  #mood-panel{max-width:200px;touch-action:manipulation}
   #hp-hud{bottom:220px!important;left:10px!important;width:160px!important}
   #room-name{font-size:12px!important}
   #interaction-prompt{font-size:12px!important;bottom:240px!important}
   #assassin-prompt{font-size:14px!important}
   #game-over .go-text{font-size:48px!important}
+  #weapon-wheel .wheel-slice{cursor:pointer}
+  .panel-close,.panel-title{touch-action:manipulation}
+  body{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 }
   </style>
   <script type="importmap">
@@ -363,6 +377,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000000;font-family:
 </head>
 <body>
 <div id="game-container"></div>
+
+  <!-- Video Cutscene -->
+  <div id="video-cutscene">
+    <video id="cutscene-video" playsinline webkit-playsinline></video>
+    <button class="skip-btn" id="cutscene-skip">SKIP ▶▶</button>
+  </div>
+
+  <!-- Mobile Vision Toggle -->
+  <button id="mobile-vision-btn">👁 시야</button>
+
   <div id="room-name">🏠</div>
   <button id="map-toggle-btn">🏪 마켓</button>
   <div id="minimap-wrap">
@@ -595,6 +619,15 @@ class WeaponWheel {
       slice.addEventListener('mouseleave', () => {
         this._setHover(-1);
       });
+      // Touch: tap to select directly (no hover needed on mobile)
+      slice.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        const idx = parseInt(slice.dataset.idx, 10);
+        this._setHover(idx);
+        this.equipWeapon(idx);
+        this.close();
+      }, { passive: false });
     });
   }
 
@@ -1583,16 +1616,19 @@ async function init() {
   // Zombie panel & death editor — titles created dynamically in game.js below
   // Will be connected after zombie UI is built (see below)
 
-  // ===== Mood buttons =====
+  // ===== Mood buttons (click + touchstart for mobile) =====
   document.querySelectorAll('.mood-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
+    const handler = (e) => {
+      if (e.type === 'touchstart') e.preventDefault(); // prevent double-fire
       const key = btn.dataset.mood;
       if (MOODS[key]) {
         applyMood(key);
         document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
       }
-    });
+    };
+    btn.addEventListener('click', handler);
+    btn.addEventListener('touchstart', handler, { passive: false });
   });
 
   // ===== Load Stage GLB =====
@@ -3585,12 +3621,51 @@ async function init() {
   const mapToggleBtn = document.getElementById('map-toggle-btn');
   let isMapLoading = false;
 
+  // === Video Cutscene System ===
+  const MARKET_VIDEO_URL = 'https://raw.githubusercontent.com/sukyonghyun-sudo/lowpoly/main/mov/market.mp4';
+  const cutsceneEl = document.getElementById('video-cutscene');
+  const cutsceneVideo = document.getElementById('cutscene-video');
+  const cutsceneSkip = document.getElementById('cutscene-skip');
+
+  function playCutscene(videoUrl) {
+    return new Promise((resolve) => {
+      cutsceneVideo.src = videoUrl;
+      cutsceneEl.classList.add('active');
+      cutsceneVideo.currentTime = 0;
+
+      const finish = () => {
+        cutsceneEl.classList.remove('active');
+        cutsceneVideo.pause();
+        cutsceneVideo.src = '';
+        cutsceneVideo.removeEventListener('ended', finish);
+        cutsceneSkip.removeEventListener('click', finish);
+        cutsceneSkip.removeEventListener('touchstart', finish);
+        resolve();
+      };
+
+      cutsceneVideo.addEventListener('ended', finish);
+      cutsceneSkip.addEventListener('click', finish);
+      cutsceneSkip.addEventListener('touchstart', (e) => { e.preventDefault(); finish(); }, { once: true });
+
+      cutsceneVideo.play().catch(() => {
+        // Autoplay blocked — skip cutscene
+        console.warn('[Cutscene] Autoplay blocked, skipping');
+        finish();
+      });
+    });
+  }
+
   async function switchMap(targetMap) {
     if (isMapLoading) return;
     if (targetMap === currentMap) return;
     isMapLoading = true;
     mapToggleBtn.disabled = true;
     mapToggleBtn.textContent = '⏳ 로딩...';
+
+    // Play cutscene when entering market
+    if (targetMap === 'market') {
+      try { await playCutscene(MARKET_VIDEO_URL); } catch(e) { console.warn('[Cutscene] Error:', e); }
+    }
 
     try {
       // 1. Remove current stage from scene
@@ -7907,11 +7982,19 @@ function createDoorPivot(scene, doorObj, box, size, hingeEdge) {
     }
   }, 200);
 
-  // Fullscreen
+  // Fullscreen (iOS uses webkitEnterFullscreen on video, Android uses standard API)
   document.getElementById('btn-fullscreen').addEventListener('touchstart', e => {
     e.preventDefault(); e.stopPropagation();
-    if (document.fullscreenElement) document.exitFullscreen();
-    else document.documentElement.requestFullscreen().catch(() => {});
+    const el = document.documentElement;
+    if (document.fullscreenElement || document.webkitFullscreenElement) {
+      (document.exitFullscreen || document.webkitExitFullscreen || (() => {})).call(document);
+    } else {
+      const rfs = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (rfs) rfs.call(el).catch(() => {
+        // iOS Safari doesn't support fullscreen API — try scrolling to hide address bar
+        window.scrollTo(0, 1);
+      });
+    }
   }, { passive: false });
 
   // Opacity toggle
@@ -7922,7 +8005,39 @@ function createDoorPivot(scene, doorObj, box, size, hingeEdge) {
     mobileEl.classList.toggle('mobile-controls-dim', controlsDim);
   }, { passive: false });
 
+  // === Mobile Vision Panel Toggle ===
+  const mobileVisionBtn = document.getElementById('mobile-vision-btn');
+  if (mobileVisionBtn) {
+    mobileVisionBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      simKey('KeyV', 100);
+    }, { passive: false });
+    mobileVisionBtn.addEventListener('click', () => {
+      simKey('KeyV', 100);
+    });
+  }
+
   console.log('[Mobile] Touch controls initialized');
+
+  // === Weapon wheel: close on backdrop touch ===
+  const wwBackdrop = document.querySelector('#weapon-wheel .backdrop');
+  if (wwBackdrop) {
+    wwBackdrop.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      // Close weapon wheel on backdrop tap
+      const tabEvt = new KeyboardEvent('keydown', { code: 'Tab', bubbles: true });
+      window.dispatchEvent(tabEvt);
+    }, { passive: false });
+  }
+
+  // === Map toggle button: add touchstart for instant response ===
+  const mapBtn = document.getElementById('map-toggle-btn');
+  if (mapBtn) {
+    mapBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      mapBtn.click();
+    }, { passive: false });
+  }
 })();
 
 // =========================================================================
