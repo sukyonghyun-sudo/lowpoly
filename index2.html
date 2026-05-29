@@ -174,10 +174,14 @@ const SRC={
   trash:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/trash_bag.glb`,`https://raw.githubusercontent.com/${REPO}/main/lee/trash_bag.glb`]
 };
 
+// ---------- device / performance ----------
+const IS_MOBILE = matchMedia('(hover:none) and (pointer:coarse)').matches || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent);
+let perfLow = IS_MOBILE;
+
 // ---------- renderer / scene / camera ----------
 const stage=document.getElementById('stage');
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const renderer=new THREE.WebGLRenderer({antialias:!perfLow, powerPreference:'high-performance'});
+renderer.setPixelRatio(perfLow?1:Math.min(devicePixelRatio,2));
 renderer.setSize(innerWidth,innerHeight);
 renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 renderer.outputColorSpace=THREE.SRGBColorSpace;
@@ -275,11 +279,21 @@ try{
 }catch(e){ console.error('postprocessing init failed',e); hasComposer=false; }
 function sizeComposer(){
   if(!hasComposer) return;
+  if(composer.setPixelRatio) composer.setPixelRatio(renderer.getPixelRatio());
   composer.setSize(innerWidth,innerHeight);
   const v=renderer.getDrawingBufferSize(new THREE.Vector2());
   fxPass.uniforms.uRes.value.copy(v);
 }
-sizeComposer();
+function applyPerf(){
+  renderer.setPixelRatio(perfLow?1:Math.min(devicePixelRatio,2));
+  renderer.setSize(innerWidth,innerHeight);
+  sizeComposer();
+  const ss=perfLow?1024:2048;
+  if(moon.shadow.mapSize.x!==ss){ moon.shadow.mapSize.set(ss,ss); if(moon.shadow.map){moon.shadow.map.dispose();moon.shadow.map=null;} }
+  const wantFlashShadow=!perfLow;
+  if(flash.castShadow!==wantFlashShadow){ flash.castShadow=wantFlashShadow; if(flash.shadow.map){flash.shadow.map.dispose();flash.shadow.map=null;} }
+}
+sizeComposer(); applyPerf();
 function updateFxActive(){
   if(!hasComposer){ fxActive=false; return; }
   const u=fxPass.uniforms, t=u.uTint.value, mt=u.uMTint.value;
@@ -318,7 +332,7 @@ function applyCharGrade(mat){
 const draco=new DRACOLoader(); draco.setDecoderPath('https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/libs/draco/');
 const gltf=new GLTFLoader().setDRACOLoader(draco);
 const fbx=new FBXLoader();
-function loadFB(loader,urls){return new Promise((res,rej)=>{const t=i=>loader.load(urls[i],res,undefined,e=>{i+1<urls.length?t(i+1):rej(e);});t(0);});}
+function loadFB(loader,urls){return new Promise((res,rej)=>{const t=i=>loader.load(urls[i],res,undefined,e=>{i+1<urls.length?t(i+1):rej(new Error('load failed: '+urls[i]));});t(0);});}
 
 // ---------- loader UI ----------
 const loaderEl=document.getElementById('loader'),ltxt=document.getElementById('ltxt'),
@@ -333,7 +347,7 @@ let trash=null,trashBaseScale=1;
 let longAxis='z',caveCenter=0,groundY=0,scale0=1,cvScale0=1,lastCaveSize=new THREE.Vector3(10,4,10);
 const clock=new THREE.Clock();
 const caveBox3=new THREE.Box3();
-let tunnelT=0,shakeAmp=0,stepTimer=0,lastSide=null,jumpArmed=true,debugBright=false,lastFloorY=0,insideTunnel=false;
+let tunnelT=0,shakeAmp=0,stepTimer=0,lastSide=null,jumpArmed=true,debugBright=false,lastFloorY=0,insideTunnel=false,caveDirty=true,frame=0;
 const D2R=Math.PI/180;
 
 const state={
@@ -380,7 +394,7 @@ let ac=null,master=null,noiseBuf=null,droneNodes=null,muted=false,vol=0.6;
 let bgm=null,bgmGain=null,bgmVol=0.5,bgmOn=true;
 const BGM_SRC=['https://cdn.jsdelivr.net/gh/sukyonghyun-sudo/lowpoly@main/lee/Chant%20Furnace.mp3',
                'https://raw.githubusercontent.com/sukyonghyun-sudo/lowpoly/main/lee/Chant%20Furnace.mp3'];
-function audioWake(){ if(!ac) initAudio(); if(ac&&ac.state==='suspended') ac.resume(); setupBGM(); }
+function audioWake(){ if(!ac) initAudio(); if(ac&&ac.state==='suspended') ac.resume().catch(()=>{}); setupBGM(); }
 function setupBGM(){
   if(bgm||!ac||!master) return;
   try{
@@ -639,7 +653,6 @@ function stickToFloor(){
   let hit=ray.intersectObjects(objs,true)[0];
   // if inside the tunnel footprint but we only hit the global ground, the real floor is the cave floor above -> cast UP
   if(cave){
-    caveBox3.setFromObject(cave);
     const insideXZ = x>caveBox3.min.x && x<caveBox3.max.x && z>caveBox3.min.z && z<caveBox3.max.z;
     if(insideXZ && (!hit || hit.object===ground)){
       ray.set(_or.set(x,feet-0.3,z),_up); ray.far=h+3;
@@ -715,7 +728,6 @@ function updateFollow(){
 // ---------- atmosphere / tunnel events ----------
 function updateAtmosphere(dt){
   if(!cave||!charRoot) return;
-  caveBox3.setFromObject(cave);
   const p=charRoot.position;
   const inside = p.x>caveBox3.min.x+0.2 && p.x<caveBox3.max.x-0.2 &&
                  p.z>caveBox3.min.z+0.2 && p.z<caveBox3.max.z-0.2 &&
@@ -743,8 +755,10 @@ function updateAtmosphere(dt){
 function animate(){
   requestAnimationFrame(animate);
   const dt=Math.min(clock.getDelta(),0.05);
+  frame++;
+  if(cave&&caveDirty){ caveBox3.setFromObject(cave); caveDirty=false; }
   const moving=updateMovement(dt);
-  stickToFloor();
+  if(!perfLow || (frame&1)===0) stickToFloor();
   if(mixer){
     const tw=moving?1:0; walkW+=((tw-walkW))*Math.min(1,dt*8);
     if(walkAction) walkAction.setEffectiveWeight(walkW), walkAction.setEffectiveTimeScale(state.walkSpeed);
@@ -772,7 +786,7 @@ function animate(){
   }
   syncReadout();
 }
-animate(); boot();
+animate(); boot().catch(e=>{ showErr('boot: '+(e&&e.message||e)); console.error(e); });
 
 addEventListener('resize',()=>{
   camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
@@ -841,6 +855,12 @@ function buildPanel(cs){
   moodNote.textContent='누르면 조명·안개·색·필터가 한 번에 바뀝니다. 이후 아래 개별 슬라이더로 미세조정하세요.';
   panel.appendChild(section('무드 / Mood · 전체 색감',true,[...moodRows,moodNote]));
 
+  // PERFORMANCE
+  const perfBtn=btnRow([['🪫 저사양 모드 (모바일 자동)',null,()=>{ perfLow=!perfLow; applyPerf(); return perfLow; },true,perfLow]]);
+  const perfNote=document.createElement('div'); perfNote.className='readout';
+  perfNote.textContent='켜면 픽셀비율↓·그림자 경량화로 가벼워집니다. 모바일은 기본 ON.';
+  panel.appendChild(section('성능 / Performance',false,[perfBtn,perfNote]));
+
   // CHARACTER
   const cPosX=slider('위치 X',-reach,reach,.05,charRoot.position.x,f2,v=>charRoot.position.x=v);
   const cPosZ=slider('위치 Z',-reach,reach,.05,charRoot.position.z,f2,v=>charRoot.position.z=v);
@@ -860,11 +880,11 @@ function buildPanel(cs){
   panel.appendChild(section('캐릭터 색보정 / Colour',false,[gB,gC,gS,gT,gR]));
 
   // CAVE
-  const vPosX=slider('위치 X',-reach,reach,.05,cave.position.x,f2,v=>cave.position.x=v);
-  const vPosY=slider('위치 Y',-5,5,.02,cave.position.y,f2,v=>cave.position.y=v);
-  const vPosZ=slider('위치 Z',-reach,reach,.05,cave.position.z,f2,v=>cave.position.z=v);
-  const vRot=slider('회전 Y',0,360,1,0,deg,v=>cave.rotation.y=v*Math.PI/180);
-  const vScl=slider('크기 배율',0.1,4,.01,1,f2,(v=>{const b=cave.scale.x;return v2=>cave.scale.setScalar(b*v2);})());
+  const vPosX=slider('위치 X',-reach,reach,.05,cave.position.x,f2,v=>{cave.position.x=v;caveDirty=true;});
+  const vPosY=slider('위치 Y',-5,5,.02,cave.position.y,f2,v=>{cave.position.y=v;caveDirty=true;});
+  const vPosZ=slider('위치 Z',-reach,reach,.05,cave.position.z,f2,v=>{cave.position.z=v;caveDirty=true;});
+  const vRot=slider('회전 Y',0,360,1,0,deg,v=>{cave.rotation.y=v*Math.PI/180;caveDirty=true;});
+  const vScl=slider('크기 배율',0.1,4,.01,1,f2,(v=>{const b=cave.scale.x;return v2=>{cave.scale.setScalar(b*v2);caveDirty=true;};})());
   const vBW=btnRow([['◐ 흑백 (동굴)',null,()=>{uBW.value=uBW.value>0.5?0:1;return uBW.value>0.5;},true,uBW.value>0.5]]);
   panel.appendChild(section('굴다리 / Cave',false,[vBW,vPosX,vPosY,vPosZ,vRot,vScl]));
 
@@ -1016,7 +1036,7 @@ function applySettings(s){
   const cc=s.characterColour; if(cc){ if('brightness'in cc)CHAR.bright.value=cc.brightness; if('contrast'in cc)CHAR.con.value=cc.contrast;
     if('saturation'in cc)CHAR.sat.value=cc.saturation; if(cc.tint)CHAR.tint.value.set(cc.tint); }
   const cv=s.cave; if(cv){ if('x'in cv)cave.position.x=cv.x; if('y'in cv)cave.position.y=cv.y; if('z'in cv)cave.position.z=cv.z;
-    if('rotYdeg'in cv)cave.rotation.y=cv.rotYdeg*D2R; if('scaleMul'in cv)cave.scale.setScalar(cvScale0*cv.scaleMul); if('blackWhite'in cv)uBW.value=cv.blackWhite?1:0; }
+    if('rotYdeg'in cv)cave.rotation.y=cv.rotYdeg*D2R; if('scaleMul'in cv)cave.scale.setScalar(cvScale0*cv.scaleMul); if('blackWhite'in cv)uBW.value=cv.blackWhite?1:0; caveDirty=true; }
   const mv=s.movement; if(mv){ if('moveSpeed'in mv)state.moveSpeed=mv.moveSpeed; if('walkAnimSpeed'in mv)state.walkSpeed=mv.walkAnimSpeed;
     if('collide'in mv)state.collide=mv.collide; if('bodyRadius'in mv)state.bodyR=mv.bodyRadius; }
   const cm=s.camera; if(cm){ if('yawDeg'in cm)state.camYaw=cm.yawDeg*D2R; if('dist'in cm)state.camDist=cm.dist; if('height'in cm)state.camHeight=cm.height;
