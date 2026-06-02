@@ -211,7 +211,12 @@ const SRC={
   man_idle:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/man_idle.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/man_idle.fbx`],
   woman_idle:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/woman_idle.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/woman_idle.fbx`],
   man_walk_with:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/man_walk_with.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/man_walk_with.fbx`],
-  woman_walk_with:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/woman_walk_with.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/woman_walk_with.fbx`]
+  woman_walk_with:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/woman_walk_with.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/woman_walk_with.fbx`],
+  hun_idle:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/hun_idle.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/hun_idle.fbx`],
+  hun_walk:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/hun_walk.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/hun_walk.fbx`],
+  churrasqueira:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/churrasqueira_opt.glb`,`https://raw.githubusercontent.com/${REPO}/main/lee/churrasqueira_opt.glb`],
+  food_garbage:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/food_garbage_opt.glb`,`https://raw.githubusercontent.com/${REPO}/main/lee/food_garbage_opt.glb`],
+  corpse:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/corpse.glb`,`https://raw.githubusercontent.com/${REPO}/main/lee/corpse.glb`]
 };
 
 // ---------- device / performance ----------
@@ -318,18 +323,46 @@ const FX={
     tDiffuse:{value:null}, uRes:{value:new THREE.Vector2(1,1)}, uTime:{value:0},
     uPixel:{value:0.0}, uPoster:{value:0.0}, uScan:{value:0.0}, uCine:{value:0.0}, uGrain:{value:0.0},
     uDesat:{value:0.0}, uContrast:{value:1.0}, uTint:{value:new THREE.Vector3(1,1,1)},
-    uMDesat:{value:0.0}, uMCon:{value:1.0}, uMBright:{value:1.0}, uMTint:{value:new THREE.Vector3(1,1,1)}
+    uMDesat:{value:0.0}, uMCon:{value:1.0}, uMBright:{value:1.0}, uMTint:{value:new THREE.Vector3(1,1,1)},
+    uTrip:{value:0.0}, uMelt:{value:0.0}, uThrob:{value:0.0}, uChroma:{value:0.0},
+    uSwirl:{value:0.0}, uKaleido:{value:0.0}, uGlitch:{value:0.0}, uZoom:{value:0.0}, uStrobe:{value:0.0},
+    uInvert:{value:0.0}, uEdge:{value:0.0}, uFalse:{value:0.0}, uBulge:{value:0.0}, uVHS:{value:0.0},
+    uBlur:{value:0.0}, uBloom:{value:0.0}, uHaze:{value:0.0}
   },
   vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
   fragmentShader:`
-    uniform sampler2D tDiffuse; uniform vec2 uRes; uniform float uTime,uPixel,uPoster,uScan,uCine,uGrain,uDesat,uContrast,uMDesat,uMCon,uMBright; uniform vec3 uTint,uMTint;
+    uniform sampler2D tDiffuse; uniform vec2 uRes; uniform float uTime,uPixel,uPoster,uScan,uCine,uGrain,uDesat,uContrast,uMDesat,uMCon,uMBright,uTrip,uMelt,uThrob,uChroma,uSwirl,uKaleido,uGlitch,uZoom,uStrobe,uInvert,uEdge,uFalse,uBulge,uVHS,uBlur,uBloom,uHaze; uniform vec3 uTint,uMTint;
     varying vec2 vUv;
     float rnd(vec2 c){return fract(sin(dot(c,vec2(12.9898,78.233)))*43758.5453);}
+    vec3 tap(vec2 p){ return texture2D(tDiffuse,p).rgb; }
+    vec3 hueShift(vec3 c,float a){ const vec3 k=vec3(0.57735); float ca=cos(a); return c*ca+cross(k,c)*sin(a)+k*dot(k,c)*(1.0-ca); }
     void main(){
       vec2 uv=vUv;
       if(uPixel>0.5){ vec2 px=uRes/uPixel; uv=(floor(vUv*px)+0.5)/px; }
-      vec3 col=texture2D(tDiffuse,uv).rgb;
-      if(uPoster>0.5){ float l=uPoster; float d=(rnd(floor(vUv*uRes))-0.5)*0.6; col=floor(col*l+0.5+d)/l; }
+      // ---- geometric warps ----
+      vec2 cc=uv-0.5;
+      if(uBulge>0.001){ float r=length(cc); cc*=1.0+uBulge*(r*r-0.25); }
+      if(uZoom>0.001){ cc*=1.0-uZoom*0.18*(0.5+0.5*sin(uTime*2.0)); }
+      if(uSwirl>0.001){ float r=length(cc); float ang=(0.35-r)*uSwirl*5.0+uTime*0.7*uSwirl; float s=sin(ang),co=cos(ang); cc=mat2(co,-s,s,co)*cc; }
+      uv=cc+0.5;
+      if(uKaleido>0.001){ vec2 k=uv-0.5; float a=atan(k.y,k.x); float r=length(k); float seg=1.0471975; a=abs(mod(a,seg*2.0)-seg); vec2 ku=vec2(cos(a),sin(a))*r+0.5; uv=mix(uv,ku,uKaleido); }
+      if(uMelt>0.001){ uv.x+=sin(uv.y*11.0+uTime*1.6)*0.02*uMelt; uv.y+=cos(uv.x*13.0+uTime*1.3)*0.02*uMelt; uv+=vec2(sin(uTime*0.7),cos(uTime*0.9))*0.012*uMelt; }
+      if(uVHS>0.001){ uv.x+=sin(uv.y*140.0+uTime*9.0)*0.0025*uVHS; }
+      if(uGlitch>0.001){ float ln=floor(uv.y*48.0); float g=rnd(vec2(ln,floor(uTime*14.0))); if(g>1.0-uGlitch*0.6){ uv.x+=(rnd(vec2(ln,floor(uTime*7.0)))-0.5)*0.12*uGlitch; } }
+      // ---- sample (+ chroma) ----
+      float ca=uChroma*0.02; if(uVHS>0.001) ca+=uVHS*0.012;
+      vec3 col;
+      if(ca>0.0005){ vec2 d=(uv-0.5); col.r=texture2D(tDiffuse,uv+d*ca).r; col.g=texture2D(tDiffuse,uv).g; col.b=texture2D(tDiffuse,uv-d*ca).b; }
+      else col=texture2D(tDiffuse,uv).rgb;
+      // ---- soft focus (blur) ----
+      if(uBlur>0.001){ vec2 r=(uBlur*3.0)/uRes; vec3 b=col*0.2;
+        b+=tap(uv+vec2(r.x,0.0))*0.1; b+=tap(uv-vec2(r.x,0.0))*0.1;
+        b+=tap(uv+vec2(0.0,r.y))*0.1; b+=tap(uv-vec2(0.0,r.y))*0.1;
+        b+=tap(uv+r*0.7)*0.1; b+=tap(uv-r*0.7)*0.1;
+        b+=tap(uv+vec2(r.x,-r.y)*0.7)*0.1; b+=tap(uv+vec2(-r.x,r.y)*0.7)*0.1;
+        col=mix(col,b,clamp(uBlur,0.0,1.0)); }
+      // ---- base grade ----
+      if(uPoster>0.5){ float l=uPoster; float dd2=(rnd(floor(vUv*uRes))-0.5)*0.6; col=floor(col*l+0.5+dd2)/l; }
       col=(col-0.5)*uContrast+0.5;
       if(uDesat>0.001){ float gl=dot(col,vec3(0.299,0.587,0.114)); col=mix(col,vec3(gl),uDesat); }
       col*=uTint;
@@ -344,9 +377,22 @@ const FX={
       col=(col-0.5)*uMCon+0.5; col*=uMBright;
       if(uMDesat>0.001){ float _ml=dot(col,vec3(0.299,0.587,0.114)); col=mix(col,vec3(_ml),uMDesat); }
       col*=uMTint;
-      if(uScan>0.01){
-        float s=sin(vUv.y*uRes.y*1.4)*0.5+0.5; col*=1.0-uScan*0.35*s;
-      }
+      // ---- bloom (glow) + dreamy haze ----
+      if(uBloom>0.001){ vec2 r=(2.5+uBloom*9.0)/uRes; vec3 g=vec3(0.0);
+        g+=tap(uv+vec2(r.x,0.0)); g+=tap(uv-vec2(r.x,0.0)); g+=tap(uv+vec2(0.0,r.y)); g+=tap(uv-vec2(0.0,r.y));
+        g+=tap(uv+r); g+=tap(uv-r); g+=tap(uv+vec2(r.x,-r.y)); g+=tap(uv+vec2(-r.x,r.y)); g*=0.125;
+        vec3 bright=max(g-0.45,0.0); col+=bright*uBloom*2.2; }
+      if(uHaze>0.001){ vec3 h=col*(1.0-0.18*uHaze)+0.17*uHaze; float hl=dot(h,vec3(0.299,0.587,0.114));
+        h=mix(h,vec3(hl),0.18*uHaze); h+=vec3(0.015,0.02,0.05)*uHaze; col=mix(col,h,clamp(uHaze,0.0,1.0)); }
+      // ---- color trips ----
+      if(uEdge>0.001){ vec2 tx=1.0/uRes; float l0=dot(texture2D(tDiffuse,uv).rgb,vec3(0.333)); float lx=dot(texture2D(tDiffuse,uv+vec2(tx.x,0.0)).rgb,vec3(0.333)); float ly=dot(texture2D(tDiffuse,uv+vec2(0.0,tx.y)).rgb,vec3(0.333)); float e=clamp((abs(l0-lx)+abs(l0-ly))*6.0,0.0,1.0); col=mix(col,vec3(e),uEdge); }
+      if(uFalse>0.001){ float l=dot(col,vec3(0.299,0.587,0.114)); vec3 pal=0.5+0.5*cos(6.2831*(l+vec3(0.0,0.33,0.67))+uTime*0.5); col=mix(col,pal,uFalse); }
+      if(uTrip>0.001){ vec3 h=hueShift(col,uTime*1.4+dot(vUv,vec2(6.0,4.0))*uTrip); float l=dot(col,vec3(0.299,0.587,0.114)); h=clamp(mix(vec3(l),h,1.0+uTrip*1.5),0.0,2.0); col=mix(col,h,uTrip); }
+      if(uInvert>0.001){ col=mix(col,1.0-col,uInvert); }
+      if(uStrobe>0.001){ float f=step(0.5,fract(uTime*9.0)); col=mix(col,col*(1.0-uStrobe),f); }
+      if(uThrob>0.001){ float p=0.5+0.5*sin(uTime*3.0); float dd=distance(vUv,vec2(0.5)); col*=1.0-uThrob*(0.30+0.45*p)*smoothstep(0.18,0.92,dd); col.r+=uThrob*0.07*p; }
+      if(uScan>0.01){ float s=sin(vUv.y*uRes.y*1.4)*0.5+0.5; col*=1.0-uScan*0.35*s; }
+      if(uVHS>0.001){ col+=(rnd(vUv*uRes*0.5+fract(uTime*3.0))-0.5)*uVHS*0.12; float band=step(0.5,fract(vUv.y*8.0-uTime*0.7)); col*=1.0-uVHS*0.08*band; }
       if(uGrain>0.01){ col+=(rnd(vUv*uRes+fract(uTime))-0.5)*uGrain*0.13; }
       if(uCine>0.5){ float bar=0.105; if(vUv.y<bar||vUv.y>1.0-bar) col=vec3(0.0); }
       gl_FragColor=vec4(col,1.0);
@@ -381,7 +427,11 @@ function updateFxActive(){
   const u=fxPass.uniforms, t=u.uTint.value, mt=u.uMTint.value;
   fxActive = u.uPixel.value>0.5||u.uPoster.value>0.5||u.uScan.value>0.01||u.uCine.value>0.01||u.uGrain.value>0.01
     ||u.uDesat.value>0.01||Math.abs(u.uContrast.value-1)>0.01||t.x!==1||t.y!==1||t.z!==1
-    ||u.uMDesat.value>0.01||Math.abs(u.uMCon.value-1)>0.01||Math.abs(u.uMBright.value-1)>0.01||mt.x!==1||mt.y!==1||mt.z!==1;
+    ||u.uMDesat.value>0.01||Math.abs(u.uMCon.value-1)>0.01||Math.abs(u.uMBright.value-1)>0.01||mt.x!==1||mt.y!==1||mt.z!==1
+    ||u.uTrip.value>0.01||u.uMelt.value>0.01||u.uThrob.value>0.01||u.uChroma.value>0.01
+    ||u.uSwirl.value>0.01||u.uKaleido.value>0.01||u.uGlitch.value>0.01||u.uZoom.value>0.01||u.uStrobe.value>0.01
+    ||u.uInvert.value>0.01||u.uEdge.value>0.01||u.uFalse.value>0.01||u.uBulge.value>0.01||u.uVHS.value>0.01
+    ||u.uBlur.value>0.01||u.uBloom.value>0.01||u.uHaze.value>0.01;
 }
 
 // ---------- cave black & white (shader inject, shared uniform) ----------
@@ -408,6 +458,27 @@ function applyCharGrade(mat){
       '#include <color_fragment>',
       '#include <color_fragment>\n diffuseColor.rgb=(diffuseColor.rgb-0.5)*uCC+0.5; diffuseColor.rgb*=uCB; float _cgl=dot(diffuseColor.rgb,vec3(0.299,0.587,0.114)); diffuseColor.rgb=mix(vec3(_cgl),diffuseColor.rgb,uCS); diffuseColor.rgb*=uCT; diffuseColor.rgb=clamp(diffuseColor.rgb,0.0,1.0);'
     );
+  };
+  mat.needsUpdate=true;
+}
+// ---------- per-object black & white (hun + props), independent of cave uBW ----------
+const uBWX={value:1.0};
+function applyBWX(mat){
+  if(!mat) return;
+  const prev=mat.onBeforeCompile;
+  mat.onBeforeCompile=(sh)=>{
+    if(prev) prev(sh);
+    sh.uniforms.uBWX=uBWX;
+    let fs=sh.fragmentShader;
+    const inj='\n{ float _bwx=dot(gl_FragColor.rgb,vec3(0.299,0.587,0.114)); gl_FragColor.rgb=mix(gl_FragColor.rgb,vec3(_bwx),uBWX); }';
+    let done=false;
+    for(const tag of ['#include <opaque_fragment>','#include <output_fragment>','#include <dithering_fragment>']){
+      if(fs.includes(tag)){ fs=fs.replace(tag, tag+inj); done=true; break; }   // desaturate FINAL colour (albedo + emissive + light)
+    }
+    if(!done && fs.includes('#include <map_fragment>')){
+      fs=fs.replace('#include <map_fragment>','#include <map_fragment>\n float _bwx=dot(diffuseColor.rgb,vec3(0.299,0.587,0.114)); diffuseColor.rgb=mix(diffuseColor.rgb,vec3(_bwx),uBWX);');
+    }
+    sh.fragmentShader='uniform float uBWX;\n'+fs;
   };
   mat.needsUpdate=true;
 }
@@ -444,21 +515,34 @@ const state={
   trash:{hand:'right',preview:false,x:0,y:0,z:0,rx:0,ry:0,rz:0,scale:1}
 };
 const keys={}; const keyTime={};
+const interact={ on:true, range:3.4, target:null, el:null };  // declared early: buildPanel references it at boot
+let _uiFilterCache='';
+const dlg={open:false,lines:[],i:0,typing:false,full:'',pos:0,timer:null,speed:30};   // dialogue state — used by animate(), declare early
+const dlgEl=document.getElementById('dialogue'),dlgNameEl=document.getElementById('dlgName'),
+  dlgTextEl=document.getElementById('dlgText'),dlgNextEl=document.getElementById('dlgNext');
 const KEYMAP={ArrowUp:'fwd',KeyW:'fwd',ArrowDown:'back',KeyS:'back',ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right'};
-function typingInField(e){ const t=e.target; return t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.isContentEditable); }
-addEventListener('keydown',e=>{audioWake(); if(typingInField(e))return; const m=KEYMAP[e.code]; if(m){keys[m]=true;keyTime[m]=performance.now();e.preventDefault();}});
-addEventListener('keyup',e=>{const m=KEYMAP[e.code]; if(m){keys[m]=false;e.preventDefault();}});
+function uiFocused(el){ if(!el) return false; const tag=el.tagName;
+  return tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT'||tag==='BUTTON'||el.isContentEditable||(el.closest&&el.closest('#panel')); }
+function typingInField(e){ return uiFocused(e.target)||uiFocused(document.activeElement); }
+addEventListener('keydown',e=>{audioWake(); if(typingInField(e)){ const mm=KEYMAP[e.code]; if(mm)keys[mm]=false; return; } const m=KEYMAP[e.code]; if(m){keys[m]=true;keyTime[m]=performance.now();e.preventDefault();}});
+// keyup in CAPTURE phase (window + document) so it always reaches us even if a focused panel element calls stopPropagation
+addEventListener('keyup',e=>{const m=KEYMAP[e.code]; if(m)keys[m]=false;},true);
+document.addEventListener('keyup',e=>{const m=KEYMAP[e.code]; if(m)keys[m]=false;},true);
 function clearInput(){ for(const k in keys)keys[k]=false; joy.x=0; joy.y=0; joyId=null; lookId=null; if(typeof knobEl!=='undefined'&&knobEl)knobEl.style.transform='translate(0,0)'; }
 addEventListener('blur',clearInput);
 document.addEventListener('visibilitychange',()=>{ if(document.hidden) clearInput(); });
 addEventListener('pointercancel',clearInput);
 addEventListener('pointerdown',audioWake);
+// the moment any UI control gets focus, release movement keys (their key-release can be swallowed by the control)
+addEventListener('focusin',e=>{ if(uiFocused(e.target)) clearInput(); });
+// clicking anywhere on the panel also releases movement (prevents a held key from "sticking")
+{ const panelEl=document.getElementById('panel'); if(panelEl) panelEl.addEventListener('pointerdown',clearInput,true); }
 
 // ---------- chase cam look (drag) + virtual joystick (touch) ----------
 const clampN=(v,a,b)=>Math.min(b,Math.max(a,v));
 const joy={x:0,y:0};
 let lookId=null,lpx=0,lpy=0;
-renderer.domElement.addEventListener('pointerdown',e=>{ if(state.follow && lookId===null){ lookId=e.pointerId; lpx=e.clientX; lpy=e.clientY; } });
+renderer.domElement.addEventListener('pointerdown',e=>{ if(uiFocused(document.activeElement)&&document.activeElement.blur) document.activeElement.blur(); if(state.follow && lookId===null){ lookId=e.pointerId; lpx=e.clientX; lpy=e.clientY; } });
 addEventListener('pointermove',e=>{ if(e.pointerId===lookId){ state.camYaw-=(e.clientX-lpx)*0.006; lpx=e.clientX; lpy=e.clientY; } });
 addEventListener('pointerup',e=>{ if(e.pointerId===lookId) lookId=null; });
 addEventListener('pointercancel',e=>{ if(e.pointerId===lookId) lookId=null; });
@@ -591,6 +675,17 @@ const npcs=[
   {key:'woman_idle', label:'여자 · Idle',     src:'woman_idle',      root:null,mixer:null,action:null, st:{x:-1.5,z:-188,footOffset:-0.66,rotY:180,scale:0.74,animSpeed:1,visible:false}},
   {key:'man_walk',   label:'남자 · Walk(짐)', src:'man_walk_with',   root:null,mixer:null,action:null, st:{x: 1.5,z:-188,footOffset:-0.66,rotY:180,scale:0.74,animSpeed:1,visible:false}},
   {key:'woman_walk', label:'여자 · Walk(짐)', src:'woman_walk_with', root:null,mixer:null,action:null, st:{x: 3.0,z:-188,footOffset:-0.63,rotY:178,scale:0.74,animSpeed:1,visible:false}},
+  {key:'hun_idle',   label:'훈 · Idle',       src:'hun_idle',        root:null,mixer:null,action:null, noEqualize:true, bw:true,
+    talk:[{name:'훈',text:'...여기서 뭐 하고 있어?'},{name:'훈',text:'빨리 돌아가. 곧 불이 꺼져.'}], examine:'한참을 미동도 없이 서 있는 남자다. 인기척에도 돌아보지 않는다.',
+    st:{x:1.75,z:-149,footOffset:-0.66,rotY:284,scale:0.81,animSpeed:1,visible:true}},
+  {key:'hun_walk',   label:'훈 · Walk(달리기)', src:'hun_walk',       root:null,mixer:null,action:null, noEqualize:true, bw:true, st:{x:1.75,z:-160,footOffset:-0.66,rotY:180,scale:0.81,animSpeed:1,visible:false}},
+];
+const props=[
+  {key:'churrasqueira', label:'슈하스케이라(화로)', src:'churrasqueira', root:null, bw:true, st:{x:1.2,y:1.78,z:-148.95,rotY:272,scale:1,visible:true},
+    smoke:{on:true,count:60,size:0.28,rise:0.55,spread:0.22,drift:0.12,opacity:0.5,offsetY:0.7,color:'#9aa0a6'}},
+  {key:'food_garbage', label:'음식 쓰레기', src:'food_garbage', root:null, bw:true, st:{x:1.5,y:1.84,z:-150.8,rotY:162,scale:0.68,visible:true},
+    flies:{on:true,count:16,size:0.035,area:0.96,height:0.5,speed:1.1,jitter:0.01,opacity:1,color:'#0a0a0a'}},
+  {key:'corpse', label:'시체', src:'corpse', root:null, bw:true, st:{x:0,y:0.4,z:-160,rotY:0,scale:1,visible:true}},
 ];
 const coupleFwd={on:false,speed:0.5,loop:6,t:0};
 let couplePaused=false;
@@ -612,7 +707,7 @@ function updateCouple(dt){
       if(!n.root) continue;
       const r=n.st.rotY*D2R, fx=Math.sin(r), fz=Math.cos(r);
       const px=n.st.x+fx*coupleFwd.t, pz=n.st.z+fz*coupleFwd.t;
-      n.root.position.set(px, floorYAt(px,pz)+n.st.footOffset, pz);
+      n.root.position.set(px, floorYAt(px,pz, n.root.position.y-n.st.footOffset)+n.st.footOffset, pz);
     }
   }
 }
@@ -682,7 +777,7 @@ function updateEvents(dt){
     if(d>coupleEvt.stop){
       const ux=ux0/d, uz=uz0/d, step=coupleEvt.speed*dt;
       const nx=mm.root.position.x+ux*step, nz=mm.root.position.z+uz*step;
-      mm.root.position.set(nx, floorYAt(nx,nz)+mm.st.footOffset, nz);
+      mm.root.position.set(nx, floorYAt(nx,nz, mm.root.position.y-mm.st.footOffset)+mm.st.footOffset, nz);
       mm.st.x=nx; mm.st.z=nz;
       const heading=Math.atan2(ux,uz);
       mm.root.rotation.y=heading; mm.st.rotY=heading/D2R;
@@ -695,7 +790,7 @@ function updateEvents(dt){
   if(coupleEvt.leaving && mm && mm.root){
     const step=coupleEvt.speed*dt;
     const nx=mm.root.position.x+coupleEvt.lx*step, nz=mm.root.position.z+coupleEvt.lz*step;
-    mm.root.position.set(nx, floorYAt(nx,nz)+mm.st.footOffset, nz);
+    mm.root.position.set(nx, floorYAt(nx,nz, mm.root.position.y-mm.st.footOffset)+mm.st.footOffset, nz);
     mm.st.x=nx; mm.st.z=nz;
     const heading=Math.atan2(coupleEvt.lx,coupleEvt.lz);
     mm.root.rotation.y=heading; mm.st.rotY=heading/D2R;
@@ -703,16 +798,115 @@ function updateEvents(dt){
     if(coupleEvt.leaveDist>16){ coupleEvt.leaving=false; coupleEvt.arrived=false; coupleEvt.done=true; hideCoupleNPCs(); }
   }
 }
-function floorYAt(x,z){
-  const base=lastFloorY||1.17;
-  const oy=base+8;
+// ---- HUN RUN EVENT (hun_walk sprints toward the player, optionally runs past) ----
+const hunRun={ auto:false, armed:true, running:false, arrived:false, leaving:false, done:false,
+  tx:1.75, tz:-160, r:5, ahead:40, speed:3.4, stop:2.0, passThrough:true, animScale:0.55, leaveDist:0, lx:0, lz:-1 };
+function hunNPC(){ return npcs.find(n=>n.key==='hun_walk'); }
+function hideHun(){ const h=hunNPC(); if(h){ h.st.visible=false; if(h.root)applyNPC(h); } }
+function resetHunRun(){ hunRun.armed=true; hunRun.running=false; hunRun.arrived=false; hunRun.leaving=false; hunRun.done=false; hunRun.leaveDist=0; hideHun(); }
+function startHunRun(){
+  const h=hunNPC(); if(!h||!h.root||!charRoot) return;
+  let sz=charRoot.position.z + hunRun.ahead; if(cave) sz=Math.min(sz, caveBox3.max.z-2);
+  h.st.visible=true; h.st.x=charRoot.position.x; h.st.z=sz; h.st.rotY=180; applyNPC(h);
+  if(h.action){ h.action.timeScale=hunRun.speed*hunRun.animScale; h.action.play(); }
+  if(h.mixer) h.mixer.setTime(0);
+  hunRun.armed=false; hunRun.running=true; hunRun.arrived=false; hunRun.leaving=false; hunRun.done=false; hunRun.leaveDist=0;
+}
+function updateHunRun(dt){
+  if(!charRoot) return; const h=hunNPC(); if(!h||!h.root) return;
+  if(hunRun.auto && hunRun.armed && !hunRun.running && !hunRun.arrived){
+    const dx=charRoot.position.x-hunRun.tx, dz=charRoot.position.z-hunRun.tz;
+    if(dx*dx+dz*dz < hunRun.r*hunRun.r) startHunRun();
+  }
+  if(h.action) h.action.timeScale = hunRun.speed*hunRun.animScale;
+  if(hunRun.running){
+    const ux0=charRoot.position.x-h.root.position.x, uz0=charRoot.position.z-h.root.position.z;
+    const d=Math.hypot(ux0,uz0)||1;
+    if(d>hunRun.stop){
+      const ux=ux0/d, uz=uz0/d, step=hunRun.speed*dt;
+      const nx=h.root.position.x+ux*step, nz=h.root.position.z+uz*step;
+      h.root.position.set(nx, floorYAt(nx,nz, h.root.position.y-h.st.footOffset)+h.st.footOffset, nz); h.st.x=nx; h.st.z=nz;
+      const heading=Math.atan2(ux,uz); h.root.rotation.y=heading; h.st.rotY=heading/D2R;
+    } else {
+      hunRun.running=false;
+      if(hunRun.passThrough){ hunRun.lx=ux0/d; hunRun.lz=uz0/d; hunRun.leaving=true; hunRun.leaveDist=0; }
+      else { hunRun.arrived=true; }
+    }
+  }
+  if(hunRun.leaving){
+    const step=hunRun.speed*dt;
+    const nx=h.root.position.x+hunRun.lx*step, nz=h.root.position.z+hunRun.lz*step;
+    h.root.position.set(nx, floorYAt(nx,nz, h.root.position.y-h.st.footOffset)+h.st.footOffset, nz); h.st.x=nx; h.st.z=nz;
+    const heading=Math.atan2(hunRun.lx,hunRun.lz); h.root.rotation.y=heading; h.st.rotY=heading/D2R;
+    hunRun.leaveDist+=step;
+    if(hunRun.leaveDist>18){ hunRun.leaving=false; hunRun.done=true; hideHun(); }
+  }
+}
+function floorYAt(x,z,baseY){
+  if(typeof baseY==='number'){            // moving NPC: probe just above its own floor, never reach the ceiling
+    let y=null;
+    if(cave){ ray.set(_or.set(x,baseY+1.3,z),_dn); ray.far=6; const h=ray.intersectObject(cave,true); if(h.length) y=h[0].point.y; }
+    if(y===null && cave){ ray.set(_or.set(x,baseY-0.3,z),_up); ray.far=1.0; const up=ray.intersectObject(cave,true); if(up.length) y=up[0].point.y; }
+    if(y===null) return baseY;             // over a gap / wall -> hold current floor (don't ascend)
+    if(y>baseY+1.8 || y<baseY-2.0) return baseY;  // arch/ceiling/wall hit -> ignore
+    return y;
+  }
+  // static placement: find floor from above
+  const base=lastFloorY||1.17, oy=base+8;
   ray.set(_or.set(x,oy,z),_dn); ray.far=oy+30;
   let y=null;
   if(cave){ const h=ray.intersectObject(cave,true); if(h.length) y=h[0].point.y; }
   if(y===null){ const g=ray.intersectObject(ground,false); if(g.length) y=g[0].point.y; }
   if(y===null) return base;
-  if(y < base-0.5) y=base;   // ray slipped through a crack -> use the player's floor level
+  if(y<base-0.5) y=base;
   return y;
+}
+function npcMorphNames(n){
+  const names=[]; const seen=new Set();
+  for(const m of (n.morphMeshes||[])){
+    if(m.morphTargetDictionary){ for(const k in m.morphTargetDictionary){ if(!seen.has(k)){seen.add(k);names.push(k);} } }
+    else if(m.morphTargetInfluences){ m.morphTargetInfluences.forEach((_,i)=>{ const k='morph_'+i; if(!seen.has(k)){seen.add(k);names.push(k);} }); }
+  }
+  return names;
+}
+function setNpcMorph(n,name,val){
+  for(const m of (n.morphMeshes||[])){
+    let idx = m.morphTargetDictionary ? m.morphTargetDictionary[name] : parseInt(name.replace('morph_',''));
+    if(idx!=null && m.morphTargetInfluences && m.morphTargetInfluences[idx]!=null) m.morphTargetInfluences[idx]=val;
+  }
+}
+function getNpcMorph(n,name){
+  for(const m of (n.morphMeshes||[])){
+    let idx = m.morphTargetDictionary ? m.morphTargetDictionary[name] : parseInt(name.replace('morph_',''));
+    if(idx!=null && m.morphTargetInfluences && m.morphTargetInfluences[idx]!=null) return m.morphTargetInfluences[idx];
+  }
+  return 0;
+}
+// ---- face texture swap (for models without blendshapes) ----
+function loadTex(url){ return new Promise((res,rej)=>{ new THREE.TextureLoader().load(url, t=>{ t.colorSpace=THREE.SRGBColorSpace; t.flipY=false; res(t); }, undefined, rej); }); }
+function faceMaterials(n){ // best guess at the head/face materials
+  const heads=[], all=[];
+  if(!n||!n.root) return {heads,all};
+  n.root.traverse(o=>{ if(o.isMesh||o.isSkinnedMesh){
+    const nm=(o.name||'').toLowerCase();
+    const ms=Array.isArray(o.material)?o.material:[o.material];
+    ms.forEach(m=>{ if(!m)return; all.push(m); const mn=(m.name||'').toLowerCase();
+      if(nm.includes('head')||nm.includes('face')||mn.includes('head')||mn.includes('face')) heads.push(m); });
+  }});
+  return {heads,all};
+}
+async function setNpcFace(n,url){
+  if(!url){ revertNpcFace(n); return; }
+  let tex; try{ tex=await loadTex(url); }catch(e){ console.warn('[face] load failed',url,e); alert('얼굴 이미지를 불러오지 못했습니다. URL/CORS를 확인하세요.'); return; }
+  const {heads,all}=faceMaterials(n);
+  const targets = heads.length?heads:all.filter(m=>m.map); // separate head if found, else any textured material
+  if(!targets.length){ console.warn('[face] no target material'); return; }
+  for(const m of targets){ if(m.userData._origMap===undefined) m.userData._origMap=m.map||null; m.map=tex; m.needsUpdate=true; }
+  console.log('[face] swapped',targets.length,'material(s) on',n.key);
+}
+function revertNpcFace(n){
+  const {all}=faceMaterials(n);
+  for(const m of all){ if(m.userData && m.userData._origMap!==undefined){ m.map=m.userData._origMap; m.needsUpdate=true; } }
 }
 function applyNPC(n){
   if(!n.root) return;
@@ -723,15 +917,205 @@ function applyNPC(n){
   n.root.scale.setScalar(n.st.scale);
   if(n.action) n.action.timeScale=n.st.animSpeed;
 }
+function applyProp(p){
+  if(!p.root) return;
+  p.root.visible=p.st.visible;
+  p.root.position.set(p.st.x,p.st.y,p.st.z);
+  p.root.rotation.set(0,p.st.rotY*D2R,0);
+  p.root.scale.setScalar(p.st.scale);
+}
+async function loadProp(p){
+  if(!SRC[p.src]) return;
+  try{
+    const g=await loadFB(gltf,SRC[p.src]);
+    const root=g.scene||g.scenes[0];
+    root.traverse(o=>{ if(o.isMesh){ o.castShadow=true; o.receiveShadow=true; o.frustumCulled=false;
+      if(p.bw){ (Array.isArray(o.material)?o.material:[o.material]).forEach(applyBWX); }
+      if(BVH_OK&&o.geometry&&!o.geometry.boundsTree){ try{o.geometry.computeBoundsTree();}catch(e){} } } });
+    p.root=root; scene.add(root); applyProp(p);
+    if(p.smoke && !p.smokePts) makeSmoke(p);
+    if(p.flies && !p.flyPts) makeFlies(p);
+    console.log('[prop] loaded',p.key);
+  }catch(e){ console.warn('[prop] load failed',p.key,e); }
+}
+// ---- grill smoke (procedural particle puffs) ----
+let _smokeTex=null;
+function smokeTexture(){
+  if(_smokeTex) return _smokeTex;
+  const c=document.createElement('canvas'); c.width=c.height=64; const g=c.getContext('2d');
+  const gr=g.createRadialGradient(32,32,0,32,32,32);
+  gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(0.45,'rgba(255,255,255,0.55)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr; g.fillRect(0,0,64,64);
+  _smokeTex=new THREE.CanvasTexture(c); return _smokeTex;
+}
+function makeSmoke(p){
+  const N=120;
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(N*3),3));
+  geo.setAttribute('aAlpha',new THREE.BufferAttribute(new Float32Array(N),1));
+  geo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(N),1));
+  const mat=new THREE.ShaderMaterial({
+    uniforms:{ uTex:{value:smokeTexture()}, uColor:{value:new THREE.Color(p.smoke.color)}, uOpacity:{value:p.smoke.opacity}, uPix:{value:(renderer?renderer.getPixelRatio():1)} },
+    vertexShader:`attribute float aAlpha; attribute float aSize; varying float vA; uniform float uPix;
+      void main(){ vA=aAlpha; vec4 mv=modelViewMatrix*vec4(position,1.0); gl_Position=projectionMatrix*mv; gl_PointSize=aSize*uPix*(320.0/max(0.001,-mv.z)); }`,
+    fragmentShader:`uniform sampler2D uTex; uniform vec3 uColor; uniform float uOpacity; varying float vA;
+      void main(){ float a=texture2D(uTex,gl_PointCoord).a; if(a*vA<0.003)discard; gl_FragColor=vec4(uColor,a*vA*uOpacity); }`,
+    transparent:true, depthWrite:false, blending:THREE.NormalBlending });
+  const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; pts.renderOrder=6;
+  scene.add(pts);
+  const stt=[]; for(let i=0;i<N;i++) stt.push({age:Math.random()*3,life:0});
+  p.smokePts=pts; p.smokeGeo=geo; p.smokeState=stt; p.smokeN=N;
+}
+function updateSmoke(p,dt){
+  if(!p.smokePts) return; const s=p.smoke;
+  const vis = s.on && p.st.visible; p.smokePts.visible=vis; if(!vis) return;
+  p.smokePts.position.set(p.st.x, p.st.y + s.offsetY, p.st.z);
+  p.smokePts.material.uniforms.uOpacity.value=s.opacity;
+  p.smokePts.material.uniforms.uColor.value.set(s.color);
+  const active=Math.min(p.smokeN, Math.round(s.count));
+  const pos=p.smokeGeo.attributes.position.array, al=p.smokeGeo.attributes.aAlpha.array, sz=p.smokeGeo.attributes.aSize.array;
+  for(let i=0;i<p.smokeN;i++){
+    const q=p.smokeState[i];
+    if(i>=active){ al[i]=0; continue; }
+    q.age+=dt;
+    if(q.age>=q.life || q.life<=0){ q.age=0; q.life=1.6+Math.random()*1.6;
+      q.x=(Math.random()-0.5)*s.spread; q.z=(Math.random()-0.5)*s.spread; q.y=0;
+      q.vx=(Math.random()-0.5)*s.drift; q.vz=(Math.random()-0.5)*s.drift; q.s0=s.size*(0.55+Math.random()*0.6); q.ph=Math.random()*6.28; }
+    const t=q.age/q.life;
+    q.y+=s.rise*dt*(0.6+t); q.x+=q.vx*dt; q.z+=q.vz*dt;
+    pos[i*3]  = q.x + Math.sin(q.ph+q.age*1.3)*0.04*s.spread;
+    pos[i*3+1]= q.y;
+    pos[i*3+2]= q.z + Math.cos(q.ph+q.age*1.1)*0.04*s.spread;
+    al[i]=Math.sin(Math.min(1,t)*Math.PI)*0.9;
+    sz[i]=q.s0*(0.4+t*1.8);
+  }
+  p.smokeGeo.attributes.position.needsUpdate=true;
+  p.smokeGeo.attributes.aAlpha.needsUpdate=true;
+  p.smokeGeo.attributes.aSize.needsUpdate=true;
+}
+// ---------- flies swarm (buzzing specks over garbage) ----------
+let _flyTex=null;
+function flyTexture(){
+  if(_flyTex) return _flyTex;
+  const c=document.createElement('canvas'); c.width=c.height=32; const g=c.getContext('2d');
+  const gr=g.createRadialGradient(16,16,0,16,16,16);
+  gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(0.6,'rgba(255,255,255,0.95)'); gr.addColorStop(0.85,'rgba(255,255,255,0.4)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+  g.fillStyle=gr; g.fillRect(0,0,32,32);
+  _flyTex=new THREE.CanvasTexture(c); return _flyTex;
+}
+function makeFlies(p){
+  const N=80;
+  const geo=new THREE.BufferGeometry();
+  geo.setAttribute('position',new THREE.BufferAttribute(new Float32Array(N*3),3));
+  geo.setAttribute('aAlpha',new THREE.BufferAttribute(new Float32Array(N),1));
+  geo.setAttribute('aSize',new THREE.BufferAttribute(new Float32Array(N),1));
+  const mat=new THREE.ShaderMaterial({
+    uniforms:{ uTex:{value:flyTexture()}, uColor:{value:new THREE.Color(p.flies.color)}, uOpacity:{value:p.flies.opacity}, uPix:{value:(renderer?renderer.getPixelRatio():1)} },
+    vertexShader:`attribute float aAlpha; attribute float aSize; varying float vA; uniform float uPix;
+      void main(){ vA=aAlpha; vec4 mv=modelViewMatrix*vec4(position,1.0); gl_Position=projectionMatrix*mv; gl_PointSize=aSize*uPix*(320.0/max(0.001,-mv.z)); }`,
+    fragmentShader:`uniform sampler2D uTex; uniform vec3 uColor; uniform float uOpacity; varying float vA;
+      void main(){ float a=texture2D(uTex,gl_PointCoord).a; if(a*vA<0.02)discard; gl_FragColor=vec4(uColor,a*vA*uOpacity); }`,
+    transparent:true, depthWrite:false, blending:THREE.NormalBlending });
+  const pts=new THREE.Points(geo,mat); pts.frustumCulled=false; pts.renderOrder=7;
+  scene.add(pts);
+  const stt=[]; for(let i=0;i<N;i++) stt.push({x:0,y:0,z:0,tx:0,ty:0,tz:0,timer:Math.random()*0.5,ph:Math.random()*100});
+  p.flyPts=pts; p.flyGeo=geo; p.flyState=stt; p.flyN=N;
+}
+function updateFlies(p,dt){
+  if(!p.flyPts) return; const f=p.flies;
+  const vis = f.on && p.st.visible; p.flyPts.visible=vis; if(!vis) return;
+  p.flyPts.position.set(p.st.x, p.st.y + f.height, p.st.z);
+  p.flyPts.material.uniforms.uOpacity.value=f.opacity;
+  p.flyPts.material.uniforms.uColor.value.set(f.color);
+  const active=Math.min(p.flyN, Math.round(f.count));
+  const pos=p.flyGeo.attributes.position.array, al=p.flyGeo.attributes.aAlpha.array, sz=p.flyGeo.attributes.aSize.array;
+  const t=performance.now()/1000;
+  for(let i=0;i<p.flyN;i++){
+    const q=p.flyState[i];
+    if(i>=active){ al[i]=0; continue; }
+    q.timer-=dt;
+    if(q.timer<=0){                                  // pick a new dart target inside the swarm volume
+      const u=Math.random()*6.2831853, v=Math.random()*2-1, r=f.area*Math.cbrt(Math.random()), rh=Math.sqrt(1-v*v);
+      q.tx=Math.cos(u)*rh*r; q.tz=Math.sin(u)*rh*r; q.ty=v*r*0.7;
+      q.timer=0.18+Math.random()*0.5;
+    }
+    const k=Math.min(1,dt*f.speed*2.6);              // dart toward target
+    q.x+=(q.tx-q.x)*k; q.y+=(q.ty-q.y)*k; q.z+=(q.tz-q.z)*k;
+    const w=f.jitter;                                // high-freq buzz wobble
+    pos[i*3]  = q.x + Math.sin(t*42.0+q.ph)*w;
+    pos[i*3+1]= q.y + Math.sin(t*49.0+q.ph*1.7)*w;
+    pos[i*3+2]= q.z + Math.cos(t*45.0+q.ph*1.3)*w;
+    al[i]=1.0;
+    sz[i]=f.size*(0.75+0.5*Math.abs(Math.sin(q.ph)));
+  }
+  p.flyGeo.attributes.position.needsUpdate=true;
+  p.flyGeo.attributes.aAlpha.needsUpdate=true;
+  p.flyGeo.attributes.aSize.needsUpdate=true;
+}
+// ---------- player-placed lights (ceiling fixtures, flicker = horror) ----------
+const placedLights=[]; let _lightSeq=0;
+function _hash(n){ const s=Math.sin(n*127.1+311.7)*43758.5453; return s-Math.floor(s); }
+function _buildLightObj(L){
+  if(L.light){ scene.remove(L.light); }
+  if(L.target){ scene.remove(L.target); L.target=null; }
+  if(L.type==='spot'){
+    const sl=new THREE.SpotLight(new THREE.Color(L.color), L.intensity, L.dist, L.angle, L.penumbra, L.decay); sl.castShadow=false;
+    const tgt=new THREE.Object3D(); scene.add(tgt); sl.target=tgt; scene.add(sl); L.light=sl; L.target=tgt;
+  } else {
+    const pl=new THREE.PointLight(new THREE.Color(L.color), L.intensity, L.dist, L.decay); pl.castShadow=false; scene.add(pl); L.light=pl;
+  }
+}
+function makeLight(opts){
+  const L=Object.assign({ id:++_lightSeq, type:'point', x:0,y:4,z:-150, color:'#ffe2b0', intensity:14, dist:24, decay:1.4,
+    angle:0.7, penumbra:0.4, aimX:0, aimZ:0,
+    flicker:true, fstyle:'fluor', fspeed:9, famount:0.8, bulb:true, _lvl:1, _seed:Math.random()*100, light:null, target:null, mesh:null }, opts||{});
+  _buildLightObj(L);
+  const bulb=new THREE.Mesh(new THREE.SphereGeometry(0.12,10,8), new THREE.MeshBasicMaterial({color:new THREE.Color(L.color),fog:false})); bulb.frustumCulled=false; scene.add(bulb); L.mesh=bulb;
+  placedLights.push(L); applyLight(L); return L;
+}
+function setLightType(L,type){ if(L.type===type)return; L.type=type; _buildLightObj(L); applyLight(L); }
+function applyLight(L){
+  const li=L.light;
+  if(li){ li.color.set(L.color); li.distance=L.dist; li.decay=L.decay; li.intensity=L.intensity; li.position.set(L.x,L.y,L.z);
+    if(L.type==='spot'){ li.angle=L.angle; li.penumbra=L.penumbra; if(L.target){ L.target.position.set(L.x+L.aimX, L.y-3, L.z+L.aimZ); L.target.updateMatrixWorld(); } } }
+  if(L.mesh){ L.mesh.position.set(L.x,L.y,L.z); L.mesh.material.color.set(L.color); L.mesh.visible=L.bulb; }
+}
+function removeLight(L){ const i=placedLights.indexOf(L); if(i>=0)placedLights.splice(i,1);
+  if(L.light)scene.remove(L.light); if(L.target)scene.remove(L.target);
+  if(L.mesh){scene.remove(L.mesh);L.mesh.geometry.dispose();L.mesh.material.dispose();} }
+function clearLights(){ while(placedLights.length) removeLight(placedLights[0]); }
+function updateLights(dt){
+  if(!placedLights.length) return; const t=performance.now()/1000;
+  for(const L of placedLights){
+    let lvl=1;
+    if(L.flicker){ const s=L.fspeed, a=L.famount, ph=L.id*1.7+L._seed;
+      if(L.fstyle==='fluor'){ const n=_hash(Math.floor(t*s)+ph), fast=_hash(Math.floor(t*s*4.0)+ph);
+        let v=(n<0.12)?(fast<0.5?0.05:0.45):(1.0-0.08*Math.abs(Math.sin(t*55.0))); lvl=1.0-a*(1.0-v); }
+      else if(L.fstyle==='candle'){ const f=Math.sin(t*s+ph)*0.5+Math.sin(t*s*2.3+ph*1.7)*0.3+Math.sin(t*s*5.1+ph)*0.2; lvl=1.0-a*0.5*(0.5-0.5*f); }
+      else if(L.fstyle==='pulse'){ lvl=1.0-a*(0.5+0.5*Math.sin(t*s)); }
+      else if(L.fstyle==='strobe'){ lvl=((t*s*0.5)%1<0.5)?1.0:(1.0-a); }
+      else if(L.fstyle==='blackout'){ const n=_hash(Math.floor(t*s)+ph); lvl=(n<0.3*a)?0.0:1.0; }
+    }
+    L._lvl += (lvl-L._lvl)*Math.min(1,dt*40);
+    if(L.light) L.light.intensity=L.intensity*L._lvl;
+    if(L.mesh) L.mesh.scale.setScalar(0.6+0.8*L._lvl);
+  }
+}
 async function loadNPC(n){
   if(!SRC[n.src]) return;
   try{
     const f=await loadFB(fbx,SRC[n.src]);
+    n.morphMeshes=[];
     f.traverse(o=>{ if(o.isMesh||o.isSkinnedMesh){ o.castShadow=true;o.receiveShadow=true;o.frustumCulled=false;
+      if(o.morphTargetInfluences && o.morphTargetInfluences.length){ n.morphMeshes.push(o); }
       (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ if(!m)return;
         if(m.map){m.map.colorSpace=THREE.SRGBColorSpace; m.color&&m.color.set(0xffffff);}
         else if(m.color){const c=m.color; if(c.r+c.g+c.b<0.15)c.set(0x9aa0a8);}
-        if('roughness'in m)m.roughness=0.85; if('metalness'in m)m.metalness=0.0; applyCharGrade(m); m.needsUpdate=true; }); }});
+        if('roughness'in m)m.roughness=0.85; if('metalness'in m)m.metalness=0.0; applyCharGrade(m); if(n.bw) applyBWX(m); m.needsUpdate=true; }); }});
+    console.log('[npc] '+n.key+' morphs:', npcMorphNames(n));
+    if(n.key==='man_walk'){ f.traverse(o=>{ if(o.isMesh||o.isSkinnedMesh){
+      const ms=Array.isArray(o.material)?o.material:[o.material];
+      console.log('[face-diag] mesh "'+o.name+'":', ms.map(m=>({mat:m&&m.name,hasMap:!!(m&&m.map)}))); } }); }
     const wrap=new THREE.Group(); scene.add(wrap); wrap.add(f);
     f.updateMatrixWorld(true);
     let box=new THREE.Box3().setFromObject(f); const hh=box.max.y-box.min.y;
@@ -748,6 +1132,43 @@ async function loadNPC(n){
     applyNPC(n);
     console.log('[npc] loaded',n.key);
   }catch(e){ console.warn('[npc] load failed',n.key,e); }
+}
+// ---- body stretch (bone scaling along each bone's length axis) ----
+function findBone(root,suffix){ let b=null; if(!root)return null; root.traverse(o=>{ if(!b&&o.isBone){ const n=o.name.toLowerCase().replace(/[^a-z]/g,''); if(n.endsWith(suffix)) b=o; } }); return b; }
+function boneLenAxis(b){ if(b.userData._lax) return b.userData._lax; let child=b.children.find(c=>c.isBone); let ax='y'; if(child){ const p=child.position,x=Math.abs(p.x),y=Math.abs(p.y),z=Math.abs(p.z); ax=(x>=y&&x>=z)?'x':((z>=x&&z>=y)?'z':'y'); } b.userData._lax=ax; return ax; }
+function stretchBones(root,suffixes,factor){ if(!root)return; for(const s of suffixes){ const b=findBone(root,s); if(b){ const ax=boneLenAxis(b); b.scale.set(1,1,1); b.scale[ax]=factor; } } }
+function curStretch(root,suffix){ const b=findBone(root,suffix); if(!b)return 1; return b.scale[boneLenAxis(b)]||1; }
+// ---- creepy procedural motion (overlaid on top of the mixer pose each frame) ----
+const creepy={ targetKey:'player', twitch:false, headTwist:false, spider:false, tremor:false, stutter:false, intensity:0.6 };
+function creepyRoot(){ if(creepy.targetKey==='player') return charRoot; const n=npcs.find(x=>x.key===creepy.targetKey); return n?n.root:null; }
+function creepyMixer(){ if(creepy.targetKey==='player') return mixer; const n=npcs.find(x=>x.key===creepy.targetKey); return n?n.mixer:null; }
+function creepyBones(root){
+  if(!root) return null;
+  if(root.userData._cbones) return root.userData._cbones;
+  const names=['neck','head','spine','leftarm','rightarm','leftforearm','rightforearm','leftupleg','rightupleg','leftleg','rightleg'];
+  const map={}; for(const s of names) map[s]=findBone(root,s);
+  root.userData._cbones=map; return map;
+}
+const _cqx=new THREE.Quaternion(), _cee=new THREE.Euler();
+function addRot(b,rx,ry,rz){ if(!b)return; _cee.set(rx,ry,rz); _cqx.setFromEuler(_cee); b.quaternion.multiply(_cqx); }
+function nz(t,s){ return Math.sin(t*s*1.7+s)*Math.cos(t*s*0.9+s*2.0); }
+function updateCreepy(){
+  if(!(creepy.twitch||creepy.headTwist||creepy.spider||creepy.tremor||creepy.stutter)) return;
+  const root=creepyRoot(); if(!root) return;
+  const B=creepyBones(root); const t=performance.now()/1000; const I=creepy.intensity;
+  if(creepy.stutter){ const mx=creepyMixer(); if(mx){ const step=6+I*8; mx.setTime(Math.floor(mx.time*step)/step); } }
+  if(creepy.tremor){ const a=0.05*I, f=42.0; for(const k in B){ const b=B[k]; if(b) addRot(b, Math.sin(t*f+k.length)*a, Math.cos(t*f*1.1)*a, Math.sin(t*f*0.7)*a); } }
+  if(creepy.twitch){ const a=0.55*I; const j=(Math.sin(t*13.0)>0.6||Math.sin(t*7.3)>0.82)?1.0:0.12;
+    addRot(B.spine, nz(t,3.1)*a*0.4*j, nz(t,2.2)*a*0.5*j, nz(t,1.7)*a*0.3*j);
+    addRot(B.neck,  nz(t,5.3)*a*j,     nz(t,4.1)*a*j,     nz(t,6.7)*a*0.6*j);
+    addRot(B.head,  nz(t,8.1)*a*0.8*j, nz(t,7.2)*a*0.8*j, 0); }
+  if(creepy.headTwist){ const ang=Math.PI*I*Math.sin(t*0.5); const snap=(Math.sin(t*0.9)>0.9)?Math.PI*I:0;
+    addRot(B.head,0,ang+snap,0); addRot(B.neck,0,ang*0.4,0); }
+  if(creepy.spider){ const a=I;
+    addRot(B.spine,-0.6*a,0,0); addRot(B.neck,-0.5*a,0,0);
+    addRot(B.leftarm,0,0,0.8*a); addRot(B.rightarm,0,0,-0.8*a);
+    addRot(B.leftforearm,0,0,0.5*a); addRot(B.rightforearm,0,0,-0.5*a);
+    addRot(B.leftupleg,0.4*a,0,0.4*a); addRot(B.rightupleg,0.4*a,0,-0.4*a); }
 }
 function poseHeight(root){ // head-bone to lowest foot/toe-bone height in current pose
   if(!root) return null;
@@ -769,6 +1190,7 @@ function equalizeNPCHeights(){
   if(!charRoot) return;
   const hp=poseHeight(charRoot); if(!hp||hp<=0.1){ console.warn('[npc] player height not measured'); return; }
   for(const n of npcs){ if(!n.root) continue;
+    if(n.noEqualize) continue;
     const base=(n._baseScale!=null)?n._baseScale:(n._baseScale=n.st.scale);
     n.st.scale=base; applyNPC(n);
     const hn=poseHeight(n.root); if(!hn||hn<=0.1) continue;
@@ -791,9 +1213,17 @@ const DEFAULTS={
   "fog":{"density":0.012,"color":"#0a0c10"},
   "shadow":{"contact":true,"opacity":1},
   "audio":{"muted":false,"volume":0.6,"footsteps":true,"bgm":true,"bgmVolume":0.5},
-  "filters":{"pixel":2,"posterize":12,"scanline":0.35,"cinematic":true,"grain":0,"desaturate":0.51,"contrast":0.73,"screenTint":"#f3eded"},
+  "filters":{"pixel":2,"posterize":0,"scanline":0.35,"cinematic":true,"grain":0.4,"desaturate":0.18,"contrast":0.92,"screenTint":"#f3eded","chroma":0.18,"blur":0.5,"bloom":0,"haze":0.6},
   "mood":{"desaturate":0,"contrast":1,"brightness":1,"tint":"#ffffff"},
-  "trash":{"hand":"right","x":0.04,"y":0.23,"z":0.01,"rotX":171,"rotY":7,"rotZ":0,"scale":0.91}
+  "trash":{"hand":"right","x":0.04,"y":0.23,"z":0.01,"rotX":171,"rotY":7,"rotZ":0,"scale":0.91},
+  "npcs":{"hun_idle":{"x":1.75,"z":-149,"footOffset":-0.66,"rotY":284,"scale":0.81,"animSpeed":1,"visible":true}},
+  "props":{"churrasqueira":{"x":1.2,"y":1.78,"z":-148.95,"rotY":272,"scale":1,"visible":true,
+    "smoke":{"on":true,"count":60,"size":0.28,"rise":0.55,"spread":0.22,"drift":0.12,"opacity":0.5,"offsetY":0.7,"color":"#9aa0a6"}},
+    "food_garbage":{"x":1.5,"y":1.84,"z":-150.8,"rotY":162,"scale":0.68,"visible":true,
+    "flies":{"on":true,"count":16,"size":0.035,"area":0.96,"height":0.5,"speed":1.1,"jitter":0.01,"opacity":1,"color":"#0a0a0a"}},
+    "corpse":{"x":0,"y":0.4,"z":-160,"rotY":0,"scale":1,"visible":true}},
+  "hunRun":{"auto":false,"speed":3.4,"ahead":40,"stop":2,"passThrough":true,"animScale":0.55,"tx":1.75,"tz":-160,"r":5},
+  "bounds":{"on":true,"auto":false,"cx":-1.22,"halfW":2.64,"floorY":0.4,"ceilY":19.83,"minZ":-174.5,"maxZ":185}
 };
 
 // ---------- overall colour / mood OVERLAY (layers on top of current filters) ----------
@@ -880,8 +1310,10 @@ async function boot(){
     buildPanel(cs);
     try{ applySettings(DEFAULTS); }catch(e){ console.warn('defaults apply failed',e); }
     setProg('96%'); if(ltxt)ltxt.textContent='동행자들을 부르는 중…';
-    await Promise.all(npcs.map(loadNPC));   // wait for NPCs so they appear with everything else
+    await Promise.all([...npcs.map(loadNPC), ...props.map(loadProp)]);   // wait for NPCs + props
+    for(const p of props){ if(p.smoke && !p.smokePts) makeSmoke(p); if(p.flies && !p.flyPts) makeFlies(p); }    // smoke/flies even if model missing
     equalizeNPCHeights();                    // match every NPC to the player's head-to-toe height
+    buildPanel(lastCaveSize);                // rebuild so expression sliders reflect loaded models
     finishLoad();
     setTimeout(equalizeNPCHeights,900);      // re-match once idle poses settle
   }catch(e){
@@ -911,6 +1343,7 @@ function castAxis(axis,amt){
   return amt;
 }
 function moveChar(dx,dz){
+  if(bounds.on){ charRoot.position.x+=dx; charRoot.position.z+=dz; clampBounds(); return; }
   if(!state.collide||!cave){ charRoot.position.x+=dx; charRoot.position.z+=dz; return; }
   charRoot.position.x+=castAxis(AX[0],dx); charRoot.position.z+=castAxis(AX[1],dz);
 }
@@ -923,6 +1356,38 @@ function resolveNPCCollision(){
     const d=Math.hypot(dx,dz), min=pr+nr;
     if(d>1e-4 && d<min){ const push=(min-d)/d; charRoot.position.x+=dx*push; charRoot.position.z+=dz*push; }
   }
+  clampBounds();
+}
+// ---- virtual corridor bounds (invisible box: walls=X, floor/ceiling=Y; active only INSIDE the tunnel z-span; ends open) ----
+const bounds={ on:true, auto:false, cx:-1.22, halfW:2.64, minZ:-174.5, maxZ:185, floorY:0.4, ceilY:19.83, wire:false, mesh:null };
+function boundsActive(){ return bounds.on && !!charRoot && charRoot.position.z>bounds.minZ && charRoot.position.z<bounds.maxZ; }
+function clampBounds(){
+  if(!boundsActive()) return;
+  const p=charRoot.position;
+  const lo=bounds.cx-bounds.halfW, hi=bounds.cx+bounds.halfW;   // walls (X) — front/back ends stay OPEN so you can enter/exit
+  if(p.x<lo)p.x=lo; else if(p.x>hi)p.x=hi;
+}
+function initBoundsFromCave(){
+  if(!cave||!bounds.auto) return;
+  bounds.cx=(caveBox3.min.x+caveBox3.max.x)/2;
+  bounds.minZ=caveBox3.min.z-0.5;          // tunnel interior start
+  bounds.maxZ=caveBox3.max.z-1.0;          // tunnel interior end
+  bounds.floorY=caveBox3.min.y-1.0;        // low safety line only (floor follows the mesh)
+  bounds.ceilY=caveBox3.max.y;             // top of the tunnel
+}
+function rebuildBoundsWire(){
+  if(bounds.mesh){ scene.remove(bounds.mesh); bounds.mesh.traverse(o=>{ if(o.geometry)o.geometry.dispose(); if(o.material)o.material.dispose(); }); bounds.mesh=null; }
+  if(!bounds.wire) return;
+  const w=Math.max(0.2,bounds.halfW*2), l=Math.max(0.2,bounds.maxZ-bounds.minZ);
+  const bottom=(typeof lastFloorY==='number'?lastFloorY:(cave?caveBox3.min.y:0));
+  const top=Math.max(bottom+0.5,bounds.ceilY);
+  const g=new THREE.BoxGeometry(w,top-bottom,l);
+  const grp=new THREE.Group();
+  const faces=new THREE.Mesh(g.clone(), new THREE.MeshBasicMaterial({color:0x33ff88,transparent:true,opacity:0.07,depthWrite:false,side:THREE.DoubleSide,fog:false}));
+  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(g), new THREE.LineBasicMaterial({color:0x5dff9a,transparent:true,opacity:0.95,depthTest:false,fog:false}));
+  faces.renderOrder=998; edges.renderOrder=999;
+  grp.add(faces); grp.add(edges); grp.position.set(bounds.cx,(bottom+top)/2,(bounds.minZ+bounds.maxZ)/2);
+  grp.frustumCulled=false; scene.add(grp); bounds.mesh=grp; g.dispose();
 }
 // ---------- waypoints + minimap ----------
 const marks=[];
@@ -951,6 +1416,10 @@ function saveMark(){ if(!charRoot)return; const p=charRoot.position;
 function updateMovement(dt){
   if(!charRoot) return false;
   if(dlg.open) return false;
+  const ae=document.activeElement;   // if a panel input/select/button is focused, key releases get swallowed -> ignore held keys
+  if(ae && (ae.tagName==='INPUT'||ae.tagName==='SELECT'||ae.tagName==='TEXTAREA'||ae.tagName==='BUTTON')){
+    keys.fwd=keys.back=keys.left=keys.right=false;
+  }
   if(joyId===null && (joy.x||joy.y)){ joy.x=0; joy.y=0; }
   let inz=(keys.fwd?1:0)-(keys.back?1:0)+joy.y;
   let inx=(keys.right?1:0)-(keys.left?1:0)+joy.x;
@@ -975,10 +1444,10 @@ function stickToFloor(){
   const h=1.8*(charRoot.scale.x/scale0);
   const x=charRoot.position.x, z=charRoot.position.z;
   const feet=charRoot.position.y-groundY;
-  const insideXZ = cave && x>caveBox3.min.x && x<caveBox3.max.x && z>caveBox3.min.z && z<caveBox3.max.z;
-  const oy = Math.max(feet,lastFloorY) + h + 0.6;  // above head, below ceiling
+  const inBox=boundsActive();
+  const insideXZ = inBox || (cave && x>caveBox3.min.x && x<caveBox3.max.x && z>caveBox3.min.z && z<caveBox3.max.z);
   let target=null;
-  if(insideXZ){
+  if(insideXZ && cave){
     const startY = (lastFloorY||1.17) + 1.3;          // well above the floor but below the ceiling
     ray.set(_or.set(x,startY,z),_dn); ray.far = 6;
     let hit=ray.intersectObject(cave,true);
@@ -987,7 +1456,7 @@ function stickToFloor(){
       ray.set(_or.set(x,(lastFloorY||1.17)-0.3,z),_up); ray.far = 1.0;
       const up=ray.intersectObject(cave,true); if(up.length) fY=up[0].point.y;
     }
-    if(fY===null) fY=lastFloorY;                       // over a crack/hole -> hold height
+    if(fY===null) fY = lastFloorY;                     // over a crack/hole -> hold height (never drop)
     target=fY;
   } else {
     ray.set(_or.set(x,charRoot.position.y+h+0.6,z),_dn); ray.far=charRoot.position.y+h+30;
@@ -998,6 +1467,7 @@ function stickToFloor(){
     if(frame<12){ lastFloorY=target; }                 // snap on spawn
     else { let d=target-lastFloorY; const cap = flatFloor?0.12:0.30; // max change/frame: tracks ramps exactly, smooths spikes
       if(d>cap)d=cap; else if(d<-cap)d=-cap; lastFloorY+=d; }
+    if(inBox && lastFloorY<bounds.floorY) lastFloorY=bounds.floorY;   // absolute safety floor inside the box
     charRoot.position.y = groundY+lastFloorY+state.footOffset;
   }
 }
@@ -1052,9 +1522,11 @@ function updateTrash(){
 function spawnAtEntrance(){
   if(!cave||!charRoot) return;
   caveBox3.setFromObject(cave);
+  initBoundsFromCave();
   charRoot.position.x=(caveBox3.min.x+caveBox3.max.x)/2;
   charRoot.position.z=caveBox3.min.z-1.6;
   charRoot.rotation.y=0;
+  clampBounds();
   camera.position.set(charRoot.position.x,charRoot.position.y+state.camHeight,charRoot.position.z-state.camDist);
 }
 
@@ -1075,6 +1547,7 @@ function updateFollow(){
       if(hit.length){ const d=Math.max(0.7,hit[0].distance-0.3); _camPos.copy(_look).addScaledVector(_f,d); }
     }
   }
+  if(boundsActive() && bounds.ceilY>charRoot.position.y+2.0 && _camPos.y>bounds.ceilY-0.15) _camPos.y=bounds.ceilY-0.15;   // don't poke through ceiling (only if it's above the head)
   camera.position.lerp(_camPos,0.25);
   camera.lookAt(_look);
   controls.target.copy(_look);
@@ -1126,8 +1599,14 @@ function animate(){
   if(charRoot) updateExtraLights(charRoot.position);
   for(const n of npcs){ if(n.mixer){ if(couplePaused&&(n.key==='man_walk'||n.key==='woman_walk'))continue; n.mixer.update(dt); } }
   updateEvents(dt);
+  updateHunRun(dt);
   updateCouple(dt);
   updateCoupleLock();
+  updateCreepy();
+  for(const p of props){ if(p.smoke) updateSmoke(p,dt); if(p.flies) updateFlies(p,dt); }
+  updateInteract();
+  updateUIFilter();
+  updateLights(dt);
   updateShadow();
   updateAtmosphere(dt);
   updateFollow();
@@ -1264,8 +1743,27 @@ function buildPanel(cs){
   const vPosZ=slider('위치 Z',-reach,reach,.05,cave.position.z,f2,v=>{cave.position.z=v;caveDirty=true;});
   const vRot=slider('회전 Y',0,360,1,0,deg,v=>{cave.rotation.y=v*Math.PI/180;caveDirty=true;});
   const vScl=slider('크기 배율',0.1,4,.01,1,f2,(v=>{const b=cave.scale.x;return v2=>{cave.scale.setScalar(b*v2);caveDirty=true;};})());
-  const vBW=btnRow([['◐ 흑백 (동굴)',null,()=>{uBW.value=uBW.value>0.5?0:1;return uBW.value>0.5;},true,uBW.value>0.5]]);
+  const vBW=btnRow([
+    ['◐ 흑백 (동굴)',null,()=>{uBW.value=uBW.value>0.5?0:1;return uBW.value>0.5;},true,uBW.value>0.5],
+    ['◐ 흑백 (훈/소품)',null,()=>{uBWX.value=uBWX.value>0.5?0:1;return uBWX.value>0.5;},true,uBWX.value>0.5] ]);
   panel.appendChild(section('굴다리 / Cave',false,[vBW,vPosX,vPosY,vPosZ,vRot,vScl]));
+
+  // VIRTUAL CORRIDOR BOUNDS
+  {
+    const bOn=btnRow([['🧱 가상 통로 제한 사용',null,()=>{bounds.on=!bounds.on;return bounds.on;},true,bounds.on]]);
+    const bWire=btnRow([['🟩 범위 박스 보기',null,()=>{bounds.wire=!bounds.wire;rebuildBoundsWire();return bounds.wire;},true,bounds.wire]]);
+    const bAuto=btnRow([['↺ 맵에 자동 맞춤',null,()=>{bounds.auto=true;initBoundsFromCave();rebuildBoundsWire();buildPanel(lastCaveSize);return false;},false]]);
+    const set=(k)=>v=>{bounds[k]=v;bounds.auto=false;rebuildBoundsWire();};
+    const bCX=slider('중심 X (좌우 위치)',-10,10,.02,bounds.cx,f2,set('cx'));
+    const bW =slider('통로 폭(반)',0.3,8,.02,bounds.halfW,f2,set('halfW'));
+    const bFloor=slider('바닥 안전선 Y (구멍 대비)',-3,6,.02,bounds.floorY,f2,set('floorY'));
+    const bCeil =slider('천장 높이 Y (카메라 한계)',-2,30,.02,bounds.ceilY,f2,set('ceilY'));
+    const bZ0=slider('굴다리 시작 Z',-300,300,.5,bounds.minZ,f2,set('minZ'));
+    const bZ1=slider('굴다리 끝 Z',-300,300,.5,bounds.maxZ,f2,set('maxZ'));
+    const bNote=document.createElement('div'); bNote.className='readout';
+    bNote.textContent='좌우 벽(폭)·천장·구간만 박스로 막고, 바닥 높이는 맵 메시(굴곡/경사)를 그대로 따라갑니다. 그래서 바닥 속으로 파고들거나 떠 보이지 않습니다. "굴다리 시작 Z ~ 끝 Z" 안에서만 작동하고, 진입 전·탈출 후엔 해제됩니다. 바닥 안전선 Y는 맵에 구멍이 있어 바닥 인식이 실패할 때만 쓰는 최소 높이입니다. 좌우로 새던 버그는 통로 폭으로 막습니다.';
+    panel.appendChild(section('🧱 이동 범위 / 가상 통로',false,[bOn,bWire,bAuto,bCX,bW,bFloor,bCeil,bZ0,bZ1,bNote]));
+  }
 
   // CAMERA
   const camMode=btnRow([
@@ -1307,6 +1805,78 @@ function buildPanel(cs){
     panel.appendChild(section('NPC · '+n.label,false,[nVis,nX,nZ,nF,nR,nS,nA]));
   }
 
+  // PROPS (static GLB props)
+  for(const p of props){
+    const pVis=btnRow([['👁 표시',null,()=>{p.st.visible=!p.st.visible;applyProp(p);return p.st.visible;},true,p.st.visible]]);
+    const pX=slider('위치 X',-12,12,.02,p.st.x,f2,v=>{p.st.x=v;applyProp(p);});
+    const pY=slider('위치 Y(높이)',-2,6,.02,p.st.y,f2,v=>{p.st.y=v;applyProp(p);});
+    const pZ=slider('위치 Z',-210,40,.05,p.st.z,f2,v=>{p.st.z=v;applyProp(p);});
+    const pR=slider('회전 Y',0,360,1,p.st.rotY,deg,v=>{p.st.rotY=v;applyProp(p);});
+    const pS=slider('크기',0.05,8,.01,p.st.scale,f2,v=>{p.st.scale=v;applyProp(p);});
+    const rows=[pVis,pX,pY,pZ,pR,pS];
+    if(p.smoke){ const s=p.smoke;
+      rows.push(btnRow([['💨 연기 켜기',null,()=>{s.on=!s.on;return s.on;},true,s.on]]));
+      rows.push(slider('연기 양',0,120,1,s.count,v=>Math.round(v)+'',v=>s.count=v));
+      rows.push(slider('연기 크기',0.05,1.5,.01,s.size,f2,v=>s.size=v));
+      rows.push(slider('상승 속도',0,2.5,.01,s.rise,f2,v=>s.rise=v));
+      rows.push(slider('퍼짐',0,1,.01,s.spread,f2,v=>s.spread=v));
+      rows.push(slider('흩날림',0,1,.01,s.drift,f2,v=>s.drift=v));
+      rows.push(slider('투명도',0,1,.01,s.opacity,f2,v=>s.opacity=v));
+      rows.push(slider('연기 높이(오프셋)',-1,4,.02,s.offsetY,f2,v=>s.offsetY=v));
+      rows.push(colorRow('연기 색',s.color,v=>s.color=v));
+    }
+    panel.appendChild(section('🍖 소품 · '+p.label,false,rows));
+  }
+
+  // PLACED CEILING LIGHTS
+  {
+    const addBtn=btnRow([['➕ 천장 조명 추가 (내 위치 위)',null,()=>{
+      const lx=charRoot?charRoot.position.x:bounds.cx, lz=charRoot?charRoot.position.z:-150;
+      const ly=(bounds&&bounds.ceilY>2)?Math.min(bounds.ceilY-1.0,(typeof lastFloorY==='number'?lastFloorY:1)+3.2):4;
+      makeLight({x:+lx.toFixed(2),y:+ly.toFixed(2),z:+lz.toFixed(2)}); buildPanel(lastCaveSize); return false; },false]]);
+    const lNote=document.createElement('div'); lNote.className='readout';
+    lNote.textContent='버튼을 누르면 현재 캐릭터 위치의 천장 높이에 조명이 하나 생깁니다. 아래 위치 X/Y/Z로 원하는 천장 지점에 옮기고, 깜박임 스타일(형광등/촛불/맥동/스트로브/암전)로 공포 연출을 주세요. 조명이 많으면 무거워질 수 있어요. 설치한 조명은 설정 저장(💾)에 함께 저장됩니다.';
+    panel.appendChild(section('💡 천장 조명 / Lights',false,[addBtn,lNote]));
+    placedLights.forEach((L,idx)=>{
+      const rVis=btnRow([['💡 전구 보이기',null,()=>{L.bulb=!L.bulb;applyLight(L);return L.bulb;},true,L.bulb]]);
+      // light TYPE dropdown (point / spot-pin)
+      const typeWrap=document.createElement('div'); typeWrap.className='ctl';
+      const typeLab=document.createElement('label'); typeLab.textContent='조명 종류';
+      const tsel=document.createElement('select'); tsel.style.cssText='width:100%;margin-top:3px;background:#1a1d24;color:#e8e8ea;border:1px solid #333;border-radius:5px;padding:4px;';
+      [['point','점 조명 (전구·전방위)'],['spot','핀 조명 (스포트·집중)']].forEach(([v,t])=>{ const o=document.createElement('option');o.value=v;o.textContent=t;if(L.type===v)o.selected=true;tsel.appendChild(o); });
+      tsel.addEventListener('change',()=>{setLightType(L,tsel.value);buildPanel(lastCaveSize);});
+      tsel.addEventListener('keydown',e=>e.stopPropagation());
+      typeWrap.appendChild(typeLab); typeWrap.appendChild(tsel);
+      const rX=slider('위치 X',-12,12,.02,L.x,f2,v=>{L.x=v;applyLight(L);});
+      const rY=slider('높이 Y',-2,24,.02,L.y,f2,v=>{L.y=v;applyLight(L);});
+      const rZ=slider('위치 Z',-300,300,.1,L.z,f2,v=>{L.z=v;applyLight(L);});
+      const rCol=colorRow('색',L.color,v=>{L.color=v;applyLight(L);});
+      const rInt=slider('밝기 (세기)',0,120,.5,L.intensity,f2,v=>{L.intensity=v;applyLight(L);});
+      const rDist=slider('도달 거리',1,150,.5,L.dist,f2,v=>{L.dist=v;applyLight(L);});
+      const rDec=slider('감쇠 (낮을수록 멀리)',0,2,.05,L.decay,f2,v=>{L.decay=v;applyLight(L);});
+      const rows=[rVis,typeWrap,rX,rY,rZ,rCol,rInt,rDist,rDec];
+      if(L.type==='spot'){
+        rows.push(slider('핀 각도(넓이)',0.05,1.4,.01,L.angle,f2,v=>{L.angle=v;applyLight(L);}));
+        rows.push(slider('가장자리 부드럽게',0,1,.01,L.penumbra,f2,v=>{L.penumbra=v;applyLight(L);}));
+        rows.push(slider('조준 X (좌우 기울기)',-12,12,.1,L.aimX,f2,v=>{L.aimX=v;applyLight(L);}));
+        rows.push(slider('조준 Z (앞뒤 기울기)',-12,12,.1,L.aimZ,f2,v=>{L.aimZ=v;applyLight(L);}));
+      }
+      const rFlk=btnRow([['✨ 깜박임',null,()=>{L.flicker=!L.flicker;if(!L.flicker){L._lvl=1;if(L.light)L.light.intensity=L.intensity;}return L.flicker;},true,L.flicker]]);
+      const styleWrap=document.createElement('div'); styleWrap.className='ctl';
+      const styleLab=document.createElement('label'); styleLab.textContent='깜박임 스타일';
+      const sel=document.createElement('select'); sel.style.cssText='width:100%;margin-top:3px;background:#1a1d24;color:#e8e8ea;border:1px solid #333;border-radius:5px;padding:4px;';
+      [['fluor','형광등(지직)'],['candle','촛불(은은)'],['pulse','맥동'],['strobe','스트로브'],['blackout','암전(툭툭)']].forEach(([v,t])=>{ const o=document.createElement('option');o.value=v;o.textContent=t;if(L.fstyle===v)o.selected=true;sel.appendChild(o); });
+      sel.addEventListener('change',()=>{L.fstyle=sel.value;});
+      sel.addEventListener('keydown',e=>e.stopPropagation());
+      styleWrap.appendChild(styleLab); styleWrap.appendChild(sel);
+      const rSpd=slider('깜박임 속도',0.5,30,.5,L.fspeed,f2,v=>{L.fspeed=v;});
+      const rAmt=slider('깜박임 세기',0,1,.01,L.famount,f2,v=>{L.famount=v;});
+      const rDel=btnRow([['🗑 이 조명 삭제',null,()=>{removeLight(L);buildPanel(lastCaveSize);return false;},false]]);
+      rows.push(rFlk,styleWrap,rSpd,rAmt,rDel);
+      panel.appendChild(section('💡 조명 #'+(idx+1)+(L.type==='spot'?' (핀)':''),false,rows));
+    });
+  }
+
   // COUPLE (walk holding hands)
   const cpFwd=btnRow([['👫 커플 전진 (손잡고 같이 걷기)',null,()=>{ coupleFwd.on=!coupleFwd.on; coupleFwd.t=0;
     if(!coupleFwd.on){ const mm=npcs.find(n=>n.key==='man_walk'),wm=npcs.find(n=>n.key==='woman_walk'); if(mm)applyNPC(mm); if(wm)applyNPC(wm); } return coupleFwd.on; },true,coupleFwd.on]]);
@@ -1338,6 +1908,48 @@ function buildPanel(cs){
   const evtNote=document.createElement('div'); evtNote.className='readout';
   evtNote.textContent='좌표 X '+coupleEvt.x+' / Z '+coupleEvt.z+' 부근에 도달하면 커플이 굴다리 안쪽 멀리서 플레이어 쪽으로 손잡고 걸어옵니다. "지금 실행"은 현재 위치를 트리거로 잡아 바로 시연합니다.';
   panel.appendChild(section('👫 커플 (손잡고 걷기)',false,[evtRow,evtSpd,evtAhead,evtStop,evtNote,cpCtl,cpFwd,cpSpd,cpLoop,clOn,clMan,clWoman,clX,clY,clZ,cpNote]));
+
+  // HUN RUN EVENT
+  {
+    const hrRun=btnRow([
+      ['🏃 훈 달려오기 지금 실행',null,()=>{ startHunRun(); return false; },false],
+      ['↺ 재무장',null,()=>{ resetHunRun(); return false; },false] ]);
+    const hrAuto=btnRow([['📍 자동 발동(좌표 도달 시)',null,()=>{ hunRun.auto=!hunRun.auto; hunRun.armed=true; return hunRun.auto; },true,hunRun.auto]]);
+    const hrPass=btnRow([['➡ 지나쳐 가기(통과)',null,()=>{ hunRun.passThrough=!hunRun.passThrough; return hunRun.passThrough; },true,hunRun.passThrough]]);
+    const hrSpd=slider('달리기 속도',0.5,9,.05,hunRun.speed,f2,v=>hunRun.speed=v);
+    const hrAhead=slider('등장 거리(앞쪽)',5,80,1,hunRun.ahead,f2,v=>hunRun.ahead=v);
+    const hrStop=slider('정지 거리',0.5,8,.1,hunRun.stop,f2,v=>hunRun.stop=v);
+    const hrAnim=slider('발 애니 배율(다리 회전)',0.1,1.5,.01,hunRun.animScale,f2,v=>hunRun.animScale=v);
+    const hrTX=slider('자동 트리거 X',-12,12,.05,hunRun.tx,f2,v=>hunRun.tx=v);
+    const hrTZ=slider('자동 트리거 Z',-210,40,.5,hunRun.tz,f2,v=>hunRun.tz=v);
+    const hrR=slider('자동 트리거 반경',1,15,.5,hunRun.r,f2,v=>hunRun.r=v);
+    const hrNote=document.createElement('div'); hrNote.className='readout';
+    hrNote.textContent='"지금 실행"을 누르면 훈이 굴다리 앞쪽 멀리서 플레이어 쪽으로 달려옵니다. 정지 거리에서 멈추거나, "지나쳐 가기"가 켜져 있으면 플레이어를 지나쳐 사라집니다. 자동 발동을 켜면 트리거 좌표 반경에 들어갔을 때 자동으로 달려옵니다. 발 애니 배율로 다리 회전 속도를 이동 속도에 맞추세요.';
+    panel.appendChild(section('🏃 훈 달려오기 / Hun Run',false,[hrRun,hrAuto,hrPass,hrSpd,hrAhead,hrStop,hrAnim,hrTX,hrTZ,hrR,hrNote]));
+  }
+
+  // EXPRESSION (couple man): morph sliders if the model has blendshapes, else face-texture swap
+  const mwalkN=npcs.find(n=>n.key==='man_walk');
+  const exMorphs=mwalkN?npcMorphNames(mwalkN):[];
+  const exRows=[];
+  if(exMorphs.length){
+    for(const nm of exMorphs){ exRows.push(slider(nm,0,1,.01,getNpcMorph(mwalkN,nm),f2,(v=>setNpcMorph(mwalkN,nm,v)))); }
+  } else {
+    const exNote=document.createElement('div'); exNote.className='readout';
+    exNote.textContent='이 모델엔 표정 모프(블렌드셰이프)가 없어 슬라이더로는 불가합니다. 대신 얼굴 텍스처를 교체해 표정을 바꿀 수 있어요. 표정이 그려진 이미지 URL(GitHub raw/jsDelivr 등 CORS 허용)을 넣고 적용하세요.';
+    const wrapEl=document.createElement('div'); wrapEl.style.cssText='display:flex;gap:6px;margin-top:6px';
+    const inp=document.createElement('input'); inp.type='text'; inp.placeholder='얼굴 이미지 URL';
+    inp.style.cssText='flex:1;min-width:0;background:#10131a;border:1px solid #2a3340;color:#cfd6e0;border-radius:6px;padding:6px 8px;font-size:12px';
+    inp.addEventListener('keydown',e=>e.stopPropagation()); inp.addEventListener('keyup',e=>e.stopPropagation());
+    const applyB=document.createElement('button'); applyB.className='ctl'; applyB.textContent='적용';
+    applyB.onclick=()=>{ const m=npcs.find(n=>n.key==='man_walk'); if(m) setNpcFace(m, inp.value.trim()); };
+    wrapEl.appendChild(inp); wrapEl.appendChild(applyB);
+    exRows.push(exNote, wrapEl);
+    exRows.push(btnRow([['↩ 원래 얼굴로',null,()=>{ const m=npcs.find(n=>n.key==='man_walk'); if(m)revertNpcFace(m); return false; },false]]));
+  }
+  const exDiag=btnRow([['🔎 얼굴/표정 데이터 콘솔 출력',null,()=>{ const m=npcs.find(n=>n.key==='man_walk'); if(m){ console.log('[expr] man_walk morphs:',npcMorphNames(m)); const {heads,all}=faceMaterials(m); console.log('  head materials:',heads.map(x=>x.name),' all textured:',all.filter(x=>x.map).map(x=>x.name)); } return false; },false]]);
+  exRows.push(exDiag);
+  panel.appendChild(section('😶 표정 / Expression (커플 남자)',false,exRows));
 
   // WAYPOINTS
   const wpSave=btnRow([['📍 현재 좌표 저장',null,()=>{saveMark();return false;},false],['🗑 전체삭제',null,()=>{marks.length=0;buildPanel(lastCaveSize);return false;},false]]);
@@ -1427,10 +2039,93 @@ function buildPanel(cs){
   const drBtn=btnRow([['🔊 긴장 드론',null,()=>{const on=!droneNodes;setDrone(on);return!!droneNodes;},true]]);
   panel.appendChild(section('연출 / 터널 이벤트',true,[evBtn,evBlk,evFog,jsBtn,jsCtl,drBtn]));
 
+  // INTERACTION PROMPT
+  {
+    const iOn=btnRow([['💬 상호작용 프롬프트',null,()=>{interact.on=!interact.on;return interact.on;},true,interact.on]]);
+    const iR=slider('표시 거리',1,8,.1,interact.range,f2,v=>interact.range=v);
+    const iNote=document.createElement('div'); iNote.className='readout';
+    iNote.textContent='NPC(예: 훈)에게 가까이 가면 화면에 "💬 대화 [F] / 🔍 조사 [E]"가 뜹니다. F=대화, E=조사. 대화 중에는 Enter/Space/E로 다음 줄, 클릭으로도 진행됩니다.';
+    panel.appendChild(section('💬 상호작용 / Interact',false,[iOn,iR,iNote]));
+  }
+
   // FOG (always-on base fog — independent of tunnel events)
   const fogDen=slider('안개 밀도',0,0.08,.001,base.fogD,f2,v=>{ base.fogD=v; if(scene.fog)scene.fog.density=v; });
   const fogCol=colorRow('안개 색', '#'+(scene.background&&scene.background.getHexString?scene.background.getHexString():'0a0c10'), v=>{ const c=new THREE.Color(v); scene.background=c; if(scene.fog)scene.fog.color.copy(c); });
   panel.appendChild(section('🌫 안개 / Fog',false,[fogDen,fogCol]));
+
+  // TRIPPY / HORROR SCREEN FILTERS
+  if(hasComposer){
+    const U=fxPass.uniforms;
+    const keys=['uTrip','uMelt','uChroma','uThrob','uSwirl','uKaleido','uGlitch','uZoom','uStrobe','uInvert','uEdge','uFalse','uBulge','uVHS','uBlur','uBloom','uHaze'];
+    const allOff=()=>{ keys.forEach(k=>{ if(U[k])U[k].value=0; }); };
+    const setFx=(o)=>{ allOff(); for(const k in o){ if(U[k]) U[k].value=o[k]; } updateFxActive(); buildPanel(lastCaveSize); };
+    const mk=(label,obj)=>[label,null,()=>{ setFx(obj); return false; },false];
+    // dreamcore/liminal preset also nudges base grade (pixel/desat/contrast/grain)
+    const dream=(g)=>[ '🌫 꿈/리미널', null, ()=>{ allOff();
+      U.uBlur.value=0.5; U.uBloom.value=0.5; U.uHaze.value=0.6; U.uChroma.value=0.18; U.uGrain.value=0.4;
+      U.uPixel.value=2; U.uPoster.value=0; U.uDesat.value=0.18; U.uContrast.value=0.92;
+      updateFxActive(); buildPanel(lastCaveSize); return false; }, false ];
+    const r1=btnRow([ mk('🍄 LSD',{uTrip:0.8,uMelt:0.5,uChroma:0.4}), mk('🌈 환각',{uTrip:0.6,uChroma:0.6,uSwirl:0.3}) ]);
+    const r2=btnRow([ mk('🌀 소용돌이',{uSwirl:0.8,uTrip:0.3,uChroma:0.2}), mk('🔯 만화경',{uKaleido:0.9,uTrip:0.4}) ]);
+    const r3=btnRow([ mk('💀 악몽',{uThrob:0.8,uChroma:0.3,uVHS:0.3}), mk('🫠 녹아내림',{uMelt:0.85,uChroma:0.2,uTrip:0.15}) ]);
+    const r4=btnRow([ mk('📺 VHS 고장',{uVHS:0.7,uGlitch:0.5,uChroma:0.4}), mk('⚡ 글리치',{uGlitch:0.8,uChroma:0.5,uStrobe:0.3}) ]);
+    const r5=btnRow([ mk('🌡 써모/애시드',{uFalse:0.9,uTrip:0.2}), mk('✏ 윤곽선',{uEdge:0.9,uInvert:0.0}) ]);
+    const r6=btnRow([ mk('🫧 어안+호흡',{uBulge:0.7,uZoom:0.8,uChroma:0.2}), mk('🔆 스트로브',{uStrobe:0.7,uInvert:0.0}) ]);
+    const rD=btnRow([ dream(), mk('🌁 몽환 소프트',{uBlur:0.35,uBloom:0.35,uHaze:0.35,uChroma:0.1}) ]);
+    const r7=btnRow([ mk('🙃 색반전',{uInvert:0.9}), ['⛔ 전부 끄기',null,()=>{ setFx({}); return false; },false] ]);
+    const sl=(label,key)=>slider(label,0,1,.01,U[key].value,f2,v=>{U[key].value=v;updateFxActive();});
+    const note=document.createElement('div'); note.className='readout';
+    note.textContent='프리셋을 누르거나 슬라이더로 자유롭게 섞으세요. 시간에 따라 살아 움직입니다. "꿈/리미널"은 블러+블룸+헤이즈+색수차+그레인으로 드림코어 룩을 만듭니다. 광과민성/멀미 주의 — 스트로브·글리치는 천천히.';
+    panel.appendChild(section('🌀 기묘 / 공포 필터',false,[
+      rD,r1,r2,r3,r4,r5,r6,r7,
+      sl('🌫 블러(소프트포커스)','uBlur'), sl('✨ 블룸(빛번짐)','uBloom'), sl('🌁 헤이즈(꿈결)','uHaze'),
+      sl('🌀 사이키델릭','uTrip'), sl('🫠 녹아내림','uMelt'), sl('👁 색수차','uChroma'), sl('🩸 공포 맥동','uThrob'),
+      sl('🌀 소용돌이','uSwirl'), sl('🔯 만화경','uKaleido'), sl('⚡ 글리치','uGlitch'), sl('🫧 줌 호흡','uZoom'),
+      sl('🔆 스트로브','uStrobe'), sl('🙃 색반전','uInvert'), sl('✏ 윤곽선','uEdge'), sl('🌡 팔레트','uFalse'),
+      sl('🫧 어안렌즈','uBulge'), sl('📺 VHS','uVHS'), note
+    ]));
+  }
+
+  // BODY STRETCH (player bones)
+  {
+    const grp={ '🦒 목':['neck'], '👤 머리':['head'], '🧍 몸통':['spine'], '🫳 팔':['leftarm','rightarm'], '🦵 다리':['leftupleg','rightupleg'] };
+    const rows=[];
+    for(const label in grp){
+      const sufs=grp[label];
+      rows.push(slider(label+' 늘이기',0.3,3,.05, curStretch(charRoot,sufs[0]), f2, v=>stretchBones(charRoot,sufs,v)));
+    }
+    rows.push(btnRow([['↩ 신체 원래대로',null,()=>{ for(const label in grp) stretchBones(charRoot,grp[label],1); buildPanel(lastCaveSize); return false; },false]]));
+    const bsNote=document.createElement('div'); bsNote.className='readout';
+    bsNote.textContent='플레이어의 뼈대를 길이 방향으로 늘립니다. 1=기본, 위로 올리면 기괴하게 길어집니다(자식 부위도 함께 늘어남). 커플(NPC)도 늘리길 원하면 말씀하세요.';
+    rows.push(bsNote);
+    panel.appendChild(section('🩻 신체 왜곡 / Body Stretch (플레이어)',false,rows));
+  }
+
+  // CREEPY MOTION
+  {
+    const cmRows=[];
+    const selWrap=document.createElement('div'); selWrap.className='row'; selWrap.style.cssText='display:flex;align-items:center;gap:8px';
+    const selLab=document.createElement('span'); selLab.textContent='대상'; selLab.style.cssText='font-size:12px;color:#9aa4b2;min-width:34px';
+    const sel=document.createElement('select'); sel.style.cssText='flex:1;background:#10131a;border:1px solid #2a3340;color:#cfd6e0;border-radius:6px;padding:6px 8px;font-size:12px';
+    [['플레이어','player'],['남자(커플)','man_walk'],['여자(커플)','woman_walk'],['남자(서있기)','man_idle'],['여자(서있기)','woman_idle']].forEach(([t,v])=>{ const o=document.createElement('option'); o.value=v; o.textContent=t; if(v===creepy.targetKey)o.selected=true; sel.appendChild(o); });
+    sel.addEventListener('change',()=>{ creepy.targetKey=sel.value; });
+    sel.addEventListener('keydown',e=>e.stopPropagation());
+    selWrap.appendChild(selLab); selWrap.appendChild(sel); cmRows.push(selWrap);
+    cmRows.push(btnRow([
+      ['😬 경련(따그닥)',null,()=>{creepy.twitch=!creepy.twitch;return creepy.twitch;},true,creepy.twitch],
+      ['🌀 머리 꺾기/회전',null,()=>{creepy.headTwist=!creepy.headTwist;return creepy.headTwist;},true,creepy.headTwist] ]));
+    cmRows.push(btnRow([
+      ['🕷 거미 자세',null,()=>{creepy.spider=!creepy.spider;return creepy.spider;},true,creepy.spider],
+      ['📳 온몸 떨림',null,()=>{creepy.tremor=!creepy.tremor;return creepy.tremor;},true,creepy.tremor] ]));
+    cmRows.push(btnRow([
+      ['🎞 프레임 끊김',null,()=>{creepy.stutter=!creepy.stutter;return creepy.stutter;},true,creepy.stutter],
+      ['⛔ 전부 끄기',null,()=>{creepy.twitch=creepy.headTwist=creepy.spider=creepy.tremor=creepy.stutter=false;buildPanel(lastCaveSize);return false;},false] ]));
+    cmRows.push(slider('강도',0,1,.01,creepy.intensity,f2,v=>creepy.intensity=v));
+    const cmNote=document.createElement('div'); cmNote.className='readout';
+    cmNote.textContent='대상을 고른 뒤 동작을 켜세요(중복 가능). 걷기/대기 애니메이션 위에 덧씌워집니다. 다가오는 커플(남자/여자)을 대상으로 켜면 가장 무섭습니다.';
+    cmRows.push(cmNote);
+    panel.appendChild(section('🧟 기괴한 움직임 / Creepy Motion',false,cmRows));
+  }
 
   // FILTERS
   if(hasComposer){
@@ -1510,13 +2205,30 @@ function collectSettings(){
     audio:{ muted:muted, volume:+vol.toFixed(2), footsteps:state.audioFootsteps, bgm:bgmOn, bgmVolume:+bgmVol.toFixed(2) },
     filters: u?{ pixel:u.uPixel.value, posterize:u.uPoster.value, scanline:+u.uScan.value.toFixed(2), cinematic:u.uCine.value>0.5,
       grain:+u.uGrain.value.toFixed(2), desaturate:+u.uDesat.value.toFixed(2), contrast:+u.uContrast.value.toFixed(2),
+      chroma:+u.uChroma.value.toFixed(2), blur:+u.uBlur.value.toFixed(2), bloom:+u.uBloom.value.toFixed(2), haze:+u.uHaze.value.toFixed(2),
       screenTint:'#'+new THREE.Color(tn.x,tn.y,tn.z).getHexString() }:null,
     mood: u?{ desaturate:+u.uMDesat.value.toFixed(2), contrast:+u.uMCon.value.toFixed(2), brightness:+u.uMBright.value.toFixed(2),
       tint:'#'+new THREE.Color(u.uMTint.value.x,u.uMTint.value.y,u.uMTint.value.z).getHexString() }:null,
     trash:{ hand:state.trash.hand, x:+state.trash.x.toFixed(3), y:+state.trash.y.toFixed(3), z:+state.trash.z.toFixed(3),
       rotX:state.trash.rx, rotY:state.trash.ry, rotZ:state.trash.rz, scale:+state.trash.scale.toFixed(3) },
     npcs: Object.fromEntries(npcs.map(n=>[n.key,{ x:+n.st.x.toFixed(3), z:+n.st.z.toFixed(3), footOffset:+n.st.footOffset.toFixed(3),
-      rotY:n.st.rotY, scale:+n.st.scale.toFixed(3), animSpeed:+n.st.animSpeed.toFixed(2), visible:n.st.visible }]))
+      rotY:n.st.rotY, scale:+n.st.scale.toFixed(3), animSpeed:+n.st.animSpeed.toFixed(2), visible:n.st.visible }])),
+    props: Object.fromEntries(props.map(p=>[p.key,{ x:+p.st.x.toFixed(3), y:+p.st.y.toFixed(3), z:+p.st.z.toFixed(3),
+      rotY:p.st.rotY, scale:+p.st.scale.toFixed(3), visible:p.st.visible,
+      smoke: p.smoke?{ on:p.smoke.on, count:Math.round(p.smoke.count), size:+p.smoke.size.toFixed(3), rise:+p.smoke.rise.toFixed(3),
+        spread:+p.smoke.spread.toFixed(3), drift:+p.smoke.drift.toFixed(3), opacity:+p.smoke.opacity.toFixed(3),
+        offsetY:+p.smoke.offsetY.toFixed(3), color:p.smoke.color }:undefined,
+      flies: p.flies?{ on:p.flies.on, count:Math.round(p.flies.count), size:+p.flies.size.toFixed(3), area:+p.flies.area.toFixed(3),
+        height:+p.flies.height.toFixed(3), speed:+p.flies.speed.toFixed(3), jitter:+p.flies.jitter.toFixed(3),
+        opacity:+p.flies.opacity.toFixed(3), color:p.flies.color }:undefined }])),
+    hunRun:{ auto:hunRun.auto, speed:+hunRun.speed.toFixed(2), ahead:hunRun.ahead, stop:+hunRun.stop.toFixed(2),
+      passThrough:hunRun.passThrough, animScale:+hunRun.animScale.toFixed(2), tx:+hunRun.tx.toFixed(2), tz:+hunRun.tz.toFixed(2), r:+hunRun.r.toFixed(2) },
+    bounds:{ on:bounds.on, auto:bounds.auto, cx:+bounds.cx.toFixed(3), halfW:+bounds.halfW.toFixed(3),
+      floorY:+bounds.floorY.toFixed(3), ceilY:+bounds.ceilY.toFixed(3), minZ:+bounds.minZ.toFixed(2), maxZ:+bounds.maxZ.toFixed(2) },
+    lights: placedLights.map(L=>({ type:L.type, x:+L.x.toFixed(2), y:+L.y.toFixed(2), z:+L.z.toFixed(2), color:L.color,
+      intensity:+L.intensity.toFixed(2), dist:+L.dist.toFixed(2), decay:+L.decay.toFixed(2),
+      angle:+L.angle.toFixed(3), penumbra:+L.penumbra.toFixed(2), aimX:+L.aimX.toFixed(2), aimZ:+L.aimZ.toFixed(2),
+      flicker:L.flicker, fstyle:L.fstyle, fspeed:+L.fspeed.toFixed(2), famount:+L.famount.toFixed(2), bulb:L.bulb }))
   };
 }
 function applySettings(s){
@@ -1549,6 +2261,7 @@ function applySettings(s){
   const fl=s.filters; if(fl&&hasComposer){ const u=fxPass.uniforms; if('pixel'in fl)u.uPixel.value=fl.pixel; if('posterize'in fl)u.uPoster.value=fl.posterize;
     if('scanline'in fl)u.uScan.value=fl.scanline; if('cinematic'in fl)u.uCine.value=fl.cinematic?1:0; if('grain'in fl)u.uGrain.value=fl.grain;
     if('desaturate'in fl)u.uDesat.value=fl.desaturate; if('contrast'in fl)u.uContrast.value=fl.contrast;
+    if('chroma'in fl)u.uChroma.value=fl.chroma; if('blur'in fl)u.uBlur.value=fl.blur; if('bloom'in fl)u.uBloom.value=fl.bloom; if('haze'in fl)u.uHaze.value=fl.haze;
     if(fl.screenTint){const c=new THREE.Color(fl.screenTint);u.uTint.value.set(c.r,c.g,c.b);} updateFxActive(); }
   const md=s.mood; if(md&&hasComposer){ const u=fxPass.uniforms;
     if('desaturate'in md)u.uMDesat.value=md.desaturate; if('contrast'in md)u.uMCon.value=md.contrast; if('brightness'in md)u.uMBright.value=md.brightness;
@@ -1559,13 +2272,19 @@ function applySettings(s){
     if('x'in d)n.st.x=d.x; if('z'in d)n.st.z=d.z; if('footOffset'in d)n.st.footOffset=d.footOffset;
     if('rotY'in d)n.st.rotY=d.rotY; if('scale'in d)n.st.scale=d.scale; if('animSpeed'in d)n.st.animSpeed=d.animSpeed;
     if('visible'in d)n.st.visible=d.visible; applyNPC(n); } }
+  if(s.props){ for(const p of props){ const d=s.props[p.key]; if(!d)continue;
+    if('x'in d)p.st.x=d.x; if('y'in d)p.st.y=d.y; if('z'in d)p.st.z=d.z;
+    if('rotY'in d)p.st.rotY=d.rotY; if('scale'in d)p.st.scale=d.scale; if('visible'in d)p.st.visible=d.visible;
+    if(d.smoke && p.smoke) Object.assign(p.smoke, d.smoke);
+    if(d.flies && p.flies) Object.assign(p.flies, d.flies);
+    applyProp(p); } }
+  if(s.hunRun){ Object.assign(hunRun, s.hunRun); }
+  if(s.bounds){ Object.assign(bounds, s.bounds); rebuildBoundsWire(); }
+  if(s.lights){ clearLights(); s.lights.forEach(d=>makeLight(d)); }
   buildPanel(lastCaveSize);
 }
 
-// ---------- dialogue box ----------
-const dlg={open:false,lines:[],i:0,typing:false,full:'',pos:0,timer:null,speed:30};
-const dlgEl=document.getElementById('dialogue'),dlgNameEl=document.getElementById('dlgName'),
-  dlgTextEl=document.getElementById('dlgText'),dlgNextEl=document.getElementById('dlgNext');
+// ---------- dialogue box (state declared early, near top) ----------
 function showDialogue(lines){ if(!lines||!lines.length)return; dlg.lines=lines.map(l=>typeof l==='string'?{text:l}:l); dlg.i=0; dlg.open=true; if(dlgEl)dlgEl.style.display='block'; dlgRender(); }
 function dlgRender(){ const ln=dlg.lines[dlg.i]||{}; if(dlgNameEl){dlgNameEl.textContent=ln.name||''; dlgNameEl.style.display=ln.name?'block':'none';}
   dlg.full=ln.text||''; dlg.pos=0; if(dlgTextEl)dlgTextEl.textContent=''; dlg.typing=true; if(dlgNextEl)dlgNextEl.style.opacity=0;
@@ -1577,6 +2296,60 @@ function dlgAdvance(){ if(!dlg.open)return;
 function dlgClose(){ dlg.open=false; if(dlgEl)dlgEl.style.display='none'; clearInterval(dlg.timer); }
 if(dlgEl) dlgEl.addEventListener('pointerdown',e=>{ e.stopPropagation(); dlgAdvance(); });
 addEventListener('keydown',e=>{ if(dlg.open&&(e.code==='Enter'||e.code==='Space'||e.code==='KeyE')){ dlgAdvance(); e.preventDefault(); } });
+
+// ---------- interaction prompt (대화 [F] / 조사 [E]) shown near NPCs ----------
+(function buildInteractUI(){
+  const el=document.createElement('div'); el.id='interactUI';
+  el.style.cssText='position:fixed;left:50%;bottom:15%;transform:translateX(-50%);z-index:30;display:none;'
+    +'background:rgba(8,9,12,0.74);border:1px solid rgba(255,255,255,0.14);border-radius:11px;padding:9px 14px;'
+    +'color:#ececef;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);box-shadow:0 6px 22px rgba(0,0,0,.55);'
+    +'font-size:15px;letter-spacing:.5px;pointer-events:none;user-select:none;min-width:118px;';
+  document.body.appendChild(el); interact.el=el;
+})();
+function _keyBadge(k){ return `<span style="display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;margin-left:26px;border:2px solid rgba(255,255,255,.8);border-radius:6px;font-size:13px;font-weight:800;line-height:1;">${k}</span>`; }
+const _ICON={
+  talk:`<svg width="24" height="24" viewBox="0 0 24 24" fill="#f2f2f4" xmlns="http://www.w3.org/2000/svg"><path d="M4 3.5h16a2.2 2.2 0 0 1 2.2 2.2v8.4a2.2 2.2 0 0 1-2.2 2.2H10l-5.2 4v-4H4a2.2 2.2 0 0 1-2.2-2.2V5.7A2.2 2.2 0 0 1 4 3.5z"/><circle cx="8" cy="10" r="1.35" fill="#0c0d10"/><circle cx="12" cy="10" r="1.35" fill="#0c0d10"/><circle cx="16" cy="10" r="1.35" fill="#0c0d10"/></svg>`,
+  examine:`<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#f2f2f4" stroke-width="2.2" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><circle cx="10.5" cy="10.5" r="6.2"/><line x1="15.2" y1="15.2" x2="20.5" y2="20.5"/></svg>`
+};
+function renderInteract(n){
+  const row=(icon,label,key)=>`<div style="display:flex;align-items:center;padding:5px 2px;">`
+    +`<span style="display:inline-flex;width:26px;justify-content:center;">${icon}</span>`
+    +`<span style="margin-left:11px;flex:1;white-space:nowrap;">${label}</span>${_keyBadge(key)}</div>`;
+  let h='';
+  if(n.talk&&n.talk.length) h+=row(_ICON.talk,'대화','F');
+  if(n.examine) h+=row(_ICON.examine,'조사','E');
+  interact.el.innerHTML=h;
+}
+function updateInteract(){
+  if(!interact.el) return;
+  if(!interact.on || dlg.open || !charRoot){ interact.el.style.display='none'; interact.target=null; return; }
+  let best=null, bd=interact.range;
+  for(const n of npcs){ if(!n.root||!n.st.visible||!(n.talk||n.examine)) continue;
+    const dx=charRoot.position.x-n.root.position.x, dz=charRoot.position.z-n.root.position.z, d=Math.hypot(dx,dz);
+    if(d<bd){ bd=d; best=n; } }
+  if(best){ if(interact.target!==best){ interact.target=best; renderInteract(best); } interact.el.style.display='block'; }
+  else { interact.el.style.display='none'; interact.target=null; }
+}
+// mirror the WebGL screen filter onto the DOM UI (dialogue / interaction prompt) so they match the look
+function updateUIFilter(){
+  if(!hasComposer) return; const u=fxPass.uniforms;
+  const blur=(u.uBlur.value*1.1).toFixed(2);
+  const gray=Math.min(1, u.uDesat.value*1.3 + u.uMDesat.value).toFixed(2);
+  const con=(u.uContrast.value*u.uMCon.value).toFixed(3);
+  const bri=(u.uMBright.value*(1+u.uHaze.value*0.05)).toFixed(3);
+  const f=`blur(${blur}px) grayscale(${gray}) contrast(${con}) brightness(${bri})`;
+  if(f!==_uiFilterCache){ _uiFilterCache=f;
+    if(dlgEl)dlgEl.style.filter=f;
+    if(interact.el)interact.el.style.filter=f;
+    const mm=document.getElementById('minimap'); if(mm)mm.style.filter=f;
+  }
+}
+addEventListener('keydown',e=>{
+  if(dlg.open||typingInField(e)) return;
+  const n=interact.target; if(!n||!interact.on) return;
+  if(e.code==='KeyF' && n.talk&&n.talk.length){ showDialogue(n.talk); interact.el.style.display='none'; e.preventDefault(); }
+  else if(e.code==='KeyE' && n.examine){ showDialogue([{name:n.label?n.label.split(' ')[0]:'',text:n.examine}]); interact.el.style.display='none'; e.preventDefault(); }
+});
 
 function currentT(){ if(!charRoot||!cave)return'';const p=charRoot.position,cp=cave.position;
   return `char pos(${p.x.toFixed(2)},${p.y.toFixed(2)},${p.z.toFixed(2)}) rotY ${(charRoot.rotation.y*180/Math.PI).toFixed(0)} scale ${charRoot.scale.x.toFixed(3)}\ncave pos(${cp.x.toFixed(2)},${cp.y.toFixed(2)},${cp.z.toFixed(2)}) rotY ${(cave.rotation.y*180/Math.PI).toFixed(0)} scale ${cave.scale.x.toFixed(3)}`;}
