@@ -214,6 +214,8 @@ const SRC={
   woman_walk_with:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/woman_walk_with.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/woman_walk_with.fbx`],
   hun_idle:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/hun_idle.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/hun_idle.fbx`],
   hun_walk:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/hun_walk.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/hun_walk.fbx`],
+  chun_idle:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/chun_idle.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/chun_idle.fbx`],
+  chun_walk:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/chun_walk.fbx`,`https://raw.githubusercontent.com/${REPO}/main/lee/chun_walk.fbx`],
   churrasqueira:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/churrasqueira_opt.glb`,`https://raw.githubusercontent.com/${REPO}/main/lee/churrasqueira_opt.glb`],
   food_garbage:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/food_garbage_opt.glb`,`https://raw.githubusercontent.com/${REPO}/main/lee/food_garbage_opt.glb`],
   corpse:[`https://cdn.jsdelivr.net/gh/${REPO}@main/lee/corpse.glb`,`https://raw.githubusercontent.com/${REPO}/main/lee/corpse.glb`]
@@ -296,6 +298,7 @@ const xtra={faceOn:false,faceInt:6, rimOn:false,rimInt:6, upOn:false,upInt:5};
 const _cdir2=new THREE.Vector3();
 function updateExtraLights(p){
   camera.getWorldDirection(_cdir2);
+  FACE.footY.value = p.y - state.footOffset;   // feet world-Y, so face mask tracks ramps
   faceLight.visible=xtra.faceOn; faceLight.intensity=xtra.faceInt;
   faceLight.position.set(p.x-_cdir2.x*1.8, p.y+1.5, p.z-_cdir2.z*1.8);
   rimLight.visible=xtra.rimOn; rimLight.intensity=xtra.rimInt;
@@ -449,6 +452,26 @@ function applyCaveBW(mat){
 
 // ---------- character colour grade (shader inject) ----------
 const CHAR={bright:{value:1.0},sat:{value:1.0},con:{value:1.0},tint:{value:new THREE.Color(0xffffff)}};
+const PDIM={value:1.0};   // player overall final brightness
+const FACE={dim:{value:0.23}, h:{value:0.56}, w:{value:0.8}, footY:{value:0.0}, _h0:0.56, _w0:0.8};  // face region dim (baked)
+let _faceCalibrated=true;   // values fixed by user; skip auto-calibration
+function applyPlayerDim(mat){
+  if(!mat) return; const prev=mat.onBeforeCompile;
+  mat.onBeforeCompile=(sh)=>{ if(prev)prev(sh);
+    sh.uniforms.uPDIM=PDIM; sh.uniforms.uFACE=FACE.dim; sh.uniforms.uFACEH=FACE.h; sh.uniforms.uFACEW=FACE.w; sh.uniforms.uFOOTY=FACE.footY;
+    let vs=sh.vertexShader;
+    if(!vs.includes('vWFY')){ vs='varying float vWFY;\n'+vs;
+      if(vs.includes('#include <project_vertex>')) vs=vs.replace('#include <project_vertex>','#include <project_vertex>\n vWFY=(modelMatrix*vec4(transformed,1.0)).y;');
+      else if(vs.includes('#include <begin_vertex>')) vs=vs.replace('#include <begin_vertex>','#include <begin_vertex>\n vWFY=(modelMatrix*vec4(position,1.0)).y;');
+      sh.vertexShader=vs; }
+    let fs=sh.fragmentShader;
+    if(fs.includes('#include <color_fragment>')){
+      fs=fs.replace('#include <color_fragment>','#include <color_fragment>\n diffuseColor.rgb*=uPDIM; { float _fy=vWFY-uFOOTY; float _fm=smoothstep(uFACEH-uFACEW,uFACEH+uFACEW,_fy); diffuseColor.rgb*=mix(1.0,uFACE,_fm); }');
+    }
+    sh.fragmentShader='uniform float uPDIM,uFACE,uFACEH,uFACEW,uFOOTY;\nvarying float vWFY;\n'+fs;
+  };
+  mat.needsUpdate=true;
+}
 function applyCharGrade(mat){
   const prev=mat.onBeforeCompile;
   mat.onBeforeCompile=(sh)=>{
@@ -679,6 +702,8 @@ const npcs=[
     talk:[{name:'훈',text:'...여기서 뭐 하고 있어?'},{name:'훈',text:'빨리 돌아가. 곧 불이 꺼져.'}], examine:'한참을 미동도 없이 서 있는 남자다. 인기척에도 돌아보지 않는다.',
     st:{x:1.75,z:-149,footOffset:-0.66,rotY:284,scale:0.81,animSpeed:1,visible:true}},
   {key:'hun_walk',   label:'훈 · Walk(달리기)', src:'hun_walk',       root:null,mixer:null,action:null, noEqualize:true, bw:true, st:{x:1.75,z:-160,footOffset:-0.66,rotY:180,scale:0.81,animSpeed:1,visible:false}},
+  {key:'chun_idle',  label:'천 · Idle',       src:'chun_idle',       root:null,mixer:null,action:null, noEqualize:true, bw:true, st:{x:-1.5,z:-155,footOffset:-0.66,rotY:90,scale:0.81,animSpeed:1,visible:true}},
+  {key:'chun_walk',  label:'천 · Walk',       src:'chun_walk',       root:null,mixer:null,action:null, noEqualize:true, bw:true, st:{x:-1.5,z:-165,footOffset:-0.66,rotY:0,scale:0.81,animSpeed:1,visible:false}},
 ];
 const props=[
   {key:'churrasqueira', label:'슈하스케이라(화로)', src:'churrasqueira', root:null, bw:true, st:{x:1.2,y:1.78,z:-148.95,rotY:272,scale:1,visible:true},
@@ -1202,7 +1227,7 @@ function equalizeNPCHeights(){
 // ---------- saved defaults (applied right after load) ----------
 const DEFAULTS={
   "character":{"x":0.077,"z":-186.508,"footOffset":-0.84,"scaleMul":0.74,"faceFlipped":false},
-  "characterColour":{"brightness":0.58,"contrast":1.02,"saturation":1,"tint":"#ffffff"},
+  "characterColour":{"brightness":0.58,"contrast":1.02,"saturation":1,"tint":"#ffffff","playerBright":1,"faceBright":0.23,"faceH":0.56,"faceW":0.8},
   "cave":{"x":-0.751,"y":1.172,"z":9.863,"rotYdeg":0,"scaleMul":1,"blackWhite":true},
   "movement":{"moveSpeed":1.7,"walkAnimSpeed":1.6,"collide":true,"bodyRadius":0.45},
   "camera":{"yawDeg":-1618.7,"dist":4,"height":1.5,"look":1.2,"fov":55,"follow":true,"viewDist":140},
@@ -1269,11 +1294,13 @@ async function boot(){
       (Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{ if(!m)return;
         if(m.map){hasTex=true;m.map.colorSpace=THREE.SRGBColorSpace;m.color&&m.color.set(0xffffff);}
         else if(m.color){const c=m.color; if(c.r+c.g+c.b<0.15)c.set(0x9aa0a8);}
-        if('roughness'in m)m.roughness=0.85; if('metalness'in m)m.metalness=0.0; applyCharGrade(m); m.needsUpdate=true; });
+        if('roughness'in m)m.roughness=0.85; if('metalness'in m)m.metalness=0.0; applyCharGrade(m); applyPlayerDim(m); m.needsUpdate=true; });
     }});
     console.log('[char] embedded texture detected:',hasTex);
     scene.add(charRoot); groundObject(charRoot,1.8);
     groundY=charRoot.position.y; scale0=charRoot.scale.x;
+    try{ const _bb=new THREE.Box3().setFromObject(charRoot); const _h=_bb.max.y-_bb.min.y;   // auto-fit face mask to model height
+      if(_h>0.2 && !_faceCalibrated){ FACE.h.value=+(_h*0.76).toFixed(3); FACE.w.value=+(_h*0.10).toFixed(3); FACE._h0=FACE.h.value; FACE._w0=FACE.w.value; _faceCalibrated=true; } }catch(e){}
 
     const idleFbx=await loadFB(fbx,SRC.idle).catch(()=>null); setProg('92%');
 
@@ -1730,12 +1757,13 @@ function buildPanel(cs){
   panel.appendChild(section('캐릭터 (정지=Idle · 이동=Walk 자동)',true,[cPosX,cPosZ,cFoot,cScl,cSpd,cMove,cFace]));
 
   // CHARACTER COLOUR CORRECTION
+  const gP=slider('플레이어 전체 밝기',0.1,1.5,.01,PDIM.value,f2,v=>PDIM.value=v);
   const gB=slider('밝기',0,2,.01,CHAR.bright.value,f2,v=>CHAR.bright.value=v);
   const gC=slider('대비',0.3,2,.01,CHAR.con.value,f2,v=>CHAR.con.value=v);
   const gS=slider('채도',0,2,.01,CHAR.sat.value,f2,v=>CHAR.sat.value=v);
   const gT=colorRow('틴트 색상 (곱)','#ffffff',hex=>CHAR.tint.value.set(hex));
-  const gR=btnRow([['↺ 색보정 초기화',null,()=>{CHAR.bright.value=1;CHAR.con.value=1;CHAR.sat.value=1;CHAR.tint.value.set(0xffffff);gB._set(1);gC._set(1);gS._set(1);},false]]);
-  panel.appendChild(section('캐릭터 색보정 / Colour',false,[gB,gC,gS,gT,gR]));
+  const gR=btnRow([['↺ 색보정 초기화',null,()=>{PDIM.value=1;CHAR.bright.value=1;CHAR.con.value=1;CHAR.sat.value=1;CHAR.tint.value.set(0xffffff);gP._set(1);gB._set(1);gC._set(1);gS._set(1);},false]]);
+  panel.appendChild(section('캐릭터 색보정 / Colour',false,[gP,gB,gC,gS,gT,gR]));
 
   // CAVE
   const vPosX=slider('위치 X',-reach,reach,.05,cave.position.x,f2,v=>{cave.position.x=v;caveDirty=true;});
@@ -2187,7 +2215,8 @@ function collectSettings(){
     character:{ x:+charRoot.position.x.toFixed(3), z:+charRoot.position.z.toFixed(3),
       footOffset:+state.footOffset.toFixed(3), scaleMul:+(charRoot.scale.x/scale0).toFixed(3), faceFlipped:state.faceOffset!==0 },
     characterColour:{ brightness:+CHAR.bright.value.toFixed(3), contrast:+CHAR.con.value.toFixed(3),
-      saturation:+CHAR.sat.value.toFixed(3), tint:hx(CHAR.tint.value) },
+      saturation:+CHAR.sat.value.toFixed(3), tint:hx(CHAR.tint.value), playerBright:+PDIM.value.toFixed(3),
+      faceBright:+FACE.dim.value.toFixed(3), faceH:+FACE.h.value.toFixed(3), faceW:+FACE.w.value.toFixed(3) },
     cave:{ x:+cave.position.x.toFixed(3), y:+cave.position.y.toFixed(3), z:+cave.position.z.toFixed(3),
       rotYdeg:+(cave.rotation.y*180/Math.PI).toFixed(1), scaleMul:+(cave.scale.x/cvScale0).toFixed(3), blackWhite:uBW.value>0.5 },
     movement:{ moveSpeed:+state.moveSpeed.toFixed(2), walkAnimSpeed:+state.walkSpeed.toFixed(2), collide:state.collide, bodyRadius:+state.bodyR.toFixed(3) },
@@ -2237,7 +2266,8 @@ function applySettings(s){
     if('footOffset'in C)state.footOffset=C.footOffset; if('scaleMul'in C)charRoot.scale.setScalar(scale0*C.scaleMul);
     if('faceFlipped'in C)state.faceOffset=C.faceFlipped?Math.PI:0; }
   const cc=s.characterColour; if(cc){ if('brightness'in cc)CHAR.bright.value=cc.brightness; if('contrast'in cc)CHAR.con.value=cc.contrast;
-    if('saturation'in cc)CHAR.sat.value=cc.saturation; if(cc.tint)CHAR.tint.value.set(cc.tint); }
+    if('saturation'in cc)CHAR.sat.value=cc.saturation; if(cc.tint)CHAR.tint.value.set(cc.tint); if('playerBright'in cc)PDIM.value=cc.playerBright;
+    if('faceBright'in cc)FACE.dim.value=cc.faceBright; if('faceH'in cc)FACE.h.value=cc.faceH; if('faceW'in cc)FACE.w.value=cc.faceW; }
   const cv=s.cave; if(cv){ if('x'in cv)cave.position.x=cv.x; if('y'in cv)cave.position.y=cv.y; if('z'in cv)cave.position.z=cv.z;
     if('rotYdeg'in cv)cave.rotation.y=cv.rotYdeg*D2R; if('scaleMul'in cv)cave.scale.setScalar(cvScale0*cv.scaleMul); if('blackWhite'in cv)uBW.value=cv.blackWhite?1:0; caveDirty=true; }
   const mv=s.movement; if(mv){ if('moveSpeed'in mv)state.moveSpeed=mv.moveSpeed; if('walkAnimSpeed'in mv)state.walkSpeed=mv.walkAnimSpeed;
